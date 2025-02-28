@@ -6,16 +6,19 @@ import random
 # Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
 # Difficulty of values used: How big values used are, whether final answer is whole number
 
-def free_text_question_generation(current_difficulty : int, question_types : list):
+# 30 seconds per question in non-mental maths, 30 * no. of questions is total time, no question-specific time
+# 10 seconds per questions in mental maths, question-specific timer
+
+def free_text_question_generation(current_difficulty : int, question_topics : list, question_types : list):
     difficulty_weighting = 20
-    question_type_chosen = random.choice(question_types)
+    question_topic_chosen = random.choice(question_topics)
     a = 0
     b = 1
     operation = ""
     question = ""
     answer = 0
     while True:
-        if question_type_chosen == "operations":
+        if question_topic_chosen == "operations":
             operation = random.choice(["add", "sub", "mul", "div"])
             a = 0
             b = 1
@@ -89,9 +92,9 @@ def free_text_question_generation(current_difficulty : int, question_types : lis
 
             if difficulty_weighting // 20 == current_difficulty:
                 break
-    print(a, b)
-    print(difficulty_weighting)
-    return a, b, question, answer
+    # print(a, b)
+    # print(difficulty_weighting)
+    return a, b, question, answer, difficulty_weighting
 
 def multiple_choice_question_generation(current_difficulty):
     difficulty_weighting = 10
@@ -103,11 +106,28 @@ def generate_question():
     pass
 
 score = 0
+difficulty_range = 50
+difficulty_boundary = 20
+current_difficulty = 2
 for x in range(0, 10):
-    a, b, question, answer = free_text_question_generation(2, ["operations"])
+    a, b, question, answer, difficulty_weighting = free_text_question_generation(current_difficulty, ["operations"], ["free_text"])
+    print(f"Difficulty range: {difficulty_range} Difficulty Level: {current_difficulty}")
     user_answer = int(input(question + "\n"))
     if answer == user_answer:
         score += 1
         print("Correct")
+        if current_difficulty > 1:
+            difficulty_range += ((difficulty_weighting - (current_difficulty*2)) // 2)
+            if difficulty_range >= 100:
+                current_difficulty += 1
+                difficulty_range = 50
+    else:
+        if current_difficulty < 4:
+            difficulty_range -= ((difficulty_boundary - (difficulty_weighting - (current_difficulty*2))) // 2)
+            if difficulty_range <= 0 and current_difficulty:
+                current_difficulty -= 1
+                difficulty_range = 50
+
+
 
 print(f"{score} out of 10")
