@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Quiz Page{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+   <h1>Quiz Page</h1>
+   <h3>Current Difficulty: Level {{ current_difficulty }}</h3>
+   {% if form %}
+      <div class="container mt-5">
+         <p>{{ final_question }}</p>
+         <form method="POST" class="form-register">
+            {{ form.csrf_token() }}
+            {{ form.answer.label() }}
+            {{ form.answer(class="form-control", placeholder="Answer") }}
+
+            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+         </form>
+      </div>
+   {% endif %}
+</div>
+{% endblock %}

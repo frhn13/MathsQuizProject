@@ -1,14 +1,5 @@
 import random
 
-# Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers, ambiguity of how to answer question, adding multiple numbers today, calculator/no calculator
-# Type of question: Free text -> multiple-choice -> true/false
-# Topic: Calculus -> Trigonometry -> Quadratic questions -> Sequences -> Linear equations -> 3d shapes -> 2d shapes -> fractions and decimals -> operations
-# Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
-# Difficulty of values used: How big values used are, whether final answer is whole number
-
-# 30 seconds per question in non-mental maths, 30 * no. of questions is total time, no question-specific time
-# 10 seconds per questions in mental maths, question-specific timer
-
 def answer_generation(real_answer : int, difficulty_weighting : int, question_type : str):
     answers = []
     if question_type == "free_text":
@@ -50,7 +41,6 @@ def operations_question_generation(entered_difficulty : int, question_types : li
         answer = 0
         match operation:
             case "add":
-                print("add")
                 difficulty_weighting += 5
                 num1 = random.randint(0, 200)
                 num2 = random.randint(0, 200)
@@ -69,7 +59,6 @@ def operations_question_generation(entered_difficulty : int, question_types : li
                 question = f"What is {num1} + {num2}?"
                 answer = num1 + num2
             case "sub":
-                print("sub")
                 difficulty_weighting += 10
                 num1 = random.randint(0, 200)
                 num2 = random.randint(0, 200)
@@ -92,7 +81,6 @@ def operations_question_generation(entered_difficulty : int, question_types : li
                 question = f"What is {num1} - {num2}?"
                 answer = num1 - num2
             case "mul":
-                print("mul")
                 difficulty_weighting += 15
                 num1 = random.randint(2, 30)
                 num2 = random.randint(2, 30)
@@ -103,7 +91,6 @@ def operations_question_generation(entered_difficulty : int, question_types : li
                 question = f"What is {num1} * {num2}?"
                 answer = num1 * num2
             case "div":
-                print("div")
                 difficulty_weighting += 20
                 while num1 % num2 != 0 or num1 == 0:
                     num1 = random.randint(20, 200)
@@ -138,44 +125,3 @@ def operations_question_generation(entered_difficulty : int, question_types : li
             pass
 
     return num1, num2, question, answer, difficulty_weighting
-
-score = 0
-difficulty_range = 50
-difficulty_boundary = 20
-current_difficulty = 2
-user_answer = ""
-
-for x in range(0, 10):
-    answer_valid = False
-    first_num, second_num, final_question, final_answer, final_difficulty_weighting = operations_question_generation(
-        current_difficulty, ["free_text", "multiple-choice", "true/false"])
-    print(f"Difficulty Weighting: {final_difficulty_weighting} Difficulty range: {difficulty_range} Difficulty Level: {current_difficulty}")
-    while not answer_valid:
-        user_answer = input(final_question + "\n")
-        try:
-            if type(user_answer) != type(final_answer):
-                user_answer = int(user_answer)
-                answer_valid = True
-            else:
-                if user_answer == "True" or user_answer == "False":
-                    answer_valid = True
-                else:
-                    print("Please answer with True or False")
-        except Exception:
-            print("Please enter a number as an answer")
-    if final_answer == user_answer:
-        score += 1
-        print("Correct")
-        if current_difficulty > 1:
-            difficulty_range += ((final_difficulty_weighting - (current_difficulty*20)) * 2)
-            if difficulty_range >= 100:
-                current_difficulty += 1
-                difficulty_range = 50
-    else:
-        if current_difficulty < 5:
-            difficulty_range -= ((difficulty_boundary - (final_difficulty_weighting - (current_difficulty*20))) * 2)
-            if difficulty_range <= 0 and current_difficulty:
-                current_difficulty -= 1
-                difficulty_range = 50
-
-print(f"{score} out of 10")
