@@ -1,5 +1,8 @@
 import random
 
+def question_topic_selection():
+    pass
+
 def answer_generation(real_answer : int, difficulty_weighting : int, question_type : str):
     answers = []
     if question_type == "free_text":
@@ -25,9 +28,6 @@ def answer_generation(real_answer : int, difficulty_weighting : int, question_ty
             difficulty_weighting -= 5
 
     return answers, difficulty_weighting
-
-def answer_checking():
-    pass
 
 def operations_question_generation(entered_difficulty : int, question_types : list):
     # question_topic_chosen = random.choice(question_topics)

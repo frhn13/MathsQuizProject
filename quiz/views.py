@@ -1,6 +1,6 @@
 from quiz import app
 from flask import render_template, redirect, url_for, request, flash, session
-from quiz.forms import AnswerForm, TopicsForm
+from quiz.forms import AnswerForm, TopicsForm, RestartForm
 from quiz.QuizCode.quizCode import operations_question_generation
 
 @app.route("/remove")
@@ -11,31 +11,77 @@ def remove_page():
     session.pop("current_difficulty", None)
     session.pop("difficulty_range", None)
     session.pop("score", None)
-    return redirect(url_for("base_page"))
+    return redirect(url_for("quiz_selection"))
 
-@app.route("/quiz_selection", methods=["GET", "POST"])
+@app.route("/end-quiz", methods=["GET", "POST"])
+def end_quiz():
+    form = RestartForm()
+    if request.method == "POST":
+        return redirect(url_for("quiz_selection"))
+    number_of_questions = session.get("number_of_questions")
+    score = session.get("score")
+    return render_template("end_quiz.html", form=form, number_of_questions=number_of_questions, score=score)
+
+@app.route("/", methods=["GET", "POST"])
+@app.route("/quiz-selection", methods=["GET", "POST"])
 def quiz_selection():
     form = TopicsForm()
 
+    session.pop("topic_selection", None)
+    session.pop("number_of_questions", None)
+    session.pop("question_number", None)
+    session.pop("final_question", None)
+    session.pop("final_answer", None)
+    session.pop("final_difficulty_weighting", None)
+    session.pop("current_difficulty", None)
+    session.pop("difficulty_range", None)
+    session.pop("score", None)
+
     if request.method == "POST":
-        pass
+        topics_chosen = []
+        if request.form.get("operations") is not None:
+            topics_chosen.append("operations")
+        if request.form.get("decimals") is not None:
+            topics_chosen.append("decimals")
+        if request.form.get("calculus") is not None:
+            topics_chosen.append("calculus")
+        if request.form.get("equations") is not None:
+            topics_chosen.append("equations")
+        if request.form.get("expressions") is not None:
+            topics_chosen.append("expressions")
+        if request.form.get("sequences") is not None:
+            topics_chosen.append("sequences")
+        if request.form.get("graphs") is not None:
+            topics_chosen.append("graphs")
+        if request.form.get("basic_shapes") is not None:
+            topics_chosen.append("basic_shapes")
+        if request.form.get("three_d_shapes") is not None:
+            topics_chosen.append("three_d_shapes")
+        if request.form.get("trigonometry") is not None:
+            topics_chosen.append("trigonometry")
+        if len(topics_chosen) == 0:
+            flash("Please select a topic.", category="danger")
+            # return redirect(url_for("quiz_selection"))
+        else:
+            session["topic_selection"] = topics_chosen
+            session["current_difficulty"] = int(request.form.get("difficulty"))
+            session["number_of_questions"] = int(request.form.get("questions"))
+            session["question_number"] = 1
+            session["difficulty_range"] = 50
+            session["score"] = 0
+            print(session.get("topic_selection"))
+            return redirect(url_for("quiz_page"))
 
     return render_template("quiz_selection.html", form=form)
 
-@app.route("/", methods=["GET", "POST"])
-@app.route("/home", methods=["GET", "POST"])
-def base_page():
+
+@app.route("/quiz", methods=["GET", "POST"])
+def quiz_page():
     form = AnswerForm()
     difficulty_boundary = 20
-
-    if "current_difficulty" not in session:
-        session["current_difficulty"] = 2
-        session["difficulty_range"] = 50
-        session["score"] = 0
-
     if "final_answer" not in session:
         first_num, second_num, question, answer, difficulty_weighting = operations_question_generation(
-            2, ["free_text", "multiple-choice", "true/false"])
+            int(session.get("current_difficulty")), ["free_text", "multiple-choice", "true/false"])
         session["final_answer"] = answer
         session["final_question"] = question
         session["final_difficulty_weighting"] = difficulty_weighting
@@ -53,10 +99,10 @@ def base_page():
                     pass
                 else:
                     flash("You must enter True or False. Try again", category="danger")
-                    return redirect(url_for("base_page"))
+                    return redirect(url_for("quiz_page"))
         except Exception:
             flash("You must enter a number. Try again.", category="danger")
-            return redirect(url_for("base_page"))
+            return redirect(url_for("quiz_page"))
 
         if answer == final_answer:
             session["score"]  += 1
@@ -72,17 +118,26 @@ def base_page():
                 session["difficulty_range"] -= (
                         (difficulty_boundary - (
                                     session["final_difficulty_weighting"] - (session["current_difficulty"] * 20))) * 2)
-                if session["difficulty_range"] <= 0 and session["current_difficulty"]:
+                if session["difficulty_range"] <= 0:
                     session["current_difficulty"] -= 1
                     session["difficulty_range"] = 50
-            flash(f"You got it wrong! The correct answer is {final_answer}", category="danger")
+            flash(f"You got it wrong! The correct answer is {final_answer}.", category="danger")
 
+        print(session.get("final_difficulty_weighting"))
+        print(session.get("current_difficulty"))
+        print(session.get("difficulty_range"))
+
+        session["question_number"] += 1
         session.pop("final_question", None)
         session.pop("final_answer", None)
         session.pop("final_difficulty_weighting", None)
-        print(session.get("current_difficulty"))
-        print(session.get("difficulty_range"))
-        return redirect(url_for("base_page"))
+
+        if session["question_number"] > session["number_of_questions"]:
+            return redirect(url_for("end_quiz"))
+
+        return redirect(url_for("quiz_page"))
+
     current_difficulty = session.get("current_difficulty")
     score = session.get("score")
-    return render_template("quiz.html", form=form, final_question=final_question, current_difficulty=current_difficulty, score=score)
+    question_number = session.get("question_number")
+    return render_template("quiz.html", form=form, final_question=final_question, current_difficulty=current_difficulty, score=score, question_number=question_number)
