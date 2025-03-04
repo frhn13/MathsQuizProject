@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Quiz Selection{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+   <h1>Quiz Selection</h1>
+
+   {% if form %}
+         <form method="POST" class="form-register mt-5">
+            {{ form.csrf_token() }}
+            {{ form.operations.label() }}
+            {{ form.operations() }}
+            <br>
+            {{ form.decimals.label() }}
+            {{ form.decimals() }}
+            <br>
+            {{ form.calculus.label() }}
+            {{ form.equations() }}
+            <br>
+            {{ form.equations.label() }}
+            {{ form.expressions() }}
+            <br>
+            {{ form.expressions.label() }}
+            {{ form.sequences() }}
+            <br>
+            {{ form.graphs.label() }}
+            {{ form.graphs() }}
+            <br>
+            {{ form.basic_shapes.label() }}
+            {{ form.basic_shapes() }}
+            <br>
+            {{ form.three_d_shapes.label() }}
+            {{ form.three_d_shapes() }}
+            <br>
+            {{ form.trigonometry.label() }}
+            {{ form.trigonometry() }}
+            <br>
+            <br>
+            {{ form.questions.label() }}
+            {{ form.questions() }}
+            <br>
+            <br>
+            {{ form.difficulty.label() }}
+            {{ form.difficulty()}}
+            <br>
+            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+         </form>
+   {% endif %}
+</div>
+{% endblock %}

@@ -4,7 +4,8 @@
 {% block content %}
 <div class="text-center mt-5">
    <h1>Quiz Page</h1>
-   <h3>Current Difficulty: Level {{ current_difficulty }}</h3>
+   <h3 class="mt-3">Current Difficulty: Level {{ current_difficulty }}</h3>
+   <h4 class="mt-3">Score: {{ score }}</h4>
    {% if form %}
       <div class="container mt-5">
          <p>{{ final_question }}</p>
