@@ -1,7 +1,31 @@
 import random
 
-def question_topic_selection():
-    pass
+def question_topic_selection(selected_topics : list, entered_difficulty : int, question_types : list):
+    chosen_topic = random.choice(selected_topics)
+    print(selected_topics)
+    match chosen_topic:
+        case "operations":
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+        case "decimals":
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+        case "calculus":
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+        case "equations":
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+        case "expressions":
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+        case "sequences":
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+        case "basic_shapes":
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+        case "three_d_shapes":
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+        case "triangles":
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+        case _:
+            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types)
+
+    return num1, num2, question, answer, difficulty_weighting
 
 def answer_generation(real_answer : int, difficulty_weighting : int, question_type : str):
     answers = []
@@ -125,3 +149,28 @@ def operations_question_generation(entered_difficulty : int, question_types : li
             pass
 
     return num1, num2, question, answer, difficulty_weighting
+
+def decimals_question_generation():
+    pass
+
+def calculus_question_generation():
+    pass
+
+def equations_question_generation():
+    pass
+
+def expressions_question_generation():
+    pass
+
+def sequences_question_generation():
+    pass
+
+def basic_shapes_question_generation():
+    pass
+
+def three_d_shapes_question_generation():
+    pass
+
+def triangles_question_generation():
+    pass
+

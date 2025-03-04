@@ -1,7 +1,7 @@
 from quiz import app
 from flask import render_template, redirect, url_for, request, flash, session
 from quiz.forms import AnswerForm, TopicsForm, RestartForm
-from quiz.QuizCode.quizCode import operations_question_generation
+from quiz.QuizCode.quizCode import question_topic_selection
 
 @app.route("/remove")
 def remove_page():
@@ -51,14 +51,12 @@ def quiz_selection():
             topics_chosen.append("expressions")
         if request.form.get("sequences") is not None:
             topics_chosen.append("sequences")
-        if request.form.get("graphs") is not None:
-            topics_chosen.append("graphs")
         if request.form.get("basic_shapes") is not None:
             topics_chosen.append("basic_shapes")
         if request.form.get("three_d_shapes") is not None:
             topics_chosen.append("three_d_shapes")
-        if request.form.get("trigonometry") is not None:
-            topics_chosen.append("trigonometry")
+        if request.form.get("triangles") is not None:
+            topics_chosen.append("triangles")
         if len(topics_chosen) == 0:
             flash("Please select a topic.", category="danger")
             # return redirect(url_for("quiz_selection"))
@@ -80,7 +78,7 @@ def quiz_page():
     form = AnswerForm()
     difficulty_boundary = 20
     if "final_answer" not in session:
-        first_num, second_num, question, answer, difficulty_weighting = operations_question_generation(
+        first_num, second_num, question, answer, difficulty_weighting = question_topic_selection(session.get("topic_selection"),
             int(session.get("current_difficulty")), ["free_text", "multiple-choice", "true/false"])
         session["final_answer"] = answer
         session["final_question"] = question
