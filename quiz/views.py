@@ -75,67 +75,76 @@ def quiz_selection():
 
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz_page():
-    form = AnswerForm()
-    difficulty_boundary = 20
-    if "final_answer" not in session:
-        first_num, second_num, question, answer, difficulty_weighting = question_topic_selection(session.get("topic_selection"),
-            int(session.get("current_difficulty")), ["free_text", "multiple-choice", "true/false"])
-        session["final_answer"] = answer
-        session["final_question"] = question
-        session["final_difficulty_weighting"] = difficulty_weighting
+    if "topic_selection" not in session:
+        flash("You must make a quiz before starting one.", category="danger")
+        return redirect(url_for("quiz_selection"))
+    else:
+        form = AnswerForm()
+        difficulty_boundary = 30
+        if "final_answer" not in session:
+            first_num, second_num, question, answer, difficulty_weighting = question_topic_selection(session.get("topic_selection"),
+                int(session.get("current_difficulty")), ["free_text", "multiple-choice", "true/false"])
+            session["final_answer"] = answer
+            session["final_question"] = question
+            session["final_difficulty_weighting"] = difficulty_weighting
 
-    final_answer = session.get("final_answer")
-    final_question = session.get("final_question")
+        final_answer = session.get("final_answer")
+        final_question = session.get("final_question")
 
-    if request.method == "POST":
-        answer = request.form.get("answer")
-        try:
-            if type(answer) != type(final_answer):
-                answer = int(answer)
-            else:
-                if answer == "True" or answer == "False":
-                    pass
+        if request.method == "POST":
+            answer = request.form.get("answer")
+            try:
+                if type(answer) != type(final_answer):
+                    answer = int(answer)
                 else:
-                    flash("You must enter True or False. Try again", category="danger")
-                    return redirect(url_for("quiz_page"))
-        except Exception:
-            flash("You must enter a number. Try again.", category="danger")
+                    if answer == "True" or answer == "False":
+                        pass
+                    else:
+                        flash("You must enter True or False. Try again", category="danger")
+                        return redirect(url_for("quiz_page"))
+            except Exception:
+                flash("You must enter a number. Try again.", category="danger")
+                return redirect(url_for("quiz_page"))
+
+            if answer == final_answer:
+                session["score"] += 1
+                print("Correct")
+                if session["current_difficulty"] < 5:
+                    session["difficulty_range"] += ((session["final_difficulty_weighting"] - (session["current_difficulty"])) * 30)
+                    if session["difficulty_range"] >= 100:
+                        session["current_difficulty"]  += 1
+                        session["difficulty_range"] = 50
+                else:
+                    session["difficulty_range"] = 50
+                flash(f"Well done! You got it right!", category="success")
+            else:
+                print("Incorrect")
+                if session["current_difficulty"] > 1:
+                    session["difficulty_range"] -= (
+                            (difficulty_boundary - (
+                                        session["final_difficulty_weighting"] - (session["current_difficulty"]))) * 30)
+                    if session["difficulty_range"] <= 0:
+                        session["current_difficulty"] -= 1
+                        session["difficulty_range"] = 50
+                else:
+                    session["difficulty_range"] = 50
+                flash(f"You got it wrong! The correct answer is {final_answer}.", category="danger")
+
+            print(f"Weighting: {session.get('final_difficulty_weighting')}")
+            print(f"Current difficulty: {session.get('current_difficulty')}")
+            print(f"Difficulty range: {session.get('difficulty_range')}")
+
+            session["question_number"] += 1
+            session.pop("final_question", None)
+            session.pop("final_answer", None)
+            session.pop("final_difficulty_weighting", None)
+
+            if session["question_number"] > session["number_of_questions"]:
+                return redirect(url_for("end_quiz"))
+
             return redirect(url_for("quiz_page"))
 
-        if answer == final_answer:
-            session["score"]  += 1
-            print("Correct")
-            if session["current_difficulty"] > 1:
-                session["difficulty_range"] += ((session["final_difficulty_weighting"] - (session["current_difficulty"] * 20)) * 2)
-                if session["difficulty_range"] >= 100:
-                    session["current_difficulty"]  += 1
-                    session["difficulty_range"] = 50
-            flash(f"Well done! You got it right!", category="success")
-        else:
-            if session["current_difficulty"] < 5:
-                session["difficulty_range"] -= (
-                        (difficulty_boundary - (
-                                    session["final_difficulty_weighting"] - (session["current_difficulty"] * 20))) * 2)
-                if session["difficulty_range"] <= 0:
-                    session["current_difficulty"] -= 1
-                    session["difficulty_range"] = 50
-            flash(f"You got it wrong! The correct answer is {final_answer}.", category="danger")
-
-        print(session.get("final_difficulty_weighting"))
-        print(session.get("current_difficulty"))
-        print(session.get("difficulty_range"))
-
-        session["question_number"] += 1
-        session.pop("final_question", None)
-        session.pop("final_answer", None)
-        session.pop("final_difficulty_weighting", None)
-
-        if session["question_number"] > session["number_of_questions"]:
-            return redirect(url_for("end_quiz"))
-
-        return redirect(url_for("quiz_page"))
-
-    current_difficulty = session.get("current_difficulty")
-    score = session.get("score")
-    question_number = session.get("question_number")
-    return render_template("quiz.html", form=form, final_question=final_question, current_difficulty=current_difficulty, score=score, question_number=question_number)
+        current_difficulty = session.get("current_difficulty")
+        score = session.get("score")
+        question_number = session.get("question_number")
+        return render_template("quiz.html", form=form, final_question=final_question, current_difficulty=current_difficulty, score=score, question_number=question_number)
