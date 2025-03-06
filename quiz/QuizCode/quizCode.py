@@ -92,12 +92,19 @@ def answer_generation(real_answer : int, question_type : str, difficulty_factors
 # ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, distractors
 def operations_question_generation(entered_difficulty : int, question_types : list, difficulty_factors : dict):
     difficulty_factors["maths_topic"][0] = 2
-    # question_topic_chosen = random.choice(question_topics)
     question_type_chosen = random.choice(question_types)
     while True:
         operation = random.choice(["add", "sub", "mul", "div"])
+        number_of_values = random.randint(2, 5)
+        operations = []
+        numbers = []
+        for i in range(0, number_of_values-1):
+            operations.append(random.choice(["+", "-", "*", "/"]))
         num1 = 0
         num2 = 1
+        num3 = 1
+        num4 = 1
+        num5 = 1
         difficulty_factors["maths_topic"][0] = 2
         difficulty_factors["difficulty_of_values"][0] = 2
         difficulty_factors["depth_of_knowledge"][0] = 4
@@ -106,71 +113,90 @@ def operations_question_generation(entered_difficulty : int, question_types : li
         difficulty_factors["number_of_steps"][0] = 3
         question = ""
         answer = 0
-        match operation:
-            case "add":
-                difficulty_factors["maths_topic"][0] += 1
-                num1 = random.randint(0, 200)
-                num2 = random.randint(0, 200)
-                if num1 <= 10 or num2 <= 10 or num1 % 10 == 0 or num2 % 10 == 0:
+        for i in range(0, number_of_values-1):
+            match operations[i]:
+                case "+":
+                    difficulty_factors["maths_topic"][0] += 1
+                    if len(numbers) == 0:
+                        numbers.append(random.randint(0, 200))
+                        numbers.append(random.randint(0, 200))
+                        if numbers[0] <= 10 or numbers[1] <= 10 or numbers[0] % 10 == 0 or numbers[1] % 10 == 0:
+                            pass
+                        elif 10 < numbers[0] <= 30 or 10 < num2 <= 30 or numbers[0] % 5 == 0 or numbers[1] % 5 == 0:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                        elif 30 < numbers[0] <= 50 or 30 < numbers[1] <= 50:
+                            difficulty_factors["difficulty_of_values"][0] += 2
+                        # elif 50 < num1 <= 80 or 50 < num2 <= 80:
+                        #     difficulty_weighting += 20
+                        # elif 80 < num1 <= 140 or 80 < num2 <= 140:
+                        #     difficulty_weighting += 25
+                        else:
+                            difficulty_factors["difficulty_of_values"][0] += (numbers[0] // 50 + numbers[1] // 50)
+                        question = f"What is {numbers[0]} + {numbers[1]}?"
+                        answer = numbers[0] + numbers[1]
+                    else:
+                        numbers.append(random.randint(0, 200))
+                        if numbers[len(numbers)-1] <= 10 or numbers[len(numbers)-1] % 10 == 0:
+                            pass
+                        elif 10 < numbers[len(numbers)-1] <= 30 or numbers[len(numbers)-1] % 5 == 0:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                        elif 30 < numbers[len(numbers)-1] <= 50:
+                            difficulty_factors["difficulty_of_values"][0] += 2
+                        # elif 50 < num1 <= 80 or 50 < num2 <= 80:
+                        #     difficulty_weighting += 20
+                        # elif 80 < num1 <= 140 or 80 < num2 <= 140:
+                        #     difficulty_weighting += 25
+                        else:
+                            difficulty_factors["difficulty_of_values"][0] += (numbers[len(numbers)-1] // 50)
+                        question = f"What is {numbers[0]} + {numbers[1]}?"
+                        answer += numbers[len(numbers)-1]
+
+                case "-":
+                    difficulty_factors["maths_topic"][0] += 2
+                    num1 = random.randint(0, 200)
+                    num2 = random.randint(0, 200)
+                    if num1 <= 10 or num2 <= 10 or num1 % 10 == 0 or num2 % 10 == 0 or abs(num1 - num2) < 10:
+                        pass
+                    elif 10 < num1 <= 30 or 10 < num2 <= 30 or num1 % 5 == 0 or num2 % 5 == 0:
+                        difficulty_factors["difficulty_of_values"][0] += 1
+                    elif 30 < num1 <= 50 or 30 < num2 <= 50:
+                        difficulty_factors["difficulty_of_values"][0] += 2
+                    # elif 50 < num1 <= 80 or 50 < num2 <= 80:
+                    #     difficulty_weighting += 20
+                    # elif 80 < num1 <= 140 or 80 < num2 <= 140:
+                    #     difficulty_weighting += 25
+                    else:
+                        difficulty_factors["difficulty_of_values"][0] += (num1 // 50 + num2 // 50)
+                    if num1 < num2:
+                        difficulty_factors["difficulty_of_values"][0] += 1
+                    if num1 - num2 < - 20:
+                        difficulty_factors["difficulty_of_values"][0] += 1
+                    question = f"What is {num1} - {num2}?"
+                    answer = num1 - num2
+                case "*":
+                    difficulty_factors["maths_topic"][0] += 3
+                    num1 = random.randint(2, 30)
+                    num2 = random.randint(2, 30)
+                    if num1 == 10 or num2 == 10 or num1 % 10 == 0 or num2 % 10 == 0 or num1 <= 4 or num2 <= 4:
+                        pass
+                    else:
+                        difficulty_factors["difficulty_of_values"][0] += (num1 // 10 + num2 // 10)
+                    question = f"What is {num1} * {num2}?"
+                    answer = num1 * num2
+                case "/":
+                    difficulty_factors["maths_topic"][0] += 4
+                    while num1 % num2 != 0 or num1 == 0:
+                        num1 = random.randint(21, 200)
+                        num2 = random.randint(2, 20)
+                    if num2 == 10 or num2 == 2 or num2 == 5:
+                        pass
+                    else:
+                        difficulty_factors["difficulty_of_values"][0] += (num1 // 30 + num2 // 5)
+                    question = f"What is {num1} / {num2}?"
+                    answer = num1 / num2
+                    answer = int(answer)
+                case _:
                     pass
-                elif 10 < num1 <= 30 or 10 < num2 <= 30 or num1 % 5 == 0 or num2 % 5 == 0:
-                    difficulty_factors["difficulty_of_values"][0] += 1
-                elif 30 < num1 <= 50 or 30 < num2 <= 50:
-                    difficulty_factors["difficulty_of_values"][0] += 2
-                # elif 50 < num1 <= 80 or 50 < num2 <= 80:
-                #     difficulty_weighting += 20
-                # elif 80 < num1 <= 140 or 80 < num2 <= 140:
-                #     difficulty_weighting += 25
-                else:
-                    difficulty_factors["difficulty_of_values"][0] += (num1 // 50 + num2 // 50)
-                question = f"What is {num1} + {num2}?"
-                answer = num1 + num2
-            case "sub":
-                difficulty_factors["maths_topic"][0] += 2
-                num1 = random.randint(0, 200)
-                num2 = random.randint(0, 200)
-                if num1 <= 10 or num2 <= 10 or num1 % 10 == 0 or num2 % 10 == 0 or abs(num1 - num2) < 10:
-                    pass
-                elif 10 < num1 <= 30 or 10 < num2 <= 30 or num1 % 5 == 0 or num2 % 5 == 0:
-                    difficulty_factors["difficulty_of_values"][0] += 1
-                elif 30 < num1 <= 50 or 30 < num2 <= 50:
-                    difficulty_factors["difficulty_of_values"][0] += 2
-                # elif 50 < num1 <= 80 or 50 < num2 <= 80:
-                #     difficulty_weighting += 20
-                # elif 80 < num1 <= 140 or 80 < num2 <= 140:
-                #     difficulty_weighting += 25
-                else:
-                    difficulty_factors["difficulty_of_values"][0] += (num1 // 50 + num2 // 50)
-                if num1 < num2:
-                    difficulty_factors["difficulty_of_values"][0] += 1
-                if num1 - num2 < - 20:
-                    difficulty_factors["difficulty_of_values"][0] += 1
-                question = f"What is {num1} - {num2}?"
-                answer = num1 - num2
-            case "mul":
-                difficulty_factors["maths_topic"][0] += 3
-                num1 = random.randint(2, 30)
-                num2 = random.randint(2, 30)
-                if num1 == 10 or num2 == 10 or num1 % 10 == 0 or num2 % 10 == 0 or num1 <= 4 or num2 <= 4:
-                    pass
-                else:
-                    difficulty_factors["difficulty_of_values"][0] += (num1 // 10 + num2 // 10)
-                question = f"What is {num1} * {num2}?"
-                answer = num1 * num2
-            case "div":
-                difficulty_factors["maths_topic"][0] += 4
-                while num1 % num2 != 0 or num1 == 0:
-                    num1 = random.randint(21, 200)
-                    num2 = random.randint(2, 20)
-                if num2 == 10 or num2 == 2 or num2 == 5:
-                    pass
-                else:
-                    difficulty_factors["difficulty_of_values"][0] += (num1 // 30 + num2 // 5)
-                question = f"What is {num1} / {num2}?"
-                answer = num1 / num2
-                answer = int(answer)
-            case _:
-                pass
 
         answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
