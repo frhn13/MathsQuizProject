@@ -82,7 +82,7 @@ def quiz_page():
         form = AnswerForm()
         difficulty_boundary = 30
         if "final_answer" not in session:
-            first_num, second_num, question, answer, difficulty_weighting = question_topic_selection(session.get("topic_selection"),
+            numbers, question, answer, difficulty_weighting = question_topic_selection(session.get("topic_selection"),
                 int(session.get("current_difficulty")), ["free_text", "multiple-choice", "true/false"])
             session["final_answer"] = answer
             session["final_question"] = question

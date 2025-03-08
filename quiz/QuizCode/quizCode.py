@@ -6,62 +6,54 @@ import random
 # Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
 # Difficulty of values used: How big values used are, whether final answer is whole number
 
-maths_topic = 0
-question_type = 0
-answers_similarity = 0
-difficulty_of_values = 0
-number_of_steps = 0
-depth_of_knowledge = 0
-abstract_vs_concrete = 0
-multiple_concepts = 0
-
 def calculate_difficulty(difficulty_factors : dict):
     summed_difficulty = 0
     for factor in difficulty_factors.values():
-        summed_difficulty += (factor[0] * factor[1])
-    return summed_difficulty / 5, summed_difficulty // 5
+        summed_difficulty += (factor[0] * (factor[1]/0.125))
+    summed_difficulty = summed_difficulty / 2
+    return summed_difficulty / 8, summed_difficulty // 8
 
 def question_topic_selection(selected_topics : list, entered_difficulty : int, question_types : list):
     difficulty_factors = {
-        "maths_topic": [0, 0.2],
-        "question_type": [0, 0.1],
-        "answers_similarity": [0, 0.2],
-        "difficulty_of_values": [0, 0.2],
-        "number_of_steps": [0, 0.1],
-        "depth_of_knowledge": [0, 0.05],
-        "abstract_vs_concrete": [0, 0.05],
-        "multiple_concepts": [0, 0.1]
+        "maths_topic": [0, 0.2],  # Topic being tested
+        "question_type": [0, 0.1],  # Free-text, multiple choice, True/False
+        "answers_similarity": [0, 0.15],  # Similarity of potential answers in MCQs
+        "difficulty_of_values": [0, 0.15],  # Values used in the question
+        "number_of_steps": [0, 0.1],  # Steps needed to find answer
+        "depth_of_knowledge": [0, 0.1],  # Extra information needed to answer question, like formulae, certain values
+        "difficulty_of_answer": [0, 0.15],  # Value of the answer
+        "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
     chosen_topic = random.choice(selected_topics)
     match chosen_topic:
         case "operations":
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "decimals":
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "calculus":
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "equations":
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "expressions":
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "sequences":
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "basic_shapes":
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "three_d_shapes":
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "triangles":
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case _:
-            num1, num2, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
 
-    return num1, num2, question, answer, difficulty_weighting
+    return numbers, question, answer, difficulty_weighting
 
 def answer_generation(real_answer : int, question_type : str, difficulty_factors : dict):
     answers = []
     if question_type == "free_text":
         difficulty_factors["question_type"][0] = 8
-        difficulty_factors["answers_similarity"][0] = 10
+        difficulty_factors["answers_similarity"][0] = 8
         answers.append(real_answer)
 
     if question_type == "multiple-choice":
@@ -89,123 +81,99 @@ def answer_generation(real_answer : int, question_type : str, difficulty_factors
 
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
-# ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, distractors
-def operations_question_generation(entered_difficulty : int, question_types : list, difficulty_factors : dict):
-    difficulty_factors["maths_topic"][0] = 2
+# ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
+# Type of question: Free text -> multiple-choice -> true/false
+# Topic: Calculus -> Trigonometry -> Quadratic questions -> Sequences -> Linear equations -> 3d shapes -> 2d shapes -> fractions and decimals -> operations
+# Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
+# Difficulty of values used: How big values used are, whether final answer is whole number
+
+def operations_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     question_type_chosen = random.choice(question_types)
-    while True:
-        operation = random.choice(["add", "sub", "mul", "div"])
-        number_of_values = random.randint(2, 5)
-        operations = []
-        numbers = []
-        for i in range(0, number_of_values-1):
-            operations.append(random.choice(["+", "-", "*", "/"]))
-        num1 = 0
-        num2 = 1
-        num3 = 1
-        num4 = 1
-        num5 = 1
-        difficulty_factors["maths_topic"][0] = 2
+    have_division_chance = random.random()
+    difficulty_weighting = 0
+    question = ""
+    numbers = []
+    answers = []
+    answer = 0
+
+    x = 0
+    while x < 10:
+        difficulty_factors["maths_topic"][0] = 0
         difficulty_factors["difficulty_of_values"][0] = 2
-        difficulty_factors["depth_of_knowledge"][0] = 4
-        difficulty_factors["multiple_concepts"][0] = 3
-        difficulty_factors["abstract_vs_concrete"][0] = 3
-        difficulty_factors["number_of_steps"][0] = 3
+        difficulty_factors["depth_of_knowledge"][0] = 2
+        difficulty_factors["multiple_topics"][0] = 3
+        difficulty_factors["difficulty_of_answer"][0] = 2
+        difficulty_factors["number_of_steps"][0] = 2
+
+        number_of_values = random.randint(2, 4)
+        if have_division_chance > 0.7:
+            operations = [random.choice(["+", "-", "*", "/"]) for x in range(number_of_values - 1)]
+        else:
+            operations = [random.choice(["+", "-", "*"]) for x in range(number_of_values - 1)]
+
+        numbers = [random.randint(1, 200) for x in range(number_of_values)]
         question = ""
-        answer = 0
-        for i in range(0, number_of_values-1):
-            match operations[i]:
-                case "+":
-                    difficulty_factors["maths_topic"][0] += 1
-                    if len(numbers) == 0:
-                        numbers.append(random.randint(0, 200))
-                        numbers.append(random.randint(0, 200))
-                        if numbers[0] <= 10 or numbers[1] <= 10 or numbers[0] % 10 == 0 or numbers[1] % 10 == 0:
-                            pass
-                        elif 10 < numbers[0] <= 30 or 10 < num2 <= 30 or numbers[0] % 5 == 0 or numbers[1] % 5 == 0:
-                            difficulty_factors["difficulty_of_values"][0] += 1
-                        elif 30 < numbers[0] <= 50 or 30 < numbers[1] <= 50:
-                            difficulty_factors["difficulty_of_values"][0] += 2
-                        # elif 50 < num1 <= 80 or 50 < num2 <= 80:
-                        #     difficulty_weighting += 20
-                        # elif 80 < num1 <= 140 or 80 < num2 <= 140:
-                        #     difficulty_weighting += 25
-                        else:
-                            difficulty_factors["difficulty_of_values"][0] += (numbers[0] // 50 + numbers[1] // 50)
-                        question = f"What is {numbers[0]} + {numbers[1]}?"
-                        answer = numbers[0] + numbers[1]
-                    else:
-                        numbers.append(random.randint(0, 200))
-                        if numbers[len(numbers)-1] <= 10 or numbers[len(numbers)-1] % 10 == 0:
-                            pass
-                        elif 10 < numbers[len(numbers)-1] <= 30 or numbers[len(numbers)-1] % 5 == 0:
-                            difficulty_factors["difficulty_of_values"][0] += 1
-                        elif 30 < numbers[len(numbers)-1] <= 50:
-                            difficulty_factors["difficulty_of_values"][0] += 2
-                        # elif 50 < num1 <= 80 or 50 < num2 <= 80:
-                        #     difficulty_weighting += 20
-                        # elif 80 < num1 <= 140 or 80 < num2 <= 140:
-                        #     difficulty_weighting += 25
-                        else:
-                            difficulty_factors["difficulty_of_values"][0] += (numbers[len(numbers)-1] // 50)
-                        question = f"What is {numbers[0]} + {numbers[1]}?"
-                        answer += numbers[len(numbers)-1]
+        for x in range(0, len(numbers)):
+            question += str(numbers[x])
+            if x < len(numbers) - 1:
+                question += operations[x]
+        answer = eval(question)
+        if have_division_chance <= 0.7 or (
+                have_division_chance > 0.7 and question.find("/") != -1 and answer.is_integer()):
+            answer = int(answer)
+            for x in range(number_of_values - 1):
+                difficulty_factors["number_of_steps"][0] += 2
+            if ("-" in operations or "+" in operations) and ("/" in operations or "*" in operations):
+                difficulty_factors["depth_of_knowledge"][0] += 2
+            for operation in set(operations):
+                match operation:
+                    case "+":
+                        difficulty_factors["maths_topic"][0] += 1
+                    case "-":
+                        difficulty_factors["maths_topic"][0] += 2
+                    case "*":
+                        difficulty_factors["maths_topic"][0] += 3
+                    case "/":
+                        difficulty_factors["maths_topic"][0] += 4
 
-                case "-":
-                    difficulty_factors["maths_topic"][0] += 2
-                    num1 = random.randint(0, 200)
-                    num2 = random.randint(0, 200)
-                    if num1 <= 10 or num2 <= 10 or num1 % 10 == 0 or num2 % 10 == 0 or abs(num1 - num2) < 10:
-                        pass
-                    elif 10 < num1 <= 30 or 10 < num2 <= 30 or num1 % 5 == 0 or num2 % 5 == 0:
-                        difficulty_factors["difficulty_of_values"][0] += 1
-                    elif 30 < num1 <= 50 or 30 < num2 <= 50:
-                        difficulty_factors["difficulty_of_values"][0] += 2
-                    # elif 50 < num1 <= 80 or 50 < num2 <= 80:
-                    #     difficulty_weighting += 20
-                    # elif 80 < num1 <= 140 or 80 < num2 <= 140:
-                    #     difficulty_weighting += 25
-                    else:
-                        difficulty_factors["difficulty_of_values"][0] += (num1 // 50 + num2 // 50)
-                    if num1 < num2:
-                        difficulty_factors["difficulty_of_values"][0] += 1
-                    if num1 - num2 < - 20:
-                        difficulty_factors["difficulty_of_values"][0] += 1
-                    question = f"What is {num1} - {num2}?"
-                    answer = num1 - num2
-                case "*":
-                    difficulty_factors["maths_topic"][0] += 3
-                    num1 = random.randint(2, 30)
-                    num2 = random.randint(2, 30)
-                    if num1 == 10 or num2 == 10 or num1 % 10 == 0 or num2 % 10 == 0 or num1 <= 4 or num2 <= 4:
-                        pass
-                    else:
-                        difficulty_factors["difficulty_of_values"][0] += (num1 // 10 + num2 // 10)
-                    question = f"What is {num1} * {num2}?"
-                    answer = num1 * num2
-                case "/":
-                    difficulty_factors["maths_topic"][0] += 4
-                    while num1 % num2 != 0 or num1 == 0:
-                        num1 = random.randint(21, 200)
-                        num2 = random.randint(2, 20)
-                    if num2 == 10 or num2 == 2 or num2 == 5:
-                        pass
-                    else:
-                        difficulty_factors["difficulty_of_values"][0] += (num1 // 30 + num2 // 5)
-                    question = f"What is {num1} / {num2}?"
-                    answer = num1 / num2
-                    answer = int(answer)
-                case _:
+            for value in numbers:
+                if value == 1 or value == 2 or value == 10:
                     pass
+                elif value % 5 == 0 or value % 10 == 0:
+                    difficulty_factors["difficulty_of_values"][0] += 0.5
+                else:
+                    if 10 < value <= 30:
+                        difficulty_factors["difficulty_of_values"][0] += 1
+                    elif 30 < value <= 80:
+                        difficulty_factors["difficulty_of_values"][0] += 1.5
+                    elif 80 < value <= 150:
+                        difficulty_factors["difficulty_of_values"][0] += 2
+                    else:
+                        difficulty_factors["difficulty_of_values"][0] += 3
+            if answer > 100:
+                difficulty_factors["difficulty_of_answer"][0] += 2
+            elif answer > 500:
+                difficulty_factors["difficulty_of_answer"][0] += 3
+            elif answer > 1000:
+                difficulty_factors["difficulty_of_answer"][0] += 4
+            elif answer > 5000:
+                difficulty_factors["difficulty_of_answer"][0] += 5
+            elif answer > 100000:
+                difficulty_factors["difficulty_of_answer"][0] += 6
+            elif answer > 1000000:
+                difficulty_factors["difficulty_of_answer"][0] += 8
 
-        answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
-        difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-        if final_difficulty == entered_difficulty:
-            print(f"Final Difficulty: {final_difficulty}")
-            print(f"Difficulty Weighting: {difficulty_weighting}")
-            break
-    # print(a, num2)
-    # print(difficulty_weighting)
+            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+            difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+
+            x += 1
+            if final_difficulty == entered_difficulty:
+                print(difficulty_factors)
+                print(difficulty_weighting)
+                break
+        else:
+            pass
+
     match question_type_chosen:
         case "free_text":
             pass
@@ -220,7 +188,7 @@ def operations_question_generation(entered_difficulty : int, question_types : li
         case _:
             pass
 
-    return num1, num2, question, answer, difficulty_weighting
+    return numbers, question, answer, difficulty_weighting
 
 def decimals_question_generation():
     pass
