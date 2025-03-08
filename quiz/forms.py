@@ -8,13 +8,13 @@ class AnswerForm(FlaskForm):
 
 class TopicsForm(FlaskForm):
     operations = BooleanField(label="Operations")
-    decimals = BooleanField(label="Fraction and Decimals")
+    decimals = BooleanField(label="Fractions")
     calculus = BooleanField(label="Calculus")
     equations = BooleanField(label="Equations")
     expressions = BooleanField(label="Expressions")
     sequences = BooleanField(label="Sequences")
-    basic_shapes = BooleanField(label="Basic Shapes")
-    three_d_shapes = BooleanField(label="3D Shapes")
+    hcf_lcm = BooleanField(label="HCF, LCM and Prime Factors")
+    percentages = BooleanField(label="Percentages")
     triangles = BooleanField(label="Pythagoras and other Triangle Questions")
     questions = IntegerField(label="Enter the number of questions to answers", validators=[DataRequired(), NumberRange(10, 50)])
     difficulty = IntegerField(label="Enter the starting difficulty of the questions", validators=[DataRequired(), NumberRange(1, 5)])

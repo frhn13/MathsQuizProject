@@ -79,7 +79,6 @@ def answer_generation(real_answer : int, question_type : str, difficulty_factors
 
     return answers, difficulty_factors
 
-
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
 # ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
 # Type of question: Free text -> multiple-choice -> true/false
@@ -96,8 +95,7 @@ def operations_question_generation(entered_difficulty: int, question_types: list
     answers = []
     answer = 0
 
-    x = 0
-    while x < 10:
+    while True:
         difficulty_factors["maths_topic"][0] = 0
         difficulty_factors["difficulty_of_values"][0] = 2
         difficulty_factors["depth_of_knowledge"][0] = 2
@@ -137,7 +135,9 @@ def operations_question_generation(entered_difficulty: int, question_types: list
                         difficulty_factors["maths_topic"][0] += 4
 
             for value in numbers:
-                if value == 1 or value == 2 or value == 10:
+                if value == 1:
+                    difficulty_factors["difficulty_of_values"][0] //= 2
+                if value == 2 or value == 10:
                     pass
                 elif value % 5 == 0 or value % 10 == 0:
                     difficulty_factors["difficulty_of_values"][0] += 0.5
@@ -151,23 +151,18 @@ def operations_question_generation(entered_difficulty: int, question_types: list
                     else:
                         difficulty_factors["difficulty_of_values"][0] += 3
             if answer > 100:
-                difficulty_factors["difficulty_of_answer"][0] += 2
-            elif answer > 500:
                 difficulty_factors["difficulty_of_answer"][0] += 3
-            elif answer > 1000:
+            elif answer > 500:
                 difficulty_factors["difficulty_of_answer"][0] += 4
-            elif answer > 5000:
+            elif answer > 1000:
                 difficulty_factors["difficulty_of_answer"][0] += 5
-            elif answer > 100000:
+            elif answer > 5000:
                 difficulty_factors["difficulty_of_answer"][0] += 6
-            elif answer > 1000000:
-                difficulty_factors["difficulty_of_answer"][0] += 8
 
             answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
             difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
-            x += 1
-            if final_difficulty == entered_difficulty:
+            if final_difficulty == entered_difficulty and answers[0] <= 10000:
                 print(difficulty_factors)
                 print(difficulty_weighting)
                 break
@@ -176,7 +171,7 @@ def operations_question_generation(entered_difficulty: int, question_types: list
 
     match question_type_chosen:
         case "free_text":
-            pass
+            question = f"What is {question}?"
         case "multiple-choice":
             question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
         case "true/false":
@@ -190,27 +185,63 @@ def operations_question_generation(entered_difficulty: int, question_types: list
 
     return numbers, question, answer, difficulty_weighting
 
-def decimals_question_generation():
+# Fraction conversion, fraction operations, algebraic fractions, surds
+def fractions_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
+    question_type_chosen = random.choice(question_types)
+    fractions_topic = random.choice(["conversion", "operations", "algebra", "surds"])
+    num1 = random.randint(1, 20)
+    num2 = random.randint(1, 20)
+    difficulty_factors["maths_topic"][0] = 2
+    difficulty_factors["difficulty_of_values"][0] = 2
+    difficulty_factors["depth_of_knowledge"][0] = 2
+    difficulty_factors["multiple_topics"][0] = 3
+    difficulty_factors["difficulty_of_answer"][0] = 2
+    difficulty_factors["number_of_steps"][0] = 2
+
+    while True:
+        if fractions_topic == "operations":
+            difficulty_factors["maths_topic"][0] = 3
+            difficulty_factors["difficulty_of_values"][0] = 2
+            difficulty_factors["depth_of_knowledge"][0] = 2
+            difficulty_factors["multiple_topics"][0] = 3
+            difficulty_factors["difficulty_of_answer"][0] = 2
+            difficulty_factors["number_of_steps"][0] = 2
+
+        elif fractions_topic == "algebra":
+            pass
+        elif fractions_topic == "surds":
+            pass
+        else:
+            convert = random.choice(["/ to .", "/ to %", "% to .", "% to /", ". to %"])
+            fraction_value = f"{num1}/{num2}"
+            decimal_value = num1 / num2
+            percentage_value = (num1 / num2) * 100
+            convert = random.choice(["/ to .", "/ to %", "% to .", "% to /", ". to %"])
+            match convert:
+                case "/ to .":
+                    pass
+
+# Linear equations, quadratic equations, quadratic formula, completing the square, simultaneous equations, quadratic simultaneous equations, inequalities, quadratic inequalities
+def equations_question_generation():
+    pass
+
+# Expression simplification, factorisation, algebraic fractions
+def expressions_question_generation():
+    pass
+
+# Linear, quadratic, geometric sequences
+def sequences_question_generation():
+    pass
+
+def hcf_lcm_prime_factors():
+    pass
+
+# Compound interest, regular interest, reverse percentages, numbers as percentages
+def percentages_question_generation():
+    pass
+
+def probability_question_generation():
     pass
 
 def calculus_question_generation():
     pass
-
-def equations_question_generation():
-    pass
-
-def expressions_question_generation():
-    pass
-
-def sequences_question_generation():
-    pass
-
-def basic_shapes_question_generation():
-    pass
-
-def three_d_shapes_question_generation():
-    pass
-
-def triangles_question_generation():
-    pass
-
