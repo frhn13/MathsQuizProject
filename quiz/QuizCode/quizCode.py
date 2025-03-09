@@ -37,9 +37,9 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
             question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "sequences":
             question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "basic_shapes":
+        case "hcf_lcm":
             question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "three_d_shapes":
+        case "percentages":
             question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "triangles":
             question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
@@ -146,6 +146,43 @@ def answer_generation_fractions(real_answer : str, question_type : str, difficul
             answers.append(f"{answers_num[0][0]}/{answers_num[0][1]}")
         else:
             answers.append(real_answer)
+    return answers, difficulty_factors
+
+def answer_generation_decimals(real_answer : float, question_type : str, difficulty_factors : dict):
+    answers = []
+    if question_type == "free_text":
+        difficulty_factors["question_type"][0] = 8
+        difficulty_factors["answers_similarity"][0] = 8
+        answers.append(real_answer)
+
+    if question_type == "multiple-choice":
+        difficulty_factors["question_type"][0] = 5
+        difficulty_factors["answers_similarity"][0] = 6
+        while True:
+            answers = []
+            for i in range(3):
+                answers.append(random.choice([real_answer - 0.5, real_answer - 0.4, real_answer - 0.3,
+                                              real_answer - 0.2, real_answer - 0.1, real_answer + 0.1,
+                                              real_answer + 0.2, real_answer + 0.3, real_answer + 0.4, real_answer + 0.5]))
+                if abs(answers[i] - real_answer) >= 10:
+                    difficulty_factors["answers_similarity"][0] -= 1
+            answers.append(real_answer)
+            if len(answers) == len(set(answers)):
+                random.shuffle(answers)
+                break
+
+    elif question_type == "true/false":
+        difficulty_factors["question_type"][0] = 2
+        difficulty_factors["answers_similarity"][0] = 5
+        if random.random() > 0.5:
+            answers = [random.choice([real_answer - 0.5, real_answer - 0.4, real_answer - 0.3,
+                                              real_answer - 0.2, real_answer - 0.1, real_answer + 0.1,
+                                              real_answer + 0.2, real_answer + 0.3, real_answer + 0.4, real_answer + 0.5])]
+            if abs(answers[0] - real_answer) >= 10:
+                difficulty_factors["answers_similarity"][0] -= 2
+        else:
+            answers.append(real_answer)
+
     return answers, difficulty_factors
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
@@ -276,17 +313,64 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
     difficulty_weighting = 0
 
     while True:
-        fractions_topic = random.choice(["conversion", "operations", "algebra", "surds"])
+        fractions_topic = random.choice(["conversion", "operations", "algebra"])
         match fractions_topic:
             case "conversion":
-                convert = random.choice(["/ to .", "/ to %", "% to .", "% to /", ". to %"])
+                difficulty_factors["maths_topic"][0] = 2
+                difficulty_factors["difficulty_of_values"][0] = 2
+                difficulty_factors["depth_of_knowledge"][0] = 2
+                difficulty_factors["multiple_topics"][0] = 3
+                difficulty_factors["difficulty_of_answer"][0] = 3
+                difficulty_factors["number_of_steps"][0] = 2
+
+                num1 = random.randint(1, 100)
+                num2 = random.randint(1, 100)
                 fraction_value = f"{num1}/{num2}"
                 decimal_value = num1 / num2
                 percentage_value = (num1 / num2) * 100
-                convert = random.choice(["/ to .", "/ to %", "% to .", "% to /", ". to %"])
+                convert = random.choice(["/ to .", "/ to %", "% to /", ". to /"])
                 match convert:
                     case "/ to .":
-                        pass
+                        answer = decimal_value
+                        question = f"Convert {fraction_value} to a decimal."
+                        answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen,
+                                                                                  difficulty_factors)
+                        difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+                        decimal_str = str(decimal_value)
+                        if percentage_value.is_integer()  and final_difficulty == entered_difficulty and num1 < num2:
+                            break
+                    case "/ to %":
+                        question = f"Convert {fraction_value} to a percentage."
+                        answer = percentage_value
+                        answers, difficulty_factors = answer_generation(int(answer), question_type_chosen,
+                                                                                 difficulty_factors)
+                        difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+                        if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 < num2:
+                            answer = int(percentage_value)
+                            break
+                    case ". to /":
+                        hcf = gcd(num1, num2)
+                        final_numerator = int(num1 / hcf)
+                        final_denominator = int(num2 / hcf)
+                        answer = f"{final_numerator}/{final_denominator}"
+                        question = f"Convert {decimal_value} to a fraction."
+
+                        answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
+                                                                                 difficulty_factors)
+                        difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+                        if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 < num2:
+                            break
+                    case "/ to %":
+                        hcf = gcd(num1, num2)
+                        final_numerator = int(num1 / hcf)
+                        final_denominator = int(num2 / hcf)
+                        answer = f"{final_numerator}/{final_denominator}"
+                        question = f"Convert {percentage_value}% to a fraction."
+                        answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
+                                                                                 difficulty_factors)
+                        difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+                        if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 < num2:
+                            break
                     case _:
                         pass
             case "operations":
@@ -506,7 +590,11 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
 
     match question_type_chosen:
         case "free_text":
-            question = f"What is {question}?" if not fractions_topic == "algebra" else f"Simplify {question}."
+            match fractions_topic:
+                case "algebra":
+                    question = f"Simplify {question}."
+                case _:
+                    question = question
         case "multiple-choice":
             question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
         case "true/false":

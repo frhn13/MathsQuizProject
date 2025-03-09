@@ -101,11 +101,11 @@ def quiz_page():
                 if (answer != "True" and answer != "False") and (final_answer == "True" or final_answer == "False"):
                     flash("You must enter True or False. Try again", category="danger")
                     return redirect(url_for("quiz_page"))
-                elif not "/" in answer and (final_answer != "True" and final_answer != "False"):
+                elif type(final_answer) == str and not "/" in answer and (final_answer != "True" and final_answer != "False"):
                     flash("You must write your answer as a fraction. Try again.", category="danger")
                     return redirect(url_for("quiz_page"))
                 else:
-                    pass
+                    final_answer = str(final_answer)
             else:
                 try:
                     if type(answer) != type(final_answer):
