@@ -8,7 +8,7 @@ class AnswerForm(FlaskForm):
 
 class TopicsForm(FlaskForm):
     operations = BooleanField(label="Operations")
-    decimals = BooleanField(label="Fractions")
+    fractions = BooleanField(label="Fractions")
     calculus = BooleanField(label="Calculus")
     equations = BooleanField(label="Equations")
     expressions = BooleanField(label="Expressions")

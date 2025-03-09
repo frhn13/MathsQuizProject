@@ -1,5 +1,7 @@
 import random
 from math import gcd, lcm
+from fractions import Fraction
+
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
 # ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
 # Type of question: Free text -> multiple-choice -> true/false
@@ -28,27 +30,27 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
     chosen_topic = random.choice(selected_topics)
     match chosen_topic:
         case "operations":
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "decimals":
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case "fractions":
+            question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "calculus":
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "equations":
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "expressions":
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "sequences":
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "basic_shapes":
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "three_d_shapes":
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "triangles":
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case _:
-            numbers, question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
 
-    return numbers, question, answer, difficulty_weighting
+    return chosen_topic, question, answer, difficulty_weighting
 
 def answer_generation(real_answer : int, question_type : str, difficulty_factors : dict):
     answers = []
@@ -74,10 +76,58 @@ def answer_generation(real_answer : int, question_type : str, difficulty_factors
     elif question_type == "true/false":
         difficulty_factors["question_type"][0] = 2
         difficulty_factors["answers_similarity"][0] = 5
-        answers = [random.randint(real_answer - 20, real_answer + 20)]
-        if abs(answers[0] - real_answer) >= 10:
-            difficulty_factors["answers_similarity"][0] -= 2
+        if random.random() > 0.5:
+            answers = [random.randint(real_answer - 20, real_answer + 20)]
+            if abs(answers[0] - real_answer) >= 10:
+                difficulty_factors["answers_similarity"][0] -= 2
+        else:
+            answers.append(real_answer)
 
+    return answers, difficulty_factors
+
+def answer_generation_fractions(real_answer : str, question_type : str, difficulty_factors : dict):
+    answers = []
+    if question_type == "free_text":
+        difficulty_factors["question_type"][0] = 8
+        difficulty_factors["answers_similarity"][0] = 8
+        answers.append(real_answer)
+
+    elif question_type == "multiple-choice":
+        difficulty_factors["question_type"][0] = 5
+        difficulty_factors["answers_similarity"][0] = 6
+        numerator = Fraction(real_answer).numerator
+        denominator = Fraction(real_answer).denominator
+        while True:
+            answers_num = []
+            for i in range(3):
+                answers_num.append([random.randint(numerator - 10, numerator + 10), random.randint(denominator - 10, denominator + 10)])
+                if abs(answers_num[i][0] - numerator) >= 5:
+                    difficulty_factors["answers_similarity"][0] -= 0.5
+                if abs(answers_num[i][1] - denominator) >= 5:
+                    difficulty_factors["answers_similarity"][0] -= 0.5
+            for i in range(len(answers_num)):
+                answers.append(f"{answers_num[i][0]}/{answers_num[i][1]}")
+            answers.append(real_answer)
+            if len(answers) == len(set(answers)):
+                random.shuffle(answers)
+                break
+
+
+    elif question_type == "true/false":
+        difficulty_factors["question_type"][0] = 2
+        difficulty_factors["answers_similarity"][0] = 5
+        numerator = Fraction(real_answer).numerator
+        denominator = Fraction(real_answer).denominator
+        if random.random() > 0.5:
+            answers_num = [
+                [random.randint(numerator - 10, numerator + 10), random.randint(denominator - 10, denominator + 10)]]
+            if abs(answers_num[0][0] - numerator) >= 5:
+                difficulty_factors["answers_similarity"][0] -= 1
+            if abs(answers_num[0][1] - denominator) >= 5:
+                difficulty_factors["answers_similarity"][0] -= 1
+            answers.append(f"{answers_num[0][0]}/{answers_num[0][1]}")
+        else:
+            answers.append(real_answer)
     return answers, difficulty_factors
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
@@ -176,7 +226,7 @@ def operations_question_generation(entered_difficulty: int, question_types: list
         case "multiple-choice":
             question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
         case "true/false":
-            question = f"{question}\nIs the answer {answers[0]}, answer with True or False"
+            question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
             if answers[0] == answer:
                 answer = "True"
             else:
@@ -184,14 +234,14 @@ def operations_question_generation(entered_difficulty: int, question_types: list
         case _:
             pass
 
-    return numbers, question, answer, difficulty_weighting
+    return question, answer, difficulty_weighting
 
 # Fraction conversion, fraction operations, algebraic fractions, surds
 
 
 def fractions_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     question_type_chosen = random.choice(question_types)
-    fractions_topic = random.choice(["conversion", "operations", "algebra", "surds"])
+    # fractions_topic = random.choice(["conversion", "operations", "algebra", "surds"])
     is_division = random.random()
     fractions_topic = "operations"
     num1 = random.randint(1, 20)
@@ -202,7 +252,10 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
     difficulty_factors["multiple_topics"][0] = 3
     difficulty_factors["difficulty_of_answer"][0] = 3
     difficulty_factors["number_of_steps"][0] = 2
-
+    answer = ""
+    question = ""
+    answers = []
+    difficulty_weighting = 0
 
     while True:
         match fractions_topic:
@@ -216,6 +269,8 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                     case "/ to .":
                         pass
             case "operations":
+                is_valid = True
+
                 difficulty_factors["maths_topic"][0] = 3
                 difficulty_factors["difficulty_of_values"][0] = 2
                 difficulty_factors["depth_of_knowledge"][0] = 4
@@ -234,63 +289,143 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                 new_denominators = []
 
                 question = f"What is {numerators[0]}/{denominators[0]} {operation} {numerators[1]}/{denominators[1]}?"
-                print(question)
 
                 match operation:
                     case "+":
-                        difficulty_factors["maths_topic"] += 1
+                        difficulty_factors["maths_topic"][0] += 1
                         if denominators[0] != denominators[1]:
-                            difficulty_factors["number_of_steps"] += 2
-                            difficulty_factors["difficulty_of_values"] += 1
+                            difficulty_factors["number_of_steps"][0] += 3
+                            difficulty_factors["difficulty_of_values"][0] += 1
                         final_denominator = lcm(denominators[0], denominators[1])
+
                         for x in range(2):
                             new_numerators.append(int(numerators[x] * (final_denominator / denominators[x])))
                             new_denominators.append(int(final_denominator))
+                        if final_denominator > 50:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                        elif final_denominator > 100:
+                            difficulty_factors["difficulty_of_values"][0] += 2
+                        elif final_denominator > 200:
+                            difficulty_factors["difficulty_of_values"][0] += 3
+                        if new_numerators[0] <= 10 or new_denominators[1] <= 10:
+                            pass
+                        elif 10 < new_numerators[0] <= 50 or 10 < new_numerators[1] <= 50:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                        elif 50 < new_numerators[0] <= 100 or 50 < new_numerators[1] <= 100:
+                            difficulty_factors["difficulty_of_values"][0] += 2
+                        elif 100 < new_numerators[0] <= 200 or 100 < new_numerators[1] <= 200:
+                            difficulty_factors["difficulty_of_values"][0] += 3
+                        else:
+                            difficulty_factors["difficulty_of_values"][0] += 4
+
                         final_numerator = sum(new_numerators)
-                        print(f"What is {new_numerators[0]}/{new_denominators[0]} {operation} {new_numerators[1]}/{new_denominators[1]}")
                         hcf = gcd(final_numerator, final_denominator)
                         final_numerator = int(final_numerator / hcf)
                         final_denominator = int(final_denominator / hcf)
-                        print(f"Answer: {final_numerator}/{final_denominator}")
-                        break
+                        answer = f"{final_numerator}/{final_denominator}"
+
                     case "-":
-                        difficulty_factors["maths_topic"] += 1
+                        difficulty_factors["maths_topic"][0] += 1
                         if denominators[0] != denominators[1]:
-                            difficulty_factors["number_of_steps"] += 2
-                            difficulty_factors["difficulty_of_values"] += 1
+                            difficulty_factors["number_of_steps"][0] += 3
+                            difficulty_factors["difficulty_of_values"][0] += 1
                         final_denominator = lcm(denominators[0], denominators[1])
                         for x in range(2):
                             new_numerators.append(int(numerators[x] * (final_denominator / denominators[x])))
                             new_denominators.append(int(final_denominator))
+
+                        if final_denominator > 50:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                        elif final_denominator > 100:
+                            difficulty_factors["difficulty_of_values"][0] += 2
+                        elif final_denominator > 200:
+                            difficulty_factors["difficulty_of_values"][0] += 3
+                        if new_numerators[0] <= 10 or new_denominators[1] <= 10:
+                            pass
+                        elif 10 < new_numerators[0] <= 50 or 10 < new_numerators[1] <= 50:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                        elif 50 < new_numerators[0] <= 100 or 50 < new_numerators[1] <= 100:
+                            difficulty_factors["difficulty_of_values"][0] += 2
+                        elif 100 < new_numerators[0] <= 200 or 100 < new_numerators[1] <= 200:
+                            difficulty_factors["difficulty_of_values"][0] += 3
+                        else:
+                            difficulty_factors["difficulty_of_values"][0] += 4
+
                         final_numerator = new_numerators[0] - new_numerators[1]
-                        print(
-                            f"What is {new_numerators[0]}/{new_denominators[0]} {operation} {new_numerators[1]}/{new_denominators[1]}")
                         hcf = gcd(final_numerator, final_denominator)
                         final_numerator = int(final_numerator / hcf)
                         final_denominator = int(final_denominator / hcf)
-                        print(f"Answer: {final_numerator}/{final_denominator}")
-                        break
+                        answer = f"{final_numerator}/{final_denominator}"
+
                     case "*":
-                        difficulty_factors["maths_topic"] += 2
+                        difficulty_factors["maths_topic"][0] += 2
+                        difficulty_factors["number_of_steps"][0] += 2
                         final_numerator = int(numerators[0] * numerators[1])
                         final_denominator = int(denominators[0] * denominators[1])
+
+                        if numerators[0] == 1 or numerators[1] == 1:
+                            pass
+                        elif numerators[0] == 2 or numerators[0] == 10 or numerators[1] == 2 or numerators[1] == 10:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                        elif 2 < numerators[0] <= 10 or 2 < numerators[1] <= 10:
+                            difficulty_factors["difficulty_of_values"][0] += 2
+                        elif 10 < numerators[0] <= 20 or 10 < numerators[1] <= 20:
+                            difficulty_factors["difficulty_of_values"][0] += 3
+
+                        if denominators[0] == 1 or denominators[1] == 1:
+                            pass
+                        elif denominators[0] == 2 or numerators[0] == 10 or denominators[1] == 2 or denominators[1] == 10:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                        elif 2 < denominators[0] <= 10 or 2 < denominators[1] <= 10:
+                            difficulty_factors["difficulty_of_values"][0] += 2
+                        elif 10 < denominators[0] <= 20 or 10 < denominators[1] <= 20:
+                            difficulty_factors["difficulty_of_values"][0] += 3
+
                         hcf = gcd(final_numerator, final_denominator)
                         final_numerator = int(final_numerator / hcf)
                         final_denominator = int(final_denominator / hcf)
-                        print(f"Answer: {final_numerator}/{final_denominator}")
-                        break
+                        answer = f"{final_numerator}/{final_denominator}"
+
                     case "/":
-                        difficulty_factors["maths_topic"] += 2
-                        difficulty_factors["depth_of_knowledge"] += 1
-                        difficulty_factors["number_of_steps"] += 1
+                        difficulty_factors["maths_topic"][0] += 2
+                        difficulty_factors["depth_of_knowledge"][0] += 2
+                        difficulty_factors["number_of_steps"][0] += 2
                         final_numerator = numerators[0] / numerators[1]
                         final_denominator = denominators[0] / denominators[1]
                         if final_numerator.is_integer() and final_denominator.is_integer():
+
+                            if numerators[0] == 1 or numerators[1] == 1:
+                                pass
+                            elif numerators[0] == 2 or numerators[0] == 10 or numerators[1] == 2 or numerators[1] == 10:
+                                difficulty_factors["difficulty_of_values"][0] += 1
+                            elif 2 < numerators[0] <= 10 or 2 < numerators[1] <= 10:
+                                difficulty_factors["difficulty_of_values"][0] += 2
+                            elif 10 < numerators[0] <= 20 or 10 < numerators[1] <= 20:
+                                difficulty_factors["difficulty_of_values"][0] += 3
+
+                            if denominators[0] == 1 or denominators[1] == 1:
+                                pass
+                            elif denominators[0] == 2 or numerators[0] == 10 or denominators[1] == 2 or denominators[1] == 10:
+                                difficulty_factors["difficulty_of_values"][0] += 1
+                            elif 2 < denominators[0] <= 10 or 2 < denominators[1] <= 10:
+                                difficulty_factors["difficulty_of_values"][0] += 2
+                            elif 10 < denominators[0] <= 20 or 10 < denominators[1] <= 20:
+                                difficulty_factors["difficulty_of_values"][0] += 3
+
                             hcf = gcd(int(final_numerator), int(final_denominator))
                             final_numerator = int(final_numerator / hcf)
                             final_denominator = int(final_denominator / hcf)
-                            print(f"Answer: {final_numerator}/{final_denominator}")
-                            break
+                            answer = f"{final_numerator}/{final_denominator}"
+                        else:
+                            is_valid = False
+                if is_valid:
+                    answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen, difficulty_factors)
+                    difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+
+                    if final_difficulty == entered_difficulty:
+                        print(difficulty_factors)
+                        print(difficulty_weighting)
+                        break
 
             case "algebra":
                 pass
@@ -299,7 +434,21 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
             case _:
                 pass
 
+    match question_type_chosen:
+        case "free_text":
+            question = f"What is {question}?"
+        case "multiple-choice":
+            question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
+        case "true/false":
+            question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
+            if answers[0] == answer:
+                answer = "True"
+            else:
+                answer = "False"
+        case _:
+            pass
 
+    return question, answer, difficulty_weighting
 
 # Linear equations, quadratic equations, quadratic formula, completing the square, simultaneous equations, quadratic simultaneous equations, inequalities, quadratic inequalities
 def equations_question_generation():
@@ -337,4 +486,4 @@ difficulty_factors = {
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
 
-fractions_question_generation(1, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
+# fractions_question_generation(2, ["free_text", "multiple-choice", "true/false"], difficulty_factors)

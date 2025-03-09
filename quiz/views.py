@@ -8,6 +8,7 @@ def remove_page():
     session.pop("final_question", None)
     session.pop("final_answer", None)
     session.pop("final_difficulty_weighting", None)
+    session.pop("current_topic", None)
     session.pop("current_difficulty", None)
     session.pop("difficulty_range", None)
     session.pop("score", None)
@@ -33,6 +34,7 @@ def quiz_selection():
     session.pop("final_question", None)
     session.pop("final_answer", None)
     session.pop("final_difficulty_weighting", None)
+    session.pop("current_topic", None)
     session.pop("current_difficulty", None)
     session.pop("difficulty_range", None)
     session.pop("score", None)
@@ -41,8 +43,8 @@ def quiz_selection():
         topics_chosen = []
         if request.form.get("operations") is not None:
             topics_chosen.append("operations")
-        if request.form.get("decimals") is not None:
-            topics_chosen.append("decimals")
+        if request.form.get("fractions") is not None:
+            topics_chosen.append("fractions")
         if request.form.get("calculus") is not None:
             topics_chosen.append("calculus")
         if request.form.get("equations") is not None:
@@ -51,10 +53,10 @@ def quiz_selection():
             topics_chosen.append("expressions")
         if request.form.get("sequences") is not None:
             topics_chosen.append("sequences")
-        if request.form.get("basic_shapes") is not None:
-            topics_chosen.append("basic_shapes")
-        if request.form.get("three_d_shapes") is not None:
-            topics_chosen.append("three_d_shapes")
+        if request.form.get("hcf_lcm") is not None:
+            topics_chosen.append("hcf_lcm")
+        if request.form.get("percentages") is not None:
+            topics_chosen.append("percentages")
         if request.form.get("triangles") is not None:
             topics_chosen.append("triangles")
         if len(topics_chosen) == 0:
@@ -82,29 +84,41 @@ def quiz_page():
         form = AnswerForm()
         difficulty_boundary = 30
         if "final_answer" not in session:
-            numbers, question, answer, difficulty_weighting = question_topic_selection(session.get("topic_selection"),
+            topic, question, answer, difficulty_weighting = question_topic_selection(session.get("topic_selection"),
                 int(session.get("current_difficulty")), ["free_text", "multiple-choice", "true/false"])
+            session["current_topic"] = topic
             session["final_answer"] = answer
             session["final_question"] = question
             session["final_difficulty_weighting"] = difficulty_weighting
 
         final_answer = session.get("final_answer")
         final_question = session.get("final_question")
+        print(final_answer)
 
         if request.method == "POST":
             answer = request.form.get("answer")
-            try:
-                if type(answer) != type(final_answer):
-                    answer = int(answer)
+            if session["current_topic"] == "fractions":
+                if (answer != "True" and answer != "False") and (final_answer == "True" or final_answer == "False"):
+                    flash("You must enter True or False. Try again", category="danger")
+                    return redirect(url_for("quiz_page"))
+                elif not "/" in answer and (final_answer != "True" and final_answer != "False"):
+                    flash("You must write your answer as a fraction. Try again.", category="danger")
+                    return redirect(url_for("quiz_page"))
                 else:
-                    if answer == "True" or answer == "False":
-                        pass
+                    pass
+            else:
+                try:
+                    if type(answer) != type(final_answer):
+                        answer = int(answer)
                     else:
-                        flash("You must enter True or False. Try again", category="danger")
-                        return redirect(url_for("quiz_page"))
-            except Exception:
-                flash("You must enter a number. Try again.", category="danger")
-                return redirect(url_for("quiz_page"))
+                        if answer == "True" or answer == "False":
+                            pass
+                        else:
+                            flash("You must enter True or False. Try again", category="danger")
+                            return redirect(url_for("quiz_page"))
+                except Exception:
+                    flash("You must enter a number. Try again.", category="danger")
+                    return redirect(url_for("quiz_page"))
 
             if answer == final_answer:
                 session["score"] += 1
@@ -138,6 +152,7 @@ def quiz_page():
             session.pop("final_question", None)
             session.pop("final_answer", None)
             session.pop("final_difficulty_weighting", None)
+            session.pop("current_topic", None)
 
             if session["question_number"] > session["number_of_questions"]:
                 return redirect(url_for("end_quiz"))
