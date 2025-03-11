@@ -1,7 +1,11 @@
+from mercantile import simplify
+
 from quiz import app
 from flask import render_template, redirect, url_for, request, flash, session
 from quiz.forms import AnswerForm, TopicsForm, RestartForm
 from quiz.QuizCode.quizCode import question_topic_selection
+from sympy import sympify, factor, expand
+
 
 @app.route("/remove")
 def remove_page():
@@ -97,28 +101,50 @@ def quiz_page():
 
         if request.method == "POST":
             answer = request.form.get("answer")
-            if session["current_topic"] == "fractions":
-                if (answer != "True" and answer != "False") and (final_answer == "True" or final_answer == "False"):
-                    flash("You must enter True or False. Try again", category="danger")
-                    return redirect(url_for("quiz_page"))
-                elif type(final_answer) == str and not "/" in answer and (final_answer != "True" and final_answer != "False"):
-                    flash("You must write your answer as a fraction. Try again.", category="danger")
-                    return redirect(url_for("quiz_page"))
-                else:
-                    final_answer = str(final_answer)
-            else:
-                try:
-                    if type(answer) != type(final_answer):
-                        answer = int(answer)
-                    else:
-                        if answer == "True" or answer == "False":
-                            pass
+            match session["current_topic"]:
+                case "fractions":
+                    if final_answer in ("True", "False") and answer not in ("True", "False"):
+                        flash("You must enter True or False. Try again", category="danger")
+                        return redirect(url_for("quiz_page"))
+                    elif type(final_answer) == str and not "/" in answer and final_answer not in ("True", "False"):
+                        flash("You must write your answer as a fraction. Try again.", category="danger")
+                        return redirect(url_for("quiz_page"))
+                    elif "x" in final_answer:
+                        if "/" in answer:
+                            final_answer = simplify(sympify(final_answer))
+                            answer = simplify(sympify(answer))
                         else:
-                            flash("You must enter True or False. Try again", category="danger")
+                            flash("You must write your answer as a fraction. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
-                except Exception:
-                    flash("You must enter a number. Try again.", category="danger")
-                    return redirect(url_for("quiz_page"))
+                    else:
+                        final_answer = str(final_answer)
+                case "expressions":
+                    if final_answer in ("True", "False") and answer not in ("True", "False"):
+                        flash("You must enter True or False. Try again", category="danger")
+                        return redirect(url_for("quiz_page"))
+                    else:
+                        if "x" not in answer:
+                            flash("Expression must be entered in correct format. Try again.", category="danger")
+                            return redirect(url_for("quiz_page"))
+                        else:
+                            final_answer = simplify(sympify(final_answer))
+                            answer = simplify(sympify(answer))
+
+                case _:
+                    try:
+                        if type(final_answer) == int:
+                            answer = int(answer)
+                        elif type(final_answer) == float:
+                            answer = float(answer)
+                        else:
+                            if final_answer in ("True", "False") and answer not in ("True", "False"):
+                                flash("You must enter True or False. Try again", category="danger")
+                                return redirect(url_for("quiz_page"))
+                            else:
+                                pass
+                    except Exception:
+                        flash("You must enter a number. Try again.", category="danger")
+                        return redirect(url_for("quiz_page"))
 
             if answer == final_answer:
                 session["score"] += 1

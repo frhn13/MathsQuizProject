@@ -1,7 +1,7 @@
 import random
 from math import gcd, lcm
 from fractions import Fraction
-from sympy import simplify, factor, expand, symbols
+from sympy import simplify, factor, expand, symbols, latex
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
 # ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
@@ -32,7 +32,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
         case "equations":
             question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "expressions":
-            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting = expressions_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "sequences":
             question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "hcf_lcm":
@@ -75,9 +75,6 @@ def generate_complex_expression():
     coefficient_1 = random.randint(1, 2)
     coefficient_2 = random.randint(1, 2)
     factorise = (coefficient_1*x + num1) * (coefficient_2*x + num2)
-    print(factorise)
-    print(expand(factorise))
-
     return expand(factorise)
 
 def answer_generation(real_answer : int, question_type : str, difficulty_factors : dict):
@@ -549,56 +546,16 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         break
 
             case "algebra":
-                difficulty_factors["maths_topic"][0] = 6
-                difficulty_factors["difficulty_of_values"][0] = 6
-                difficulty_factors["depth_of_knowledge"][0] = 6
-                difficulty_factors["multiple_topics"][0] = 6
-                difficulty_factors["difficulty_of_answer"][0] = 5
-                difficulty_factors["number_of_steps"][0] = 7
+                question, answer, question_type_chosen = algebraic_fractions(difficulty_factors)
+                answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
+                                                                          difficulty_factors)
+                difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+                answer = str(answer)
 
-                x = symbols("x")
-                common_factor = random.randint(1, 3)
-                quadratic_value_numerator, linear_value_numerator, number_value_numerator = generate_expression(random.choice([True, False]), random.choice([True, False]), random.choice([True, False]))
-                quadratic_value_denominator, linear_value_denominator, number_value_denominator = generate_expression(random.choice([True, False]), random.choice([True, False]), random.choice([True, False]))
-                if quadratic_value_numerator == 0 or linear_value_numerator == 0:
-                    pass
-                elif quadratic_value_denominator == 0 or linear_value_denominator == 0:
-                    pass
-                else:
-                    numerator = common_factor * random.randint(1, 3) * (
-                                quadratic_value_numerator + linear_value_numerator + number_value_numerator)
-                    denominator = common_factor * random.randint(1, 3) * (
-                            quadratic_value_denominator + linear_value_denominator + number_value_denominator)
-                    question = f"{numerator}/{denominator}"
-                    print(type(numerator))
-                    print(type(denominator))
-                    numerator_terms = numerator.as_ordered_terms()
-                    denominator_terms = denominator.as_ordered_terms()
-                    if quadratic_value_numerator == 0:
-                        difficulty_factors["difficulty_of_values"][0] -= 1
-                        difficulty_factors["number_of_steps"][0] -= 1
-                    if quadratic_value_denominator == 0:
-                        difficulty_factors["difficulty_of_values"][0] -= 1
-                        difficulty_factors["number_of_steps"][0] -= 1
-                    if linear_value_numerator == 0:
-                        difficulty_factors["difficulty_of_values"][0] -= 0.5
-                    if linear_value_denominator == 0:
-                        difficulty_factors["difficulty_of_values"][0] -= 0.5
-                    if quadratic_value_numerator != 0 and numerator_terms[0].coeff(x, numerator.as_ordered_terms()[0].as_poly().degree()) > 1:
-                        difficulty_factors["difficulty_of_values"][0] += 0.5
-                    if quadratic_value_denominator != 0 and denominator_terms[0].coeff(x, denominator.as_ordered_terms()[0].as_poly().degree()) > 1:
-                        difficulty_factors["difficulty_of_values"][0] += 0.5
-                    answer = simplify(numerator/denominator)
-                    question_type_chosen = "free_text"
-                    answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen, difficulty_factors)
-                    difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                    answer = str(answer)
-
-                    if final_difficulty == entered_difficulty:
-                        print(difficulty_factors)
-                        print(difficulty_weighting)
-                        break
-
+                if question is not None and answer is not None and final_difficulty == entered_difficulty:
+                    print(difficulty_factors)
+                    print(difficulty_weighting)
+                    break
             case "surds":
                 pass
             case _:
@@ -606,11 +563,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
 
     match question_type_chosen:
         case "free_text":
-            match fractions_topic:
-                case "algebra":
-                    question = f"Simplify {question}."
-                case _:
-                    question = question
+            question = question
         case "multiple-choice":
             question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
         case "true/false":
@@ -619,7 +572,6 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                 answer = "True"
             else:
                 answer = "False"
-
         case _:
             pass
 
@@ -635,12 +587,45 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
     while True:
         x = symbols("x")
         expressions_topic = random.choice(["simplification", "factorisation", "algebraic_fractions", "collecting_like_terms"])
-        expressions_topic = "factorisation"
+        # expressions_topic = "algebraic_fractions"
         match expressions_topic:
             case "simplification":
-                pass
+                print("simplification")
+                difficulty_factors["maths_topic"][0] = 4
+                difficulty_factors["difficulty_of_values"][0] = 2
+                difficulty_factors["depth_of_knowledge"][0] = 5
+                difficulty_factors["multiple_topics"][0] = 3
+                difficulty_factors["difficulty_of_answer"][0] = 3
+                difficulty_factors["number_of_steps"][0] = 3
+
+                common_factor = random.randint(1, 5)
+
+                if random.random() > 0.5:
+                    quadratic_value, linear_value, number_value = generate_expression(random.choice([True, False]),
+                                                                                      random.choice([True, False]),
+                                                                                      random.choice([True, False]))
+                    if quadratic_value == 0 and linear_value == 0 or quadratic_value == 0 and number_value == 0 \
+                            or linear_value == 0 and number_value == 0:
+                        expression = None
+
+                    else:
+                        expression = common_factor * (quadratic_value + linear_value + number_value)
+                else:
+                    expression = generate_complex_expression()
+
+                factorised = factor(expression)
+                question = f"Expand {factorised}."
+                answer = expression
+                if expression is None or expression == factorised:
+                    pass
+                else:
+                    answers, difficulty_factors = answer_generation(answer, question_type_chosen,
+                                                                    difficulty_factors)
+                    difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+                    if final_difficulty == entered_difficulty or 1 == 1:
+                        break
             case "factorisation":
-                simple_factorisation = False
+                print("factorisation")
                 difficulty_factors["maths_topic"][0] = 4
                 difficulty_factors["difficulty_of_values"][0] = 2
                 difficulty_factors["depth_of_knowledge"][0] = 5
@@ -656,17 +641,16 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                                                                                   random.choice([True, False]))
                     if quadratic_value == 0 and linear_value == 0 or quadratic_value == 0 and number_value == 0 \
                             or linear_value == 0 and number_value == 0:
-                        expression = ""
+                        expression = None
+
                     else:
                         expression = common_factor * (quadratic_value + linear_value + number_value)
-                        question = f"Factorise {expression}."
-                        answer = factor(expression)
                 else:
                     expression = generate_complex_expression()
 
                 question = f"Factorise {expression}."
                 answer = factor(expression)
-                if expression == "" or expression == answer:
+                if expression is None or expression == answer:
                     pass
                 else:
                     answers, difficulty_factors = answer_generation(answer, question_type_chosen,
@@ -674,18 +658,40 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
                     if final_difficulty == entered_difficulty or 1 == 1:
-                        print(question)
-                        print(answer)
-                        print(difficulty_factors)
-                        print(difficulty_weighting)
                         break
 
             case "algebraic_fractions":
-                pass
-            case "collecting_like_terms":
-                pass
+                question, answer, question_type_chosen = algebraic_fractions(difficulty_factors)
+                answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
+                                                                          difficulty_factors)
+                difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+                answer = str(answer)
+
+                if question is not None and answer is not None and final_difficulty == entered_difficulty:
+                    print(difficulty_factors)
+                    print(difficulty_weighting)
+                    break
+
             case _:
                 pass
+
+    match question_type_chosen:
+        case "free_text":
+            question = question
+        case "multiple-choice":
+            question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
+        case "true/false":
+            question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
+            if answers[0] == answer:
+                answer = "True"
+            else:
+                answer = "False"
+        case _:
+            pass
+
+    answer = str(answer)
+
+    return question, answer, difficulty_weighting
 
 # Linear, quadratic, geometric sequences
 def sequences_question_generation():
@@ -704,6 +710,57 @@ def probability_question_generation():
 def calculus_question_generation():
     pass
 
+def algebraic_fractions(difficulty_factors : dict):
+    difficulty_factors["maths_topic"][0] = 6
+    difficulty_factors["difficulty_of_values"][0] = 6
+    difficulty_factors["depth_of_knowledge"][0] = 6
+    difficulty_factors["multiple_topics"][0] = 6
+    difficulty_factors["difficulty_of_answer"][0] = 5
+    difficulty_factors["number_of_steps"][0] = 7
+
+    question_type_chosen = "free_text"
+    question = None
+    answer = None
+
+    x = symbols("x")
+    common_factor = random.randint(1, 3)
+    quadratic_value_numerator, linear_value_numerator, number_value_numerator = generate_expression(
+        random.choice([True, False]), random.choice([True, False]), random.choice([True, False]))
+    quadratic_value_denominator, linear_value_denominator, number_value_denominator = generate_expression(
+        random.choice([True, False]), random.choice([True, False]), random.choice([True, False]))
+    if quadratic_value_numerator == 0 or linear_value_numerator == 0:
+        return question, answer, question_type_chosen
+    elif quadratic_value_denominator == 0 or linear_value_denominator == 0:
+        return question, answer, question_type_chosen
+    else:
+        numerator = common_factor * random.randint(1, 3) * (
+                quadratic_value_numerator + linear_value_numerator + number_value_numerator)
+        denominator = common_factor * random.randint(1, 3) * (
+                quadratic_value_denominator + linear_value_denominator + number_value_denominator)
+        question = f"Simplify {numerator}/{denominator}"
+        print(type(numerator))
+        print(type(denominator))
+        numerator_terms = numerator.as_ordered_terms()
+        denominator_terms = denominator.as_ordered_terms()
+        if quadratic_value_numerator == 0:
+            difficulty_factors["difficulty_of_values"][0] -= 1
+            difficulty_factors["number_of_steps"][0] -= 1
+        if quadratic_value_denominator == 0:
+            difficulty_factors["difficulty_of_values"][0] -= 1
+            difficulty_factors["number_of_steps"][0] -= 1
+        if linear_value_numerator == 0:
+            difficulty_factors["difficulty_of_values"][0] -= 0.5
+        if linear_value_denominator == 0:
+            difficulty_factors["difficulty_of_values"][0] -= 0.5
+        if quadratic_value_numerator != 0 and numerator_terms[0].coeff(x, numerator.as_ordered_terms()[
+            0].as_poly().degree()) > 1:
+            difficulty_factors["difficulty_of_values"][0] += 0.5
+        if quadratic_value_denominator != 0 and denominator_terms[0].coeff(x, denominator.as_ordered_terms()[
+            0].as_poly().degree()) > 1:
+            difficulty_factors["difficulty_of_values"][0] += 0.5
+        answer = simplify(numerator / denominator)
+        return question, answer, question_type_chosen
+
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested
         "question_type": [0, 0.1],  # Free-text, multiple choice, True/False
@@ -716,4 +773,4 @@ difficulty_factors = {
     }
 
 # generate_complex_expression()
-expressions_question_generation(2, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
+# expressions_question_generation(2, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
