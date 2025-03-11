@@ -1,8 +1,6 @@
 import random
 from math import gcd, lcm
 from fractions import Fraction
-
-from narwhals import Boolean
 from sympy import simplify, factor, expand, symbols
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
@@ -69,6 +67,18 @@ def generate_expression(quadratic_value_added : bool, linear_value_added : bool,
     if number_value_added:
         number_value = random.choice([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5])
     return quadratic_value, linear_value, number_value
+
+def generate_complex_expression():
+    x = symbols("x")
+    num1 = random.randint(1, 10)
+    num2 = random.randint(1, 10)
+    coefficient_1 = random.randint(1, 2)
+    coefficient_2 = random.randint(1, 2)
+    factorise = (coefficient_1*x + num1) * (coefficient_2*x + num2)
+    print(factorise)
+    print(expand(factorise))
+
+    return expand(factorise)
 
 def answer_generation(real_answer : int, question_type : str, difficulty_factors : dict):
     answers = []
@@ -316,12 +326,12 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
         fractions_topic = random.choice(["conversion", "operations", "algebra"])
         match fractions_topic:
             case "conversion":
-                difficulty_factors["maths_topic"][0] = 2
+                difficulty_factors["maths_topic"][0] = 3
                 difficulty_factors["difficulty_of_values"][0] = 2
                 difficulty_factors["depth_of_knowledge"][0] = 2
                 difficulty_factors["multiple_topics"][0] = 3
                 difficulty_factors["difficulty_of_answer"][0] = 3
-                difficulty_factors["number_of_steps"][0] = 2
+                difficulty_factors["number_of_steps"][0] = 3
 
                 num1 = random.randint(1, 100)
                 num2 = random.randint(1, 100)
@@ -329,6 +339,12 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                 decimal_value = num1 / num2
                 percentage_value = (num1 / num2) * 100
                 convert = random.choice(["/ to .", "/ to %", "% to /", ". to /"])
+
+                if round(decimal_value, 1) != decimal_value:
+                    difficulty_factors["difficulty_of_answer"][0] += 1
+                if num1 > num2:
+                    difficulty_factors["difficulty_of_answer"][0] += 1
+                    difficulty_factors["difficulty_of_values"][0] += 2
                 match convert:
                     case "/ to .":
                         answer = decimal_value
@@ -345,7 +361,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         answers, difficulty_factors = answer_generation(int(answer), question_type_chosen,
                                                                                  difficulty_factors)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                        if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 < num2:
+                        if percentage_value.is_integer() and final_difficulty == entered_difficulty:
                             answer = int(percentage_value)
                             break
                     case ". to /":
@@ -358,9 +374,9 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
                                                                                  difficulty_factors)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                        if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 < num2:
+                        if percentage_value.is_integer() and final_difficulty == entered_difficulty:
                             break
-                    case "/ to %":
+                    case "% to /":
                         hcf = gcd(num1, num2)
                         final_numerator = int(num1 / hcf)
                         final_denominator = int(num2 / hcf)
@@ -369,7 +385,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
                                                                                  difficulty_factors)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                        if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 < num2:
+                        if percentage_value.is_integer() and final_difficulty == entered_difficulty:
                             break
                     case _:
                         pass
@@ -614,8 +630,62 @@ def equations_question_generation():
     pass
 
 # Expression simplification, factorisation, algebraic fractions
-def expressions_question_generation():
-    pass
+def expressions_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
+    question_type_chosen = random.choice(["free-text"])
+    while True:
+        x = symbols("x")
+        expressions_topic = random.choice(["simplification", "factorisation", "algebraic_fractions", "collecting_like_terms"])
+        expressions_topic = "factorisation"
+        match expressions_topic:
+            case "simplification":
+                pass
+            case "factorisation":
+                simple_factorisation = False
+                difficulty_factors["maths_topic"][0] = 4
+                difficulty_factors["difficulty_of_values"][0] = 2
+                difficulty_factors["depth_of_knowledge"][0] = 5
+                difficulty_factors["multiple_topics"][0] = 3
+                difficulty_factors["difficulty_of_answer"][0] = 3
+                difficulty_factors["number_of_steps"][0] = 3
+
+                common_factor = random.randint(1, 5)
+
+                if random.random() > 0.5:
+                    quadratic_value, linear_value, number_value = generate_expression(random.choice([True, False]),
+                                                                                  random.choice([True, False]),
+                                                                                  random.choice([True, False]))
+                    if quadratic_value == 0 and linear_value == 0 or quadratic_value == 0 and number_value == 0 \
+                            or linear_value == 0 and number_value == 0:
+                        expression = ""
+                    else:
+                        expression = common_factor * (quadratic_value + linear_value + number_value)
+                        question = f"Factorise {expression}."
+                        answer = factor(expression)
+                else:
+                    expression = generate_complex_expression()
+
+                question = f"Factorise {expression}."
+                answer = factor(expression)
+                if expression == "" or expression == answer:
+                    pass
+                else:
+                    answers, difficulty_factors = answer_generation(answer, question_type_chosen,
+                                                                              difficulty_factors)
+                    difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+
+                    if final_difficulty == entered_difficulty or 1 == 1:
+                        print(question)
+                        print(answer)
+                        print(difficulty_factors)
+                        print(difficulty_weighting)
+                        break
+
+            case "algebraic_fractions":
+                pass
+            case "collecting_like_terms":
+                pass
+            case _:
+                pass
 
 # Linear, quadratic, geometric sequences
 def sequences_question_generation():
@@ -645,4 +715,5 @@ difficulty_factors = {
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
 
-# fractions_question_generation(2, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
+# generate_complex_expression()
+expressions_question_generation(2, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
