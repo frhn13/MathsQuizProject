@@ -3,6 +3,7 @@ import random
 from .operations_generation import operations_question_generation
 from .fractions_generation import fractions_question_generation
 from .expressions_generation import expressions_question_generation
+from .equations_generation import equations_question_generation
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
 # ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
@@ -12,6 +13,7 @@ from .expressions_generation import expressions_question_generation
 # Difficulty of values used: How big values used are, whether final answer is whole number
 
 def question_topic_selection(selected_topics : list, entered_difficulty : int, question_types : list):
+    multiple_answers = "No"
     difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested
         "question_type": [0, 0.1],  # Free-text, multiple choice, True/False
@@ -31,7 +33,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
         case "calculus":
             question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "equations":
-            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+            question, answer, difficulty_weighting, multiple_answers = equations_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "expressions":
             question, answer, difficulty_weighting = expressions_question_generation(entered_difficulty, question_types, difficulty_factors)
         case "sequences":
@@ -45,7 +47,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
         case _:
             question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
 
-    return chosen_topic, question, answer, difficulty_weighting
+    return chosen_topic, question, answer, difficulty_weighting, multiple_answers
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
 # ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
@@ -53,11 +55,6 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
 # Topic: Calculus -> Trigonometry -> Quadratic questions -> Sequences -> Linear equations -> 3d shapes -> 2d shapes -> fractions and decimals -> operations
 # Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
 # Difficulty of values used: How big values used are, whether final answer is whole number
-
-
-# Linear equations, quadratic equations, quadratic formula, completing the square, simultaneous equations, quadratic simultaneous equations, inequalities, quadratic inequalities
-def equations_question_generation():
-    pass
 
 # Linear, quadratic, geometric sequences
 def sequences_question_generation():

@@ -1,6 +1,6 @@
 from quiz import app
 from flask import render_template, redirect, url_for, request, flash, session
-from quiz.forms import AnswerForm, TopicsForm, RestartForm
+from quiz.forms import AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm, AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm
 from .QuizCode.topic_manager import question_topic_selection
 from sympy import sympify, factor, expand, simplify
 
@@ -10,6 +10,7 @@ def remove_page():
     session.pop("final_question", None)
     session.pop("final_answer", None)
     session.pop("final_difficulty_weighting", None)
+    session.pop("multiple_answers", None)
     session.pop("current_topic", None)
     session.pop("current_difficulty", None)
     session.pop("difficulty_range", None)
@@ -36,6 +37,7 @@ def quiz_selection():
     session.pop("final_question", None)
     session.pop("final_answer", None)
     session.pop("final_difficulty_weighting", None)
+    session.pop("multiple_answers", None)
     session.pop("current_topic", None)
     session.pop("current_difficulty", None)
     session.pop("difficulty_range", None)
@@ -86,21 +88,72 @@ def quiz_page():
         form = AnswerForm()
         difficulty_boundary = 30
         if "final_answer" not in session:
-            topic, question, answer, difficulty_weighting = question_topic_selection(session.get("topic_selection"),
-                int(session.get("current_difficulty")), ["free_text", "multiple-choice", "true/false"])
+            topic, question, answer, difficulty_weighting, multiple_answers = question_topic_selection(
+                session.get("topic_selection"), int(session.get("current_difficulty")),
+    ["free_text", "multiple-choice", "true/false"])
             session["current_topic"] = topic
             session["final_answer"] = answer
             session["final_question"] = question
             session["final_difficulty_weighting"] = difficulty_weighting
+            session["multiple_answers"] = multiple_answers
+
+        if session["multiple_answers"] == "No":
+            form = AnswerForm()
+        if session["multiple_answers"] == "TwoSame":
+            form = AnswerQuadraticEquationForm()
+        if session["multiple_answers"] == "TwoDifferent":
+            form = AnswerSimultaneousEquationForm()
+        if session["multiple_answers"] == "FourDifferent":
+            form = AnswerQuadraticSimultaneousEquationForm()
 
         final_answer = session.get("final_answer")
         final_question = session.get("final_question")
-        print(final_answer)
+        print(final_answer[0])
+        print(type(final_answer[0]))
 
         if request.method == "POST":
-            answer = request.form.get("answer")
+            answer = 0
             match session["current_topic"]:
+
+                case "equations":
+                    match session["multiple_answers"]:
+                        case "No":
+                            answer = request.form.get("answer")
+                            answer = float(answer)
+
+                        case "TwoSame":
+                            answer_x_1 = request.form.get("answer_x_1")
+                            answer_x_2 = request.form.get("answer_x_2")
+
+                            if type(answer_x_1) != int or type(answer_x_1) != float or type(answer_x_2) != int or type(answer_x_2) != float:
+                                flash("You must enter a number. Try again.", category="danger")
+                                return redirect(url_for("quiz_page"))
+                            answer = [float(answer_x_1), float(answer_x_2)]
+
+                        case "TwoDifferent":
+                            answer_x = request.form.get("answer_x")
+                            answer_y = request.form.get("answer_y")
+
+                            if type(answer_x) != int or type(answer_x) != float or type(answer_y) != int or type(answer_y) != float:
+                                flash("You must enter a number. Try again.", category="danger")
+                                return redirect(url_for("quiz_page"))
+                            answer = [float(answer_x), float(answer_y)]
+                        case "FourDifferent":
+                            answer_x_1 = request.form.get("answer_x_1")
+                            answer_x_2 = request.form.get("answer_x_2")
+                            answer_y_1 = request.form.get("answer_y_1")
+                            answer_y_2 = request.form.get("answer_y_2")
+
+                            if type(answer_x_1) != int or type(answer_x_1) != float or type(answer_x_2) != int or type(answer_x_2) != float\
+                                    or type(answer_y_1) != int or type(answer_y_1) != float or type(answer_y_2) != int or type(answer_y_2) != float:
+                                flash("You must enter a number. Try again.", category="danger")
+                                return redirect(url_for("quiz_page"))
+                            answer = [float(answer_x_1), float(answer_x_2), float(answer_y_1), float(answer_y_2)]
+                        case _:
+                            pass
+
                 case "fractions":
+                    answer = request.form.get("answer")
                     if final_answer in ("True", "False") and answer not in ("True", "False"):
                         flash("You must enter True or False. Try again", category="danger")
                         return redirect(url_for("quiz_page"))
@@ -117,6 +170,7 @@ def quiz_page():
                     else:
                         final_answer = str(final_answer)
                 case "expressions":
+                    answer = request.form.get("answer")
                     if final_answer in ("True", "False") and answer not in ("True", "False"):
                         flash("You must enter True or False. Try again", category="danger")
                         return redirect(url_for("quiz_page"))
@@ -127,9 +181,9 @@ def quiz_page():
                         else:
                             final_answer = simplify(sympify(final_answer))
                             answer = simplify(sympify(answer))
-
                 case _:
                     try:
+                        answer = request.form.get("answer")
                         if type(final_answer) == int:
                             answer = int(answer)
                         elif type(final_answer) == float:
@@ -144,7 +198,9 @@ def quiz_page():
                         flash("You must enter a number. Try again.", category="danger")
                         return redirect(url_for("quiz_page"))
 
-            if answer == final_answer:
+            if (answer == final_answer or answer == final_answer[0] or
+                    (type(answer) == list and type(final_answer) == list and ((len(answer) == 2 and answer[0] == final_answer[0] and answer[1] == final_answer[1])
+            or (len(answer) == 4 and answer[0][0] == final_answer[0][0] and answer[0][1] == final_answer[0][1] and answer[1][0] == final_answer[1][0] and answer[1][1] == final_answer[1][1])))):
                 session["score"] += 1
                 print("Correct")
                 if session["current_difficulty"] < 5:
@@ -176,6 +232,7 @@ def quiz_page():
             session.pop("final_question", None)
             session.pop("final_answer", None)
             session.pop("final_difficulty_weighting", None)
+            session.pop("multiple_answers", None)
             session.pop("current_topic", None)
 
             if session["question_number"] > session["number_of_questions"]:
@@ -186,4 +243,5 @@ def quiz_page():
         current_difficulty = session.get("current_difficulty")
         score = session.get("score")
         question_number = session.get("question_number")
-        return render_template("quiz.html", form=form, final_question=final_question, current_difficulty=current_difficulty, score=score, question_number=question_number)
+        multiple_answers = session.get("multiple_answers")
+        return render_template("quiz.html", form=form, final_question=final_question, current_difficulty=current_difficulty, score=score, question_number=question_number, multiple_answers=multiple_answers)

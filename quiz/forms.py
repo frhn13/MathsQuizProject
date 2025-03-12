@@ -1,9 +1,26 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, BooleanField
+from wtforms import StringField, SubmitField, IntegerField, BooleanField, FloatField
 from wtforms.validators import DataRequired, NumberRange
 
 class AnswerForm(FlaskForm):
     answer = StringField(label="Answer: ", validators=[DataRequired()])
+    submit = SubmitField(label="Submit Answer")
+
+class AnswerQuadraticEquationForm(FlaskForm):
+    answer_x_1 = StringField(label="X1: ", validators=[DataRequired()])
+    answer_x_2 = StringField(label="X2: ", validators=[DataRequired()])
+    submit = SubmitField(label="Submit Answer")
+
+class AnswerSimultaneousEquationForm(FlaskForm):
+    answer_x = StringField(label="X: ", validators=[DataRequired()])
+    answer_y = StringField(label="Y: ", validators=[DataRequired()])
+    submit = SubmitField(label="Submit Answer")
+
+class AnswerQuadraticSimultaneousEquationForm(FlaskForm):
+    answer_x_1 = StringField(label="X1: ", validators=[DataRequired()])
+    answer_x_2 = StringField(label="X2: ", validators=[DataRequired()])
+    answer_y_1 = StringField(label="Y1: ", validators=[DataRequired()])
+    answer_y_2 = StringField(label="Y2: ", validators=[DataRequired()])
     submit = SubmitField(label="Submit Answer")
 
 class TopicsForm(FlaskForm):
