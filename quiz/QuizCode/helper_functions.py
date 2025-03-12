@@ -1,6 +1,8 @@
+import math
 import random
 from fractions import Fraction
-from sympy import simplify, factor, expand, symbols, roots, Eq, solveset
+from sympy import simplify, factor, expand, symbols, roots, Eq, solveset, discriminant, solve
+
 
 def calculate_difficulty(difficulty_factors : dict):
     summed_difficulty = 0
@@ -8,6 +10,89 @@ def calculate_difficulty(difficulty_factors : dict):
         summed_difficulty += (factor[0] * (factor[1]/0.125))
     summed_difficulty = summed_difficulty / 2
     return summed_difficulty / 8, summed_difficulty // 8
+
+def generate_equation(equation_type : str) -> str:
+    x = symbols("x")
+    y = symbols("y")
+    answer = 0
+    equation = ""
+
+    match equation_type:
+        case "linear":
+            linear_value = random.choice([1, -1]) * random.randint(1, 10)
+            number_value = random.choice([1, -1]) * random.randint(1, 10)
+            answer = solveset(linear_value * x + number_value, x)
+            #equation = Eq(linear_value * x + number_value, 0)
+            equation = f"{linear_value}x + {number_value} = 0"
+        case "whole_quadratic":
+            root_1 = random.choice([1, -1]) * random.randint(1, 10)
+            root_2 = random.choice([1, -1]) * random.randint(1, 10)
+            print(root_1)
+            print(root_2)
+            common_factor = random.randint(1, 3)
+            answer = solveset(common_factor * (x+root_1) * (x+root_2), x)
+            equation_start = expand(common_factor * (x+root_1) * (x+root_2))
+            equation = f"{equation_start.coeff(x, 2)}x**2 + {equation_start.coeff(x, 1)}x + {equation_start.coeff(x, 0)}"
+            print(equation_start)
+        case "floating_quadratic":
+            while True:
+                quadratic_value = 1
+                linear_value = random.choice([1, -1]) * random.randint(1, 10)
+                number_value = random.choice([1, -1]) * random.randint(1, 10)
+                common_factor = random.randint(1, 3)
+                equation_start = Eq(quadratic_value * x**2 + linear_value * x + number_value, 0)
+                if discriminant(equation_start) >= 0 and not math.sqrt(discriminant(equation_start)).is_integer():
+                    equation = f"{quadratic_value}x**2 + {linear_value}x + {number_value}"
+                    answer = solveset(quadratic_value * x**2 + linear_value * x + number_value, x)
+                    break
+        case "completing_the_square":
+            pass
+        case "linear_simultaneous":
+            while True:
+                x_value_1 = random.choice([1, -1]) * random.randint(1, 10)
+                y_value_1 = random.choice([1, -1]) * random.randint(1, 10)
+                number_value_1 = random.choice([1, -1]) * random.randint(1, 30)
+                x_value_2 = random.choice([1, -1]) * random.randint(1, 10)
+                y_value_2 = random.choice([1, -1]) * random.randint(1, 10)
+                number_value_2 = random.choice([1, -1]) * random.randint(1, 30)
+
+                equation_1 = Eq(x_value_1*x + y_value_1*y, number_value_1)
+                equation_2 = Eq(x_value_2*x + y_value_2*y, number_value_2)
+                answers = solve((equation_1, equation_2), (x, y))
+                if answers is not None:
+                    answer = list(answers.values())
+                    if answer[0].is_integer and answer[1].is_integer:
+                        break
+
+        case "quadratic_simultaneous":
+            while True:
+                equation_1 = Eq(x ** 2 + 2 * x - 3, 0)  # Quadratic equation
+                equation_2 = Eq(2 * x + y, 4)  # Linear equation
+
+                x_value_1 = random.choice([1, -1]) * random.randint(1, 10)
+                y_value_1 = random.choice([1, -1]) * random.randint(1, 10)
+                number_value_1 = random.choice([1, -1]) * random.randint(1, 30)
+                x_value_2 = random.choice([1, -1]) * random.randint(1, 10)
+                y_value_2 = random.choice([1, -1]) * random.randint(1, 10)
+                number_value_2 = random.choice([1, -1]) * random.randint(1, 30)
+
+                equation_1 = Eq(x**2 + y**2, number_value_1)
+                equation_2 = Eq(x_value_2 * x + y_value_2 * y, number_value_2)
+
+                answers = solve((equation_1, equation_2), (x, y))
+                answer = answers
+                if (len(answer) == 2 and len(answer[0]) == 2 and len(answer[1]) == 2 and answer[0][0].is_integer and
+                        answer[0][1].is_integer and answer[1][0].is_integer and answer[1][1].is_integer):
+                    print(equation_1)
+                    print(equation_2)
+                    break
+        case _:
+            pass
+    print(answer)
+    answer = list(answer)
+    print(answer[0][0])
+    print(equation)
+    return "yay"
 
 def generate_expression(quadratic_value_added : bool, linear_value_added : bool, number_value_added : bool):
     x = symbols("x")
@@ -196,3 +281,5 @@ def algebraic_fractions(difficulty_factors : dict):
             difficulty_factors["difficulty_of_values"][0] += 0.5
         answer = simplify(numerator / denominator)
         return question, answer, question_type_chosen
+
+generate_equation("quadratic_simultaneous")
