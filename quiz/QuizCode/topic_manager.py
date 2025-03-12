@@ -1,0 +1,88 @@
+import random
+
+from .operations_generation import operations_question_generation
+from .fractions_generation import fractions_question_generation
+from .expressions_generation import expressions_question_generation
+
+# Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
+# ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
+# Type of question: Free text -> multiple-choice -> true/false
+# Topic: Calculus -> Trigonometry -> Quadratic questions -> Sequences -> Linear equations -> 3d shapes -> 2d shapes -> fractions and decimals -> operations
+# Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
+# Difficulty of values used: How big values used are, whether final answer is whole number
+
+def question_topic_selection(selected_topics : list, entered_difficulty : int, question_types : list):
+    difficulty_factors = {
+        "maths_topic": [0, 0.2],  # Topic being tested
+        "question_type": [0, 0.1],  # Free-text, multiple choice, True/False
+        "answers_similarity": [0, 0.15],  # Similarity of potential answers in MCQs
+        "difficulty_of_values": [0, 0.15],  # Values used in the question
+        "number_of_steps": [0, 0.1],  # Steps needed to find answer
+        "depth_of_knowledge": [0, 0.1],  # Extra information needed to answer question, like formulae, certain values
+        "difficulty_of_answer": [0, 0.15],  # Value of the answer
+        "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
+    }
+    chosen_topic = random.choice(selected_topics)
+    match chosen_topic:
+        case "operations":
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case "fractions":
+            question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case "calculus":
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case "equations":
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case "expressions":
+            question, answer, difficulty_weighting = expressions_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case "sequences":
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case "hcf_lcm":
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case "percentages":
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case "triangles":
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+        case _:
+            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+
+    return chosen_topic, question, answer, difficulty_weighting
+
+# Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
+# ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
+# Type of question: Free text -> multiple-choice -> true/false
+# Topic: Calculus -> Trigonometry -> Quadratic questions -> Sequences -> Linear equations -> 3d shapes -> 2d shapes -> fractions and decimals -> operations
+# Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
+# Difficulty of values used: How big values used are, whether final answer is whole number
+
+
+# Linear equations, quadratic equations, quadratic formula, completing the square, simultaneous equations, quadratic simultaneous equations, inequalities, quadratic inequalities
+def equations_question_generation():
+    pass
+
+# Linear, quadratic, geometric sequences
+def sequences_question_generation():
+    pass
+
+def hcf_lcm_prime_factors():
+    pass
+
+# Compound interest, regular interest, reverse percentages, numbers as percentages
+def percentages_question_generation():
+    pass
+
+def probability_question_generation():
+    pass
+
+def calculus_question_generation():
+    pass
+
+difficulty_factors = {
+        "maths_topic": [0, 0.2],  # Topic being tested
+        "question_type": [0, 0.1],  # Free-text, multiple choice, True/False
+        "answers_similarity": [0, 0.15],  # Similarity of potential answers in MCQs
+        "difficulty_of_values": [0, 0.15],  # Values used in the question
+        "number_of_steps": [0, 0.1],  # Steps needed to find answer
+        "depth_of_knowledge": [0, 0.1],  # Extra information needed to answer question, like formulae, certain values
+        "difficulty_of_answer": [0, 0.15],  # Value of the answer
+        "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
+    }

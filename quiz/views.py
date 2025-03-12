@@ -1,10 +1,8 @@
-from mercantile import simplify
-
 from quiz import app
 from flask import render_template, redirect, url_for, request, flash, session
 from quiz.forms import AnswerForm, TopicsForm, RestartForm
-from quiz.QuizCode.quizCode import question_topic_selection
-from sympy import sympify, factor, expand
+from .QuizCode.topic_manager import question_topic_selection
+from sympy import sympify, factor, expand, simplify
 
 
 @app.route("/remove")
@@ -109,7 +107,7 @@ def quiz_page():
                     elif type(final_answer) == str and not "/" in answer and final_answer not in ("True", "False"):
                         flash("You must write your answer as a fraction. Try again.", category="danger")
                         return redirect(url_for("quiz_page"))
-                    elif "x" in final_answer:
+                    elif final_answer == str and "x" in final_answer:
                         if "/" in answer:
                             final_answer = simplify(sympify(final_answer))
                             answer = simplify(sympify(answer))

@@ -1,0 +1,103 @@
+import random
+
+from .helper_functions import answer_generation, calculate_difficulty
+
+# BIDMAS
+def operations_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
+    question_type_chosen = random.choice(question_types)
+    have_division_chance = random.random()
+    difficulty_weighting = 0
+    question = ""
+    numbers = []
+    answers = []
+    answer = 0
+
+    while True:
+        difficulty_factors["maths_topic"][0] = 0
+        difficulty_factors["difficulty_of_values"][0] = 2
+        difficulty_factors["depth_of_knowledge"][0] = 2
+        difficulty_factors["multiple_topics"][0] = 3
+        difficulty_factors["difficulty_of_answer"][0] = 2
+        difficulty_factors["number_of_steps"][0] = 2
+
+        number_of_values = random.randint(2, 4)
+        if have_division_chance > 0.7:
+            operations = [random.choice(["+", "-", "*", "/"]) for x in range(number_of_values - 1)]
+        else:
+            operations = [random.choice(["+", "-", "*"]) for x in range(number_of_values - 1)]
+
+        numbers = [random.randint(1, 200) for x in range(number_of_values)]
+        question = ""
+        for x in range(0, len(numbers)):
+            question += str(numbers[x])
+            if x < len(numbers) - 1:
+                question += operations[x]
+        answer = eval(question)
+        if have_division_chance <= 0.7 or (
+                have_division_chance > 0.7 and question.find("/") != -1 and answer.is_integer()):
+            answer = int(answer)
+            for x in range(number_of_values - 1):
+                difficulty_factors["number_of_steps"][0] += 2
+            if ("-" in operations or "+" in operations) and ("/" in operations or "*" in operations):
+                difficulty_factors["depth_of_knowledge"][0] += 2
+            for operation in set(operations):
+                match operation:
+                    case "+":
+                        difficulty_factors["maths_topic"][0] += 1
+                    case "-":
+                        difficulty_factors["maths_topic"][0] += 2
+                    case "*":
+                        difficulty_factors["maths_topic"][0] += 3
+                    case "/":
+                        difficulty_factors["maths_topic"][0] += 4
+
+            for value in numbers:
+                if value == 1:
+                    difficulty_factors["difficulty_of_values"][0] //= 2
+                if value == 2 or value == 10:
+                    pass
+                elif value % 5 == 0 or value % 10 == 0:
+                    difficulty_factors["difficulty_of_values"][0] += 0.5
+                else:
+                    if 10 < value <= 30:
+                        difficulty_factors["difficulty_of_values"][0] += 1
+                    elif 30 < value <= 80:
+                        difficulty_factors["difficulty_of_values"][0] += 1.5
+                    elif 80 < value <= 150:
+                        difficulty_factors["difficulty_of_values"][0] += 2
+                    else:
+                        difficulty_factors["difficulty_of_values"][0] += 3
+            if answer > 100:
+                difficulty_factors["difficulty_of_answer"][0] += 3
+            elif answer > 500:
+                difficulty_factors["difficulty_of_answer"][0] += 4
+            elif answer > 1000:
+                difficulty_factors["difficulty_of_answer"][0] += 5
+            elif answer > 5000:
+                difficulty_factors["difficulty_of_answer"][0] += 6
+
+            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+            difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+
+            if final_difficulty == entered_difficulty and answers[0] <= 10000:
+                print(difficulty_factors)
+                print(difficulty_weighting)
+                break
+        else:
+            pass
+
+    match question_type_chosen:
+        case "free_text":
+            question = f"What is {question}?"
+        case "multiple-choice":
+            question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
+        case "true/false":
+            question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
+            if answers[0] == answer:
+                answer = "True"
+            else:
+                answer = "False"
+        case _:
+            pass
+
+    return question, answer, difficulty_weighting
