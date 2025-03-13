@@ -108,8 +108,8 @@ def quiz_page():
 
         final_answer = session.get("final_answer")
         final_question = session.get("final_question")
-        print(final_answer[0])
-        print(type(final_answer[0]))
+        print(final_answer)
+        print(type(final_answer))
 
         if request.method == "POST":
             answer = 0
@@ -119,13 +119,17 @@ def quiz_page():
                     match session["multiple_answers"]:
                         case "No":
                             answer = request.form.get("answer")
+                            if not answer.replace(".", "").replace("-", "").isnumeric():
+                                flash("You must enter a number. Try again.", category="danger")
+                                return redirect(url_for("quiz_page"))
                             answer = float(answer)
 
                         case "TwoSame":
                             answer_x_1 = request.form.get("answer_x_1")
                             answer_x_2 = request.form.get("answer_x_2")
 
-                            if type(answer_x_1) != int or type(answer_x_1) != float or type(answer_x_2) != int or type(answer_x_2) != float:
+                            if (not answer_x_1.replace(".", "").replace("-","").isnumeric() or
+                                    not answer_x_2.replace(".", "").replace("-","").isnumeric()):
                                 flash("You must enter a number. Try again.", category="danger")
                                 return redirect(url_for("quiz_page"))
                             answer = [float(answer_x_1), float(answer_x_2)]
@@ -134,7 +138,8 @@ def quiz_page():
                             answer_x = request.form.get("answer_x")
                             answer_y = request.form.get("answer_y")
 
-                            if type(answer_x) != int or type(answer_x) != float or type(answer_y) != int or type(answer_y) != float:
+                            if (not answer_x.replace(".", "").replace("-","").isnumeric() or
+                                    not answer_y.replace(".", "").replace("-","").isnumeric()):
                                 flash("You must enter a number. Try again.", category="danger")
                                 return redirect(url_for("quiz_page"))
                             answer = [float(answer_x), float(answer_y)]
@@ -144,8 +149,10 @@ def quiz_page():
                             answer_y_1 = request.form.get("answer_y_1")
                             answer_y_2 = request.form.get("answer_y_2")
 
-                            if type(answer_x_1) != int or type(answer_x_1) != float or type(answer_x_2) != int or type(answer_x_2) != float\
-                                    or type(answer_y_1) != int or type(answer_y_1) != float or type(answer_y_2) != int or type(answer_y_2) != float:
+                            if (not answer_x_1.replace(".", "").replace("-","").isnumeric() or
+                                    not answer_x_2.replace(".", "").replace("-","").isnumeric()
+                                    or not answer_y_1.replace(".", "").replace("-","").isnumeric()
+                                    or not answer_y_2.replace(".", "").replace("-","").isnumeric()):
                                 flash("You must enter a number. Try again.", category="danger")
                                 return redirect(url_for("quiz_page"))
                             answer = [float(answer_x_1), float(answer_x_2), float(answer_y_1), float(answer_y_2)]
@@ -200,7 +207,8 @@ def quiz_page():
 
             if (answer == final_answer or answer == final_answer[0] or
                     (type(answer) == list and type(final_answer) == list and ((len(answer) == 2 and answer[0] == final_answer[0] and answer[1] == final_answer[1])
-            or (len(answer) == 4 and answer[0][0] == final_answer[0][0] and answer[0][1] == final_answer[0][1] and answer[1][0] == final_answer[1][0] and answer[1][1] == final_answer[1][1])))):
+            or (len(answer) == 4 and (answer[0] == final_answer[0] and answer[1] == final_answer[0] or (answer[0] == final_answer[1] and answer[1] == final_answer[0]))
+                and (answer[2] == final_answer[2] and answer[3] == final_answer[3] or (answer[2] == final_answer[3] and answer[3] == final_answer[2])))))):
                 session["score"] += 1
                 print("Correct")
                 if session["current_difficulty"] < 5:

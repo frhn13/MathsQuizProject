@@ -19,8 +19,48 @@
          </form>
       </div>
    {% elif multiple_answers == "TwoSame" %}
+      <div class="container mt-3">
+         <p>{{ final_question }}</p>
+         <form method="POST" class="form-register">
+            {{ form.csrf_token() }}
+            {{ form.answer_x_1.label() }}
+            {{ form.answer_x_1(class="form-control", placeholder="X1") }}
+            {{ form.answer_x_2.label() }}
+            {{ form.answer_x_2(class="form-control", placeholder="X2") }}
+
+            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+         </form>
+      </div>
    {% elif multiple_answers == "TwoDifferent" %}
+      <div class="container mt-3">
+         <p>{{ final_question }}</p>
+         <form method="POST" class="form-register">
+            {{ form.csrf_token() }}
+            {{ form.answer_x.label() }}
+            {{ form.answer_x(class="form-control", placeholder="X") }}
+            {{ form.answer_y.label() }}
+            {{ form.answer_y(class="form-control", placeholder="Y") }}
+
+            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+         </form>
+      </div>
    {% elif multiple_answers == "FourDifferent" %}
+      <div class="container mt-3">
+         <p>{{ final_question }}</p>
+         <form method="POST" class="form-register">
+            {{ form.csrf_token() }}
+            {{ form.answer_x_1.label() }}
+            {{ form.answer_x_1(class="form-control", placeholder="X1") }}
+            {{ form.answer_x_2.label() }}
+            {{ form.answer_x_2(class="form-control", placeholder="X2") }}
+            {{ form.answer_y_1.label() }}
+            {{ form.answer_y_1(class="form-control", placeholder="Y1") }}
+            {{ form.answer_y_2.label() }}
+            {{ form.answer_y_2(class="form-control", placeholder="Y2") }}
+
+            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+         </form>
+      </div>
    {% endif %}
 </div>
 {% endblock %}

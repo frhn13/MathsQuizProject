@@ -11,7 +11,7 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
     multiple_answers = "No"
     while True:
         equation_type = random.choice(["linear", "whole_quadratic", "floating_quadratic", "linear_simultaneous"])
-        if entered_difficulty > 4:
+        if entered_difficulty >= 4:
             equation_type = "quadratic_simultaneous"
 
         equation, final_answer = generate_equation(equation_type, difficulty_factors)
@@ -29,28 +29,27 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
         case "free_text":
             match equation_type:
                 case "linear":
-                    question = f"{equation} \t Find x."
+                    question = f"{equation} \t Find x to 2 decimal places."
                     answer = [round(float(final_answer[0]), 2)]
                 case "whole_quadratic":
-                    question = f"{equation} \t Find both values of x."
+                    question = f"{equation} \t Find both values of x to 2 decimal places."
                     answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
                     multiple_answers = "TwoSame"
                 case "floating_quadratic":
-                    question = f"{equation} \t Find both values of x."
+                    question = f"{equation} \t Find both values of x to 2 decimal places."
                     answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
                     multiple_answers = "TwoSame"
                 case "linear_simultaneous":
-                    question = f"{equation} \t Find the value of x and y."
+                    question = f"{equation} \t Find the value of x and y to 2 decimal places."
                     answer.append(round(float(final_answer[0][1]), 2))
                     answer.append(round(float(final_answer[1][1]), 2))
                     multiple_answers = "TwoDifferent"
                 case "quadratic_simultaneous":
-                    question = f"{equation} \t Find both values of x and y."
+                    question = f"{equation} \t Find both values of x and y to 2 decimal places."
                     answer.append(round(float(final_answer[0][0]), 2))
                     answer.append(round(float(final_answer[0][1]), 2))
                     answer.append(round(float(final_answer[1][0]), 2))
                     answer.append(round(float(final_answer[1][0]), 2))
-                    # answer = [final_answer[0][0], final_answer[1][0], final_answer[0][1], final_answer[1][1]]
                     multiple_answers = "FourDifferent"
                 case _:
                     pass

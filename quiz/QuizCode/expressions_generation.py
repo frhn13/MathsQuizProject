@@ -13,7 +13,7 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
         match expressions_topic:
             case "simplification":
                 difficulty_factors["maths_topic"][0] = 4
-                difficulty_factors["difficulty_of_values"][0] = 2
+                difficulty_factors["difficulty_of_values"][0] = 3
                 difficulty_factors["depth_of_knowledge"][0] = 5
                 difficulty_factors["multiple_topics"][0] = 3
                 difficulty_factors["difficulty_of_answer"][0] = 3
@@ -31,6 +31,13 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
 
                     else:
                         expression = common_factor * (quadratic_value + linear_value + number_value)
+                        if quadratic_value != 0:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                            difficulty_factors["difficulty_of_answer"][0] += 1
+                            difficulty_factors["number_of_steps"][0] += 1
+                        if quadratic_value < 0:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                            difficulty_factors["difficulty_of_answer"][0] += 1
                 else:
                     expression = generate_complex_expression()
 
@@ -43,11 +50,11 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                     answers, difficulty_factors = answer_generation(answer, question_type_chosen,
                                                                     difficulty_factors)
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                    if final_difficulty == entered_difficulty or 1 == 1:
+                    if final_difficulty == entered_difficulty:
                         break
             case "factorisation":
                 difficulty_factors["maths_topic"][0] = 4
-                difficulty_factors["difficulty_of_values"][0] = 2
+                difficulty_factors["difficulty_of_values"][0] = 3
                 difficulty_factors["depth_of_knowledge"][0] = 5
                 difficulty_factors["multiple_topics"][0] = 3
                 difficulty_factors["difficulty_of_answer"][0] = 3
@@ -62,9 +69,15 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                     if quadratic_value == 0 and linear_value == 0 or quadratic_value == 0 and number_value == 0 \
                             or linear_value == 0 and number_value == 0:
                         expression = None
-
                     else:
                         expression = common_factor * (quadratic_value + linear_value + number_value)
+                        if quadratic_value != 0:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                            difficulty_factors["difficulty_of_answer"][0] += 1
+                            difficulty_factors["number_of_steps"][0] += 1
+                        if quadratic_value < 0:
+                            difficulty_factors["difficulty_of_values"][0] += 1
+                            difficulty_factors["difficulty_of_answer"][0] += 1
                 else:
                     expression = generate_complex_expression()
 
@@ -77,7 +90,7 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                                                                               difficulty_factors)
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
-                    if final_difficulty == entered_difficulty or 1 == 1:
+                    if final_difficulty == entered_difficulty:
                         break
 
             case "algebraic_fractions":

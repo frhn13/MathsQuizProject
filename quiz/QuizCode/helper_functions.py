@@ -345,6 +345,6 @@ difficulty_factors = {
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
 
-generate_equation("linear_simultaneous", difficulty_factors)
-generate_equation("floating_quadratic", difficulty_factors)
-generate_equation("quadratic_simultaneous", difficulty_factors)
+#generate_equation("linear_simultaneous", difficulty_factors)
+#generate_equation("floating_quadratic", difficulty_factors)
+#generate_equation("quadratic_simultaneous", difficulty_factors)
