@@ -205,7 +205,7 @@ def quiz_page():
                         flash("You must enter a number. Try again.", category="danger")
                         return redirect(url_for("quiz_page"))
 
-            if (answer == final_answer or answer == final_answer[0] or
+            if (answer == final_answer or (type(final_answer == list) and len(final_answer) == 1 and answer == final_answer[0]) or
                     (type(answer) == list and type(final_answer) == list and ((len(answer) == 2 and answer[0] == final_answer[0] and answer[1] == final_answer[1])
             or (len(answer) == 4 and (answer[0] == final_answer[0] and answer[1] == final_answer[0] or (answer[0] == final_answer[1] and answer[1] == final_answer[0]))
                 and (answer[2] == final_answer[2] and answer[3] == final_answer[3] or (answer[2] == final_answer[3] and answer[3] == final_answer[2])))))):
@@ -252,4 +252,6 @@ def quiz_page():
         score = session.get("score")
         question_number = session.get("question_number")
         multiple_answers = session.get("multiple_answers")
-        return render_template("quiz.html", form=form, final_question=final_question, current_difficulty=current_difficulty, score=score, question_number=question_number, multiple_answers=multiple_answers)
+        return render_template("quiz.html", form=form, final_question=final_question,
+                               current_difficulty=current_difficulty, score=score, question_number=question_number,
+                               multiple_answers=multiple_answers)

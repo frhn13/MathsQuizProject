@@ -129,11 +129,6 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
                 final_answer = solve((equation_1, equation_2), (x, y))
                 if (len(final_answer) == 2 and len(final_answer[0]) == 2 and len(final_answer[1]) == 2 and final_answer[0][0].is_integer and
                         final_answer[0][1].is_integer and final_answer[1][0].is_integer and final_answer[1][1].is_integer):
-                    #print(type(final_answer[0][0]))
-                    #print(final_answer[0][0])
-                    #t = int(final_answer[0][0])
-                    #print(t)
-                    #print(type(t))
                     break
         case _:
             pass
@@ -160,10 +155,49 @@ def generate_complex_expression():
     x = symbols("x")
     num1 = random.randint(1, 10)
     num2 = random.randint(1, 10)
-    coefficient_1 = random.randint(1, 2)
-    coefficient_2 = random.randint(1, 2)
+    coefficient_1 = random.randint(1, 2) * random.choice([-1, 1])
+    coefficient_2 = random.randint(1, 2) * random.choice([-1, 1])
     factorise = (coefficient_1*x + num1) * (coefficient_2*x + num2)
-    return expand(factorise)
+    return expand(factorise), coefficient_1, coefficient_2
+
+def factorisation_and_simplification(difficulty_factors : dict):
+    x = symbols("x")
+    difficulty_factors["maths_topic"][0] = 4
+    difficulty_factors["difficulty_of_values"][0] = 3
+    difficulty_factors["depth_of_knowledge"][0] = 5
+    difficulty_factors["multiple_topics"][0] = 3
+    difficulty_factors["difficulty_of_answer"][0] = 3
+    difficulty_factors["number_of_steps"][0] = 3
+
+    common_factor = random.randint(1, 5)
+
+    if random.random() > 0.5:
+        quadratic_value, linear_value, number_value = generate_expression(random.choice([True, False]),
+                                                                          random.choice([True, False]),
+                                                                          random.choice([True, False]))
+        if quadratic_value == 0 and linear_value == 0 or quadratic_value == 0 and number_value == 0 \
+                or linear_value == 0 and number_value == 0:
+            expression = None
+
+        else:
+            expression = common_factor * (quadratic_value + linear_value + number_value)
+            if expression.coeff(x, 2) != 0:
+                difficulty_factors["difficulty_of_values"][0] += 1
+                difficulty_factors["difficulty_of_answer"][0] += 1
+                difficulty_factors["number_of_steps"][0] += 1
+            if expression.coeff(x, 2) < 0:
+                difficulty_factors["difficulty_of_values"][0] += 1
+                difficulty_factors["difficulty_of_answer"][0] += 1
+    else:
+        expression, coefficient_1, coefficient_2 = generate_complex_expression()
+        difficulty_factors["difficulty_of_values"][0] += 1
+        difficulty_factors["difficulty_of_answer"][0] += 1
+        difficulty_factors["number_of_steps"][0] += 1
+        if coefficient_1 < 0 or coefficient_2 < 0:
+            difficulty_factors["difficulty_of_values"][0] += 1
+            difficulty_factors["difficulty_of_answer"][0] += 1
+
+    return difficulty_factors, expression
 
 def answer_generation(real_answer : int, question_type : str, difficulty_factors : dict):
     answers = []

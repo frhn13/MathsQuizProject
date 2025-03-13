@@ -63,7 +63,7 @@ def sequences_question_generation():
 def hcf_lcm_prime_factors():
     pass
 
-# Compound interest, regular interest, reverse percentages, numbers as percentages
+# Compound interest, regular interest, reverse percentages, numbers as percentages, percentages of amounts
 def percentages_question_generation():
     pass
 
