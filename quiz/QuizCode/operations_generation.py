@@ -4,6 +4,7 @@ from .helper_functions import answer_generation, calculate_difficulty
 
 # BIDMAS
 def operations_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
+
     question_type_chosen = random.choice(question_types)
     have_division_chance = random.random()
     difficulty_weighting = 0
@@ -14,11 +15,11 @@ def operations_question_generation(entered_difficulty: int, question_types: list
 
     while True:
         difficulty_factors["maths_topic"][0] = 0
-        difficulty_factors["difficulty_of_values"][0] = 2
-        difficulty_factors["depth_of_knowledge"][0] = 2
-        difficulty_factors["multiple_topics"][0] = 3
-        difficulty_factors["difficulty_of_answer"][0] = 2
-        difficulty_factors["number_of_steps"][0] = 2
+        difficulty_factors["difficulty_of_values"][0] = 1
+        difficulty_factors["depth_of_knowledge"][0] = 1
+        difficulty_factors["multiple_topics"][0] = 0
+        difficulty_factors["difficulty_of_answer"][0] = 1
+        difficulty_factors["number_of_steps"][0] = 1
 
         number_of_values = random.randint(2, 4)
         if have_division_chance > 0.7:
@@ -40,16 +41,17 @@ def operations_question_generation(entered_difficulty: int, question_types: list
                 difficulty_factors["number_of_steps"][0] += 2
             if ("-" in operations or "+" in operations) and ("/" in operations or "*" in operations):
                 difficulty_factors["depth_of_knowledge"][0] += 2
+                difficulty_factors["multiple_topics"][0] += 2
             for operation in set(operations):
                 match operation:
                     case "+":
-                        difficulty_factors["maths_topic"][0] += 1
+                        difficulty_factors["maths_topic"][0] += 0.5
                     case "-":
-                        difficulty_factors["maths_topic"][0] += 2
+                        difficulty_factors["maths_topic"][0] += 1
                     case "*":
-                        difficulty_factors["maths_topic"][0] += 3
+                        difficulty_factors["maths_topic"][0] += 1.5
                     case "/":
-                        difficulty_factors["maths_topic"][0] += 4
+                        difficulty_factors["maths_topic"][0] += 2
 
             for value in numbers:
                 if value == 1:
@@ -66,20 +68,20 @@ def operations_question_generation(entered_difficulty: int, question_types: list
                     elif 80 < value <= 150:
                         difficulty_factors["difficulty_of_values"][0] += 2
                     else:
-                        difficulty_factors["difficulty_of_values"][0] += 3
+                        difficulty_factors["difficulty_of_values"][0] += 2.5
             if answer > 100:
-                difficulty_factors["difficulty_of_answer"][0] += 3
+                difficulty_factors["difficulty_of_answer"][0] += 1
             elif answer > 500:
-                difficulty_factors["difficulty_of_answer"][0] += 4
+                difficulty_factors["difficulty_of_answer"][0] += 1.5
             elif answer > 1000:
-                difficulty_factors["difficulty_of_answer"][0] += 5
+                difficulty_factors["difficulty_of_answer"][0] += 2
             elif answer > 5000:
-                difficulty_factors["difficulty_of_answer"][0] += 6
+                difficulty_factors["difficulty_of_answer"][0] += 2.5
 
             answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
             difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
-            if final_difficulty == entered_difficulty and answers[0] <= 10000:
+            if final_difficulty == entered_difficulty and -10000 <= answers[0] <= 10000:
                 print(difficulty_factors)
                 print(difficulty_weighting)
                 break

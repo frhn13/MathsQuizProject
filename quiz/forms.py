@@ -34,7 +34,7 @@ class TopicsForm(FlaskForm):
     percentages = BooleanField(label="Percentages")
     triangles = BooleanField(label="Pythagoras and other Triangle Questions")
     questions = IntegerField(label="Enter the number of questions to answers", validators=[DataRequired(), NumberRange(10, 50)])
-    difficulty = IntegerField(label="Enter the starting difficulty of the questions", validators=[DataRequired(), NumberRange(1, 5)])
+    difficulty = IntegerField(label="Enter the starting difficulty of the questions", validators=[DataRequired(), NumberRange(1, 10)])
     submit = SubmitField(label="Submit Selection")
 
 class RestartForm(FlaskForm):

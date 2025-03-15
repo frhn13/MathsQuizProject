@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for, request, flash, session
 from quiz.forms import AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm, AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm
 from .QuizCode.topic_manager import question_topic_selection
 from sympy import sympify, factor, expand, simplify
+from .QuizCode.min_and_max_difficulties import operations, equations, expressions, fractions
 
 
 @app.route("/remove")
@@ -205,13 +206,13 @@ def quiz_page():
                         flash("You must enter a number. Try again.", category="danger")
                         return redirect(url_for("quiz_page"))
 
-            if (answer == final_answer or (type(final_answer == list) and len(final_answer) == 1 and answer == final_answer[0]) or
+            if (answer == final_answer or (type(final_answer == list) and (len(final_answer) == 1 and answer == final_answer[0])) or
                     (type(answer) == list and type(final_answer) == list and ((len(answer) == 2 and answer[0] == final_answer[0] and answer[1] == final_answer[1])
             or (len(answer) == 4 and (answer[0] == final_answer[0] and answer[1] == final_answer[0] or (answer[0] == final_answer[1] and answer[1] == final_answer[0]))
                 and (answer[2] == final_answer[2] and answer[3] == final_answer[3] or (answer[2] == final_answer[3] and answer[3] == final_answer[2])))))):
                 session["score"] += 1
                 print("Correct")
-                if session["current_difficulty"] < 5:
+                if session["current_difficulty"] < 10:
                     session["difficulty_range"] += ((session["final_difficulty_weighting"] - (session["current_difficulty"])) * 30)
                     if session["difficulty_range"] >= 100:
                         session["current_difficulty"]  += 1

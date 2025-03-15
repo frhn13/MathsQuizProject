@@ -11,7 +11,7 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
     multiple_answers = "No"
     while True:
         equation_type = random.choice(["linear", "whole_quadratic", "floating_quadratic", "linear_simultaneous"])
-        if entered_difficulty >= 4:
+        if entered_difficulty >= 8:
             equation_type = "quadratic_simultaneous"
 
         equation, final_answer = generate_equation(equation_type, difficulty_factors)

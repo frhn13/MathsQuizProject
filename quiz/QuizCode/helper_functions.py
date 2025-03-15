@@ -8,7 +8,7 @@ def calculate_difficulty(difficulty_factors : dict):
     summed_difficulty = 0
     for factor in difficulty_factors.values():
         summed_difficulty += (factor[0] * (factor[1]/0.125))
-    summed_difficulty = summed_difficulty / 2
+    # summed_difficulty = summed_difficulty / 2
     return summed_difficulty / 8, summed_difficulty // 8
 
 def generate_equation(equation_type : str, difficulty_factors : dict):
@@ -21,8 +21,8 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
         case "linear":
             difficulty_factors["maths_topic"][0] = 4
             difficulty_factors["difficulty_of_values"][0] = 3
-            difficulty_factors["depth_of_knowledge"][0] = 5
-            difficulty_factors["multiple_topics"][0] = 5
+            difficulty_factors["depth_of_knowledge"][0] = 4
+            difficulty_factors["multiple_topics"][0] = 4
             difficulty_factors["difficulty_of_answer"][0] = 3
             difficulty_factors["number_of_steps"][0] = 3
             linear_value = random.choice([1, -1]) * random.randint(1, 10)
@@ -164,7 +164,7 @@ def factorisation_and_simplification(difficulty_factors : dict):
     x = symbols("x")
     difficulty_factors["maths_topic"][0] = 4
     difficulty_factors["difficulty_of_values"][0] = 3
-    difficulty_factors["depth_of_knowledge"][0] = 5
+    difficulty_factors["depth_of_knowledge"][0] = 4
     difficulty_factors["multiple_topics"][0] = 3
     difficulty_factors["difficulty_of_answer"][0] = 3
     difficulty_factors["number_of_steps"][0] = 3
@@ -307,12 +307,12 @@ def answer_generation_decimals(real_answer : float, question_type : str, difficu
 
     elif question_type == "true/false":
         difficulty_factors["question_type"][0] = 2
-        difficulty_factors["answers_similarity"][0] = 5
+        difficulty_factors["answers_similarity"][0] = 4
         if random.random() > 0.5:
             answers = [random.choice([real_answer - 0.5, real_answer - 0.4, real_answer - 0.3,
                                               real_answer - 0.2, real_answer - 0.1, real_answer + 0.1,
                                               real_answer + 0.2, real_answer + 0.3, real_answer + 0.4, real_answer + 0.5])]
-            if abs(answers[0] - real_answer) >= 10:
+            if abs(answers[0] - real_answer) >= 0.2:
                 difficulty_factors["answers_similarity"][0] -= 2
         else:
             answers.append(real_answer)

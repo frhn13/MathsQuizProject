@@ -11,12 +11,6 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
     fractions_topic = "algebra"
     num1 = random.randint(1, 20)
     num2 = random.randint(1, 20)
-    difficulty_factors["maths_topic"][0] = 2
-    difficulty_factors["difficulty_of_values"][0] = 2
-    difficulty_factors["depth_of_knowledge"][0] = 2
-    difficulty_factors["multiple_topics"][0] = 3
-    difficulty_factors["difficulty_of_answer"][0] = 3
-    difficulty_factors["number_of_steps"][0] = 2
     answer = ""
     question = ""
     answers = []
@@ -26,12 +20,12 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
         fractions_topic = random.choice(["conversion", "operations", "algebra"])
         match fractions_topic:
             case "conversion":
-                difficulty_factors["maths_topic"][0] = 3
-                difficulty_factors["difficulty_of_values"][0] = 2
+                difficulty_factors["maths_topic"][0] = 1
+                difficulty_factors["difficulty_of_values"][0] = 1
                 difficulty_factors["depth_of_knowledge"][0] = 2
-                difficulty_factors["multiple_topics"][0] = 3
-                difficulty_factors["difficulty_of_answer"][0] = 3
-                difficulty_factors["number_of_steps"][0] = 3
+                difficulty_factors["multiple_topics"][0] = 1
+                difficulty_factors["difficulty_of_answer"][0] = 1
+                difficulty_factors["number_of_steps"][0] = 1
 
                 num1 = random.randint(1, 100)
                 num2 = random.randint(1, 100)
@@ -56,6 +50,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         if percentage_value.is_integer()  and final_difficulty == entered_difficulty and num1 < num2:
                             break
                     case "/ to %":
+                        difficulty_factors["number_of_steps"][0] += 2
                         question = f"Convert {fraction_value} to a percentage."
                         answer = percentage_value
                         answers, difficulty_factors = answer_generation(int(answer), question_type_chosen,
@@ -77,6 +72,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         if percentage_value.is_integer() and final_difficulty == entered_difficulty:
                             break
                     case "% to /":
+                        difficulty_factors["number_of_steps"][0] += 2
                         hcf = gcd(num1, num2)
                         final_numerator = int(num1 / hcf)
                         final_denominator = int(num2 / hcf)
@@ -115,7 +111,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                     case "+":
                         difficulty_factors["maths_topic"][0] += 1
                         if denominators[0] != denominators[1]:
-                            difficulty_factors["number_of_steps"][0] += 3
+                            difficulty_factors["number_of_steps"][0] += 2
                             difficulty_factors["difficulty_of_values"][0] += 1
                         final_denominator = lcm(denominators[0], denominators[1])
 
@@ -123,11 +119,11 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                             new_numerators.append(int(numerators[x] * (final_denominator / denominators[x])))
                             new_denominators.append(int(final_denominator))
                         if final_denominator > 50:
-                            difficulty_factors["difficulty_of_values"][0] += 1
+                            difficulty_factors["difficulty_of_values"][0] += 0.5
                         elif final_denominator > 100:
-                            difficulty_factors["difficulty_of_values"][0] += 2
+                            difficulty_factors["difficulty_of_values"][0] += 1
                         elif final_denominator > 200:
-                            difficulty_factors["difficulty_of_values"][0] += 3
+                            difficulty_factors["difficulty_of_values"][0] += 1.5
                         if new_numerators[0] <= 10 or new_denominators[1] <= 10:
                             pass
                         elif 10 < new_numerators[0] <= 50 or 10 < new_numerators[1] <= 50:
@@ -148,7 +144,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                     case "-":
                         difficulty_factors["maths_topic"][0] += 1
                         if denominators[0] != denominators[1]:
-                            difficulty_factors["number_of_steps"][0] += 3
+                            difficulty_factors["number_of_steps"][0] += 2
                             difficulty_factors["difficulty_of_values"][0] += 1
                         final_denominator = lcm(denominators[0], denominators[1])
                         for x in range(2):
@@ -156,11 +152,11 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                             new_denominators.append(int(final_denominator))
 
                         if final_denominator > 50:
-                            difficulty_factors["difficulty_of_values"][0] += 1
+                            difficulty_factors["difficulty_of_values"][0] += 0.5
                         elif final_denominator > 100:
-                            difficulty_factors["difficulty_of_values"][0] += 2
+                            difficulty_factors["difficulty_of_values"][0] += 1
                         elif final_denominator > 200:
-                            difficulty_factors["difficulty_of_values"][0] += 3
+                            difficulty_factors["difficulty_of_values"][0] += 1.5
                         if new_numerators[0] <= 10 or new_denominators[1] <= 10:
                             pass
                         elif 10 < new_numerators[0] <= 50 or 10 < new_numerators[1] <= 50:
@@ -179,28 +175,26 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         answer = f"{final_numerator}/{final_denominator}"
 
                     case "*":
-                        difficulty_factors["maths_topic"][0] += 2
-                        difficulty_factors["number_of_steps"][0] += 2
                         final_numerator = int(numerators[0] * numerators[1])
                         final_denominator = int(denominators[0] * denominators[1])
 
                         if numerators[0] == 1 or numerators[1] == 1:
                             pass
                         elif numerators[0] == 2 or numerators[0] == 10 or numerators[1] == 2 or numerators[1] == 10:
-                            difficulty_factors["difficulty_of_values"][0] += 1
+                            difficulty_factors["difficulty_of_values"][0] += 0.5
                         elif 2 < numerators[0] <= 10 or 2 < numerators[1] <= 10:
-                            difficulty_factors["difficulty_of_values"][0] += 2
+                            difficulty_factors["difficulty_of_values"][0] += 1
                         elif 10 < numerators[0] <= 20 or 10 < numerators[1] <= 20:
-                            difficulty_factors["difficulty_of_values"][0] += 3
+                            difficulty_factors["difficulty_of_values"][0] += 1.5
 
                         if denominators[0] == 1 or denominators[1] == 1:
                             pass
-                        elif denominators[0] == 2 or numerators[0] == 10 or denominators[1] == 2 or denominators[1] == 10:
-                            difficulty_factors["difficulty_of_values"][0] += 1
+                        elif denominators[0] == 2 or denominators[0] == 10 or denominators[1] == 2 or denominators[1] == 10:
+                            difficulty_factors["difficulty_of_values"][0] += 0.5
                         elif 2 < denominators[0] <= 10 or 2 < denominators[1] <= 10:
-                            difficulty_factors["difficulty_of_values"][0] += 2
+                            difficulty_factors["difficulty_of_values"][0] += 1
                         elif 10 < denominators[0] <= 20 or 10 < denominators[1] <= 20:
-                            difficulty_factors["difficulty_of_values"][0] += 3
+                            difficulty_factors["difficulty_of_values"][0] += 1.5
 
                         hcf = gcd(final_numerator, final_denominator)
                         final_numerator = int(final_numerator / hcf)
@@ -218,20 +212,20 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                             if numerators[0] == 1 or numerators[1] == 1:
                                 pass
                             elif numerators[0] == 2 or numerators[0] == 10 or numerators[1] == 2 or numerators[1] == 10:
-                                difficulty_factors["difficulty_of_values"][0] += 1
+                                difficulty_factors["difficulty_of_values"][0] += 0.5
                             elif 2 < numerators[0] <= 10 or 2 < numerators[1] <= 10:
-                                difficulty_factors["difficulty_of_values"][0] += 2
+                                difficulty_factors["difficulty_of_values"][0] += 1
                             elif 10 < numerators[0] <= 20 or 10 < numerators[1] <= 20:
-                                difficulty_factors["difficulty_of_values"][0] += 3
+                                difficulty_factors["difficulty_of_values"][0] += 1.5
 
                             if denominators[0] == 1 or denominators[1] == 1:
                                 pass
                             elif denominators[0] == 2 or numerators[0] == 10 or denominators[1] == 2 or denominators[1] == 10:
-                                difficulty_factors["difficulty_of_values"][0] += 1
+                                difficulty_factors["difficulty_of_values"][0] += 0.5
                             elif 2 < denominators[0] <= 10 or 2 < denominators[1] <= 10:
-                                difficulty_factors["difficulty_of_values"][0] += 2
+                                difficulty_factors["difficulty_of_values"][0] += 1
                             elif 10 < denominators[0] <= 20 or 10 < denominators[1] <= 20:
-                                difficulty_factors["difficulty_of_values"][0] += 3
+                                difficulty_factors["difficulty_of_values"][0] += 1.5
 
                             hcf = gcd(int(final_numerator), int(final_denominator))
                             final_numerator = int(final_numerator / hcf)
