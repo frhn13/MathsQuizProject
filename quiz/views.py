@@ -1,10 +1,11 @@
 from quiz import app
 from flask import render_template, redirect, url_for, request, flash, session
-from quiz.forms import AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm, AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm
-from .QuizCode.topic_manager import question_topic_selection
 from sympy import sympify, factor, expand, simplify
-from .QuizCode.min_and_max_difficulties import operations, equations, expressions, fractions
 
+from .QuizCode.min_and_max_difficulties import operations, equations, expressions, fractions
+from quiz.forms import (AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm,
+                        AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm)
+from .QuizCode.topic_manager import question_topic_selection
 
 @app.route("/remove")
 def remove_page():
@@ -42,20 +43,40 @@ def quiz_selection():
     session.pop("current_topic", None)
     session.pop("current_difficulty", None)
     session.pop("difficulty_range", None)
+    session.pop("max_difficulty", None)
+    session.pop("min_difficulty", None)
     session.pop("score", None)
+    session["max_difficulty"] = 0
+    session["min_difficulty"] = 10
 
     if request.method == "POST":
         topics_chosen = []
         if request.form.get("operations") is not None:
             topics_chosen.append("operations")
+            if session["max_difficulty"] < operations[1]:
+                session["max_difficulty"] = operations[1]
+            if session["min_difficulty"] > operations[0]:
+                session["min_difficulty"] = operations[0]
         if request.form.get("fractions") is not None:
             topics_chosen.append("fractions")
+            if session["max_difficulty"] < fractions[1]:
+                session["max_difficulty"] = fractions[1]
+            if session["min_difficulty"] > fractions[0]:
+                session["min_difficulty"] = fractions[0]
         if request.form.get("calculus") is not None:
             topics_chosen.append("calculus")
         if request.form.get("equations") is not None:
             topics_chosen.append("equations")
+            if session["max_difficulty"] < equations[1]:
+                session["max_difficulty"] = equations[1]
+            if session["min_difficulty"] > equations[0]:
+                session["min_difficulty"] = equations[0]
         if request.form.get("expressions") is not None:
             topics_chosen.append("expressions")
+            if session["max_difficulty"] < expressions[1]:
+                session["max_difficulty"] = expressions[1]
+            if session["min_difficulty"] > expressions[0]:
+                session["min_difficulty"] = expressions[0]
         if request.form.get("sequences") is not None:
             topics_chosen.append("sequences")
         if request.form.get("hcf_lcm") is not None:
@@ -67,6 +88,10 @@ def quiz_selection():
         if len(topics_chosen) == 0:
             flash("Please select a topic.", category="danger")
             # return redirect(url_for("quiz_selection"))
+        elif int(request.form.get("difficulty")) > session["max_difficulty"]:
+            flash("The difficulty selected is too high for the chosen topics.", category="danger")
+        elif int(request.form.get("difficulty")) < session["min_difficulty"]:
+            flash("The difficulty selected is too low for the chosen topics.", category="danger")
         else:
             session["topic_selection"] = topics_chosen
             session["current_difficulty"] = int(request.form.get("difficulty"))
@@ -206,13 +231,13 @@ def quiz_page():
                         flash("You must enter a number. Try again.", category="danger")
                         return redirect(url_for("quiz_page"))
 
-            if (answer == final_answer or (type(final_answer == list) and (len(final_answer) == 1 and answer == final_answer[0])) or
+            if (answer == final_answer or (type(final_answer) == list and (len(final_answer) == 1 and answer == final_answer[0])) or
                     (type(answer) == list and type(final_answer) == list and ((len(answer) == 2 and answer[0] == final_answer[0] and answer[1] == final_answer[1])
             or (len(answer) == 4 and (answer[0] == final_answer[0] and answer[1] == final_answer[0] or (answer[0] == final_answer[1] and answer[1] == final_answer[0]))
                 and (answer[2] == final_answer[2] and answer[3] == final_answer[3] or (answer[2] == final_answer[3] and answer[3] == final_answer[2])))))):
                 session["score"] += 1
                 print("Correct")
-                if session["current_difficulty"] < 10:
+                if session["current_difficulty"] < session["max_difficulty"]:
                     session["difficulty_range"] += ((session["final_difficulty_weighting"] - (session["current_difficulty"])) * 30)
                     if session["difficulty_range"] >= 100:
                         session["current_difficulty"]  += 1
@@ -222,7 +247,7 @@ def quiz_page():
                 flash(f"Well done! You got it right!", category="success")
             else:
                 print("Incorrect")
-                if session["current_difficulty"] > 1:
+                if session["current_difficulty"] > session["min_difficulty"]:
                     session["difficulty_range"] -= (
                             (difficulty_boundary - (
                                         session["final_difficulty_weighting"] - (session["current_difficulty"]))) * 30)

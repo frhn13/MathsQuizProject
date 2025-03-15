@@ -4,6 +4,7 @@ from .operations_generation import operations_question_generation
 from .fractions_generation import fractions_question_generation
 from .expressions_generation import expressions_question_generation
 from .equations_generation import equations_question_generation
+from .min_and_max_difficulties import *
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
 # ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
@@ -24,28 +25,68 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
         "difficulty_of_answer": [0, 0.15],  # Value of the answer
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
-    chosen_topic = random.choice(selected_topics)
-    match chosen_topic:
-        case "operations":
-            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "fractions":
-            question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "calculus":
-            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "equations":
-            question, answer, difficulty_weighting, multiple_answers = equations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "expressions":
-            question, answer, difficulty_weighting = expressions_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "sequences":
-            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "hcf_lcm":
-            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "percentages":
-            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case "triangles":
-            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
-        case _:
-            question, answer, difficulty_weighting = operations_question_generation(entered_difficulty, question_types, difficulty_factors)
+    is_topic_chosen = False
+    while not is_topic_chosen:
+        chosen_topic = random.choice(selected_topics)
+        match chosen_topic:
+            case "operations":
+                if operations[0] <= entered_difficulty <= operations[1]:
+                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                                                                                            question_types,
+                                                                                            difficulty_factors)
+                    is_topic_chosen = True
+            case "fractions":
+                print(fractions[0])
+                if fractions[0] <= entered_difficulty <= fractions[1]:
+                    question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty,
+                                                                                           question_types,
+                                                                                           difficulty_factors)
+                    is_topic_chosen = True
+            case "calculus":
+                if operations[0] <= entered_difficulty <= operations[1]:
+                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                                                                                            question_types,
+                                                                                            difficulty_factors)
+                    is_topic_chosen = True
+            case "equations":
+                if equations[0] <= entered_difficulty <= equations[1]:
+                    question, answer, difficulty_weighting, multiple_answers = equations_question_generation(
+                        entered_difficulty, question_types, difficulty_factors)
+                    is_topic_chosen = True
+            case "expressions":
+                if expressions[0] <= entered_difficulty <= expressions[1]:
+                    question, answer, difficulty_weighting = expressions_question_generation(entered_difficulty, question_types, difficulty_factors)
+                    is_topic_chosen = True
+            case "sequences":
+                if operations[0] <= entered_difficulty <= operations[1]:
+                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                                                                                            question_types,
+                                                                                            difficulty_factors)
+                    is_topic_chosen = True
+            case "hcf_lcm":
+                if operations[0] <= entered_difficulty <= operations[1]:
+                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                                                                                            question_types,
+                                                                                            difficulty_factors)
+                    is_topic_chosen = True
+            case "percentages":
+                if operations[0] <= entered_difficulty <= operations[1]:
+                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                                                                                            question_types,
+                                                                                            difficulty_factors)
+                    is_topic_chosen = True
+            case "triangles":
+                if operations[0] <= entered_difficulty <= operations[1]:
+                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                                                                                            question_types,
+                                                                                            difficulty_factors)
+                    is_topic_chosen = True
+            case _:
+                if operations[0] <= entered_difficulty <= operations[1]:
+                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                                                                                            question_types,
+                                                                                            difficulty_factors)
+                    is_topic_chosen = True
 
     return chosen_topic, question, answer, difficulty_weighting, multiple_answers
 
