@@ -1,11 +1,43 @@
 from quiz import app
 from flask import render_template, redirect, url_for, request, flash, session
 from sympy import sympify, factor, expand, simplify
+from flask_login import login_user, logout_user, login_required, current_user
 
 from .QuizCode.min_and_max_difficulties import operations, equations, expressions, fractions
-from quiz.forms import (AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm,
+from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm,
                         AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm)
 from .QuizCode.topic_manager import question_topic_selection
+from quiz.models import User, QuestionTopics, QuestionDifficulties
+from quiz import db
+
+@app.route("/register", methods=["GET", "POST"])
+def register_page():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        created_user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        db.session.add(created_user)
+        db.session.commit()
+        question_topics = QuestionTopics(user_id=created_user.id)
+        question_difficulties = QuestionDifficulties(user_id=created_user.id)
+        db.session.add(question_topics)
+        db.session.add(question_difficulties)
+        db.session.commit()
+        login_user(created_user)
+        flash("Account creation successful!", category="success")
+        return redirect(url_for("quiz_selection"))
+
+    return render_template("register.html", form=form)
+
+@app.route("/logout")
+@login_required
+def logout_page():
+    logout_user()
+    flash("You are now logged out.", category="info")
+    return redirect(url_for("register_page"))
+
+@app.route("/login")
+def login_page():
+    return redirect(url_for("quiz_selection"))
 
 @app.route("/remove")
 def remove_page():

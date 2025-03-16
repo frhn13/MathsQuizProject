@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, BooleanField, FloatField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms import StringField, SubmitField, IntegerField, BooleanField, FloatField, PasswordField
+from wtforms.validators import DataRequired, NumberRange, Email, Length, EqualTo
+import re
 
 class AnswerForm(FlaskForm):
     answer = StringField(label="Answer: ", validators=[DataRequired()])
@@ -39,3 +40,15 @@ class TopicsForm(FlaskForm):
 
 class RestartForm(FlaskForm):
     submit = SubmitField(label="Start New Quiz")
+
+class RegisterForm(FlaskForm):
+    username = StringField(label="Username:", validators=[DataRequired(), Length(4, 20)])
+    email = StringField(label="Email Address:", validators=[DataRequired(), Length(4, 40), Email()])
+    password = PasswordField(label="Password:", validators=[DataRequired(), Length(4, 20)])
+    confirm_password = PasswordField(label="Confirm Password:", validators=[DataRequired(), EqualTo("password")])
+    submit = SubmitField(label="Sign Up")
+
+class LoginForm(FlaskForm):
+    username = PasswordField(label="Username:", validators=[DataRequired(), Length(4, 20)])
+    password = PasswordField(label="Password:", validators=[DataRequired(), Length(4, 20)])
+    submit = SubmitField(label="Login")

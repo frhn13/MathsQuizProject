@@ -10,5 +10,7 @@ app.config["SECRET_KEY"] = "VerySecretKey" # Needed to display the form
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///maths_quiz.db"
 db = SQLAlchemy(app) # Creates database
 login_manager = LoginManager(app)
+login_manager.login_view = "login_page"
+login_manager.login_message_category = "warning"
 
 from quiz import views

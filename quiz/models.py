@@ -1,4 +1,5 @@
 from flask_login import UserMixin
+import bcrypt
 
 from quiz import db, login_manager
 
@@ -8,11 +9,16 @@ def load_user(user_id): # Needed for logging in users
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
-    username = db.Column(db.String(length=40), nullable=False, unique=True)
+    username = db.Column(db.String(length=20), nullable=False, unique=True)
     email = db.Column(db.String(length=40), nullable=False, unique=True)
     password = db.Column(db.String(length=30), nullable=False)
     question_topics = db.relationship("QuestionTopics")
     question_difficulties = db.relationship("QuestionDifficulties")
+
+    def __init__(self, username, email, password):
+        self.username = username
+        self.email = email
+        self.password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
 class QuestionTopics(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
@@ -53,7 +59,7 @@ class QuestionTopics(db.Model):
     triangles_wrong = db.Column(db.Integer(), default=0)
     triangles_percentage = db.Column(db.Float(), default=0.0)
 
-    user = db.Column(db.Integer(), db.ForeignKey("user.id"))
+    user_id = db.Column(db.Integer(), db.ForeignKey("user.id"), nullable=False)
 
 class QuestionDifficulties(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -98,4 +104,4 @@ class QuestionDifficulties(db.Model):
     level_ten_wrong = db.Column(db.Integer(), default=0)
     level_ten_percentage = db.Column(db.Float(), default=0.0)
 
-    user = db.Column(db.Integer(), db.ForeignKey("user.id"))
+    user_id = db.Column(db.Integer(), db.ForeignKey("user.id"), nullable=False)
