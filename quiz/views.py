@@ -1,15 +1,15 @@
-from quiz import app
 from flask import render_template, redirect, url_for, request, flash, session
 from sympy import sympify, factor, expand, simplify
 from flask_login import login_user, logout_user, login_required, current_user
 import bcrypt
 
+from quiz import app, db
 from .QuizCode.min_and_max_difficulties import operations, equations, expressions, fractions
 from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm,
                         AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm)
 from .QuizCode.topic_manager import question_topic_selection
 from quiz.models import User, QuestionTopics, QuestionDifficulties
-from quiz import db
+from quiz.update_results import update_topic_information, update_difficulty_information
 
 @app.route("/", methods=["GET", "POST"])
 @app.route("/register", methods=["GET", "POST"])
@@ -98,6 +98,8 @@ def quiz_selection():
     session.pop("max_difficulty", None)
     session.pop("min_difficulty", None)
     session.pop("score", None)
+    session.pop("difficulty_counter", None)
+    session.pop("topic_counter", None)
     session["max_difficulty"] = 0
     session["min_difficulty"] = 10
 
@@ -145,6 +147,20 @@ def quiz_selection():
         elif int(request.form.get("difficulty")) < session["min_difficulty"]:
             flash("The difficulty selected is too low for the chosen topics.", category="danger")
         else:
+            session["difficulty_counter"] = {
+                f"level_{x}": [0, 0] for x in range(1, 11)
+            }
+            session["topic_counter"] = {
+                "operations": [0, 0],
+                "expressions": [0, 0],
+                "equations": [0, 0],
+                "fractions": [0, 0],
+                "sequences": [0, 0],
+                "hcf_lcm": [0, 0],
+                "percentages": [0, 0],
+                "calculus": [0, 0],
+                "triangles": [0, 0],
+            }
             session["topic_selection"] = topics_chosen
             session["current_difficulty"] = int(request.form.get("difficulty"))
             session["number_of_questions"] = int(request.form.get("questions"))
@@ -188,7 +204,6 @@ def quiz_page():
         final_answer = session.get("final_answer")
         final_question = session.get("final_question")
         print(final_answer)
-        print(type(final_answer))
 
         if request.method == "POST":
             answer = 0
@@ -289,16 +304,27 @@ def quiz_page():
             or (len(answer) == 4 and (answer[0] == final_answer[0] and answer[1] == final_answer[0] or (answer[0] == final_answer[1] and answer[1] == final_answer[0]))
                 and (answer[2] == final_answer[2] and answer[3] == final_answer[3] or (answer[2] == final_answer[3] and answer[3] == final_answer[2])))))):
                 session["score"] += 1
+                session["topic_counter"][session["current_topic"]][0] += 1
+                difficulty_counter = session["difficulty_counter"]
+                difficulty_counter[f"level_{session['current_difficulty']}"][0] += 1
+                session["difficulty_counter"] = difficulty_counter
+
                 print("Correct")
                 if session["current_difficulty"] < session["max_difficulty"]:
                     session["difficulty_range"] += ((session["final_difficulty_weighting"] - (session["current_difficulty"])) * 30)
                     if session["difficulty_range"] >= 100:
-                        session["current_difficulty"]  += 1
+                        session["current_difficulty"] += 1
                         session["difficulty_range"] = 50
                 else:
                     session["difficulty_range"] = 50
                 flash(f"Well done! You got it right!", category="success")
             else:
+
+                session["topic_counter"][session["current_topic"]][1] += 1
+                difficulty_counter = session["difficulty_counter"]
+                difficulty_counter[f"level_{session['current_difficulty']}"][1] += 1
+                session["difficulty_counter"] = difficulty_counter
+
                 print("Incorrect")
                 if session["current_difficulty"] > session["min_difficulty"]:
                     session["difficulty_range"] -= (
@@ -323,6 +349,12 @@ def quiz_page():
             session.pop("current_topic", None)
 
             if session["question_number"] > session["number_of_questions"]:
+                print(session["topic_counter"])
+                print(session["difficulty_counter"])
+                update_topic_information(session["topic_counter"])
+                update_difficulty_information(session["difficulty_counter"])
+                # question_topics = QuestionTopics.query.filter_by(user_id=current_user.id).first()
+
                 return redirect(url_for("end_quiz"))
 
             return redirect(url_for("quiz_page"))
