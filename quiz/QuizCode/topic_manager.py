@@ -36,7 +36,6 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             difficulty_factors)
                     is_topic_chosen = True
             case "fractions":
-                print(fractions[0])
                 if fractions[0] <= entered_difficulty <= fractions[1]:
                     question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty,
                                                                                            question_types,
@@ -55,7 +54,9 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                     is_topic_chosen = True
             case "expressions":
                 if expressions[0] <= entered_difficulty <= expressions[1]:
-                    question, answer, difficulty_weighting = expressions_question_generation(entered_difficulty, question_types, difficulty_factors)
+                    question, answer, difficulty_weighting = expressions_question_generation(entered_difficulty,
+                                                                                             question_types,
+                                                                                             difficulty_factors)
                     is_topic_chosen = True
             case "sequences":
                 if operations[0] <= entered_difficulty <= operations[1]:
