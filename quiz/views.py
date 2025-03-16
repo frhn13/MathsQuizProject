@@ -2,6 +2,7 @@ from quiz import app
 from flask import render_template, redirect, url_for, request, flash, session
 from sympy import sympify, factor, expand, simplify
 from flask_login import login_user, logout_user, login_required, current_user
+import bcrypt
 
 from .QuizCode.min_and_max_difficulties import operations, equations, expressions, fractions
 from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm,
@@ -10,23 +11,27 @@ from .QuizCode.topic_manager import question_topic_selection
 from quiz.models import User, QuestionTopics, QuestionDifficulties
 from quiz import db
 
+@app.route("/", methods=["GET", "POST"])
 @app.route("/register", methods=["GET", "POST"])
 def register_page():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        created_user = User(username=form.username.data, email=form.email.data, password=form.password.data)
-        db.session.add(created_user)
-        db.session.commit()
-        question_topics = QuestionTopics(user_id=created_user.id)
-        question_difficulties = QuestionDifficulties(user_id=created_user.id)
-        db.session.add(question_topics)
-        db.session.add(question_difficulties)
-        db.session.commit()
-        login_user(created_user)
-        flash("Account creation successful!", category="success")
-        return redirect(url_for("quiz_selection"))
+    if current_user.is_anonymous:
+        form = RegisterForm()
+        if form.validate_on_submit():
+            created_user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+            db.session.add(created_user)
+            db.session.commit()
+            question_topics = QuestionTopics(user_id=created_user.id)
+            question_difficulties = QuestionDifficulties(user_id=created_user.id)
+            db.session.add(question_topics)
+            db.session.add(question_difficulties)
+            db.session.commit()
+            login_user(created_user)
+            flash("Account creation successful!", category="success")
+            return redirect(url_for("quiz_selection"))
 
-    return render_template("register.html", form=form)
+        return render_template("register.html", form=form)
+    else:
+        return redirect(url_for("quiz_selection"))
 
 @app.route("/logout")
 @login_required
@@ -35,9 +40,22 @@ def logout_page():
     flash("You are now logged out.", category="info")
     return redirect(url_for("register_page"))
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login_page():
-    return redirect(url_for("quiz_selection"))
+    if current_user.is_anonymous:
+        form = LoginForm()
+        if form.validate_on_submit():
+            user_logging_in = User.query.filter_by(username=form.username.data).first()
+            if user_logging_in and bcrypt.checkpw(form.password.data.encode("utf-8"), user_logging_in.password):
+                login_user(user_logging_in)
+                flash("Login successful!", category="success")
+                return redirect(url_for("quiz_selection"))
+            else:
+                flash("Your login details are invalid.", category="danger")
+                return redirect(url_for("login_page"))
+        return render_template("login.html", form=form)
+    else:
+        return redirect(url_for("quiz_selection"))
 
 @app.route("/remove")
 def remove_page():
@@ -52,6 +70,7 @@ def remove_page():
     return redirect(url_for("quiz_selection"))
 
 @app.route("/end-quiz", methods=["GET", "POST"])
+@login_required
 def end_quiz():
     form = RestartForm()
     if request.method == "POST":
@@ -60,8 +79,9 @@ def end_quiz():
     score = session.get("score")
     return render_template("end_quiz.html", form=form, number_of_questions=number_of_questions, score=score)
 
-@app.route("/", methods=["GET", "POST"])
+
 @app.route("/quiz-selection", methods=["GET", "POST"])
+@login_required
 def quiz_selection():
     form = TopicsForm()
 
@@ -138,6 +158,7 @@ def quiz_selection():
 
 
 @app.route("/quiz", methods=["GET", "POST"])
+@login_required
 def quiz_page():
     if "topic_selection" not in session:
         flash("You must make a quiz before starting one.", category="danger")
