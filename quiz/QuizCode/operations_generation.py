@@ -27,7 +27,7 @@ def operations_question_generation(entered_difficulty: int, question_types: list
         else:
             operations = [random.choice(["+", "-", "*"]) for x in range(number_of_values - 1)]
 
-        numbers = [random.randint(1, 200) for x in range(number_of_values)]
+        numbers = random.sample(range(1, 201), number_of_values) # Chooses series of unique numbers from 1 - 200
         question = ""
         for x in range(0, len(numbers)):
             question += str(numbers[x])

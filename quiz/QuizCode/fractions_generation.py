@@ -33,6 +33,8 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                 decimal_value = num1 / num2
                 percentage_value = (num1 / num2) * 100
                 convert = random.choice(["/ to .", "/ to %", "% to /", ". to /"])
+                print(num1)
+                print(num2)
 
                 if round(decimal_value, 1) != decimal_value:
                     difficulty_factors["difficulty_of_answer"][0] += 1
@@ -47,7 +49,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                                                                                   difficulty_factors)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
                         decimal_str = str(decimal_value)
-                        if percentage_value.is_integer()  and final_difficulty == entered_difficulty and num1 < num2:
+                        if percentage_value.is_integer()  and final_difficulty == entered_difficulty and num1 != num2:
                             break
                     case "/ to %":
                         difficulty_factors["number_of_steps"][0] += 2
@@ -56,7 +58,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         answers, difficulty_factors = answer_generation(int(answer), question_type_chosen,
                                                                                  difficulty_factors)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                        if percentage_value.is_integer() and final_difficulty == entered_difficulty:
+                        if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 != num2:
                             answer = int(percentage_value)
                             break
                     case ". to /":
@@ -69,7 +71,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
                                                                                  difficulty_factors)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                        if percentage_value.is_integer() and final_difficulty == entered_difficulty:
+                        if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 != num2:
                             break
                     case "% to /":
                         difficulty_factors["number_of_steps"][0] += 2
@@ -81,7 +83,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
                                                                                  difficulty_factors)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                        if percentage_value.is_integer() and final_difficulty == entered_difficulty:
+                        if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 != num2:
                             break
                     case _:
                         pass
