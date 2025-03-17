@@ -4,6 +4,7 @@ from .operations_generation import operations_question_generation
 from .fractions_generation import fractions_question_generation
 from .expressions_generation import expressions_question_generation
 from .equations_generation import equations_question_generation
+from .percentages_generation import percentages_question_generation
 from .min_and_max_difficulties import *
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
@@ -71,8 +72,8 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             difficulty_factors)
                     is_topic_chosen = True
             case "percentages":
-                if operations[0] <= entered_difficulty <= operations[1]:
-                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                if percentages[0] <= entered_difficulty <= percentages[1]:
+                    question, answer, difficulty_weighting = percentages_question_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True
@@ -105,14 +106,13 @@ def sequences_question_generation():
 def hcf_lcm_prime_factors():
     pass
 
-# Compound interest, regular interest, reverse percentages, numbers as percentages, percentages of amounts
-def percentages_question_generation():
-    pass
-
 def probability_question_generation():
     pass
 
 def calculus_question_generation():
+    pass
+
+def triangles_question_generation():
     pass
 
 difficulty_factors = {

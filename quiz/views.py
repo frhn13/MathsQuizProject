@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 import bcrypt
 
 from quiz import app, db
-from .QuizCode.min_and_max_difficulties import operations, equations, expressions, fractions
+from .QuizCode.min_and_max_difficulties import *
 from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm,
                         AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm)
 from .QuizCode.topic_manager import question_topic_selection
@@ -137,6 +137,10 @@ def quiz_selection():
             topics_chosen.append("hcf_lcm")
         if request.form.get("percentages") is not None:
             topics_chosen.append("percentages")
+            if session["max_difficulty"] < percentages[1]:
+                session["max_difficulty"] = percentages[1]
+            if session["min_difficulty"] > percentages[0]:
+                session["min_difficulty"] = percentages[0]
         if request.form.get("triangles") is not None:
             topics_chosen.append("triangles")
         if len(topics_chosen) == 0:

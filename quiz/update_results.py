@@ -35,7 +35,6 @@ def update_topic_information(topic_counter : dict):
 
         db.session.commit()
 
-        # question_topics = QuestionTopics.query.filter_by(user_id=current_user.id).first()
         question_topics.operations_percentage = question_topics.operations_right / (question_topics.operations_right + question_topics.operations_wrong) if (question_topics.operations_right + question_topics.operations_wrong) != 0 else 0
         question_topics.fractions_percentage = question_topics.fractions_right / (question_topics.fractions_right + question_topics.fractions_wrong) if (question_topics.fractions_right + question_topics.fractions_wrong) != 0 else 0
         question_topics.calculus_percentage = question_topics.calculus_right / (question_topics.calculus_right + question_topics.calculus_wrong) if (question_topics.calculus_right + question_topics.calculus_wrong) != 0 else 0
@@ -84,7 +83,6 @@ def update_difficulty_information(difficulty_counter : dict):
 
         db.session.commit()
 
-        # question_difficulties = QuestionDifficulties.query.filter_by(user_id=current_user.id).first()
         question_difficulties.level_one_percentage = (question_difficulties.level_one_right /
                                                       (question_difficulties.level_one_right + question_difficulties.level_one_wrong)) \
             if (question_difficulties.level_one_right + question_difficulties.level_one_wrong) != 0 else 0
