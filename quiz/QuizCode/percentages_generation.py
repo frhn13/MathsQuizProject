@@ -2,7 +2,6 @@ import random
 
 from .helper_functions import answer_generation, calculate_difficulty, answer_generation_decimals
 
-
 # Compound interest, regular interest, reverse percentages, numbers as percentages, percentages of amounts
 def percentages_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     answer = 0

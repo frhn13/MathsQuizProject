@@ -5,6 +5,7 @@ from .fractions_generation import fractions_question_generation
 from .expressions_generation import expressions_question_generation
 from .equations_generation import equations_question_generation
 from .percentages_generation import percentages_question_generation
+from .sequences_generation import sequences_question_generation
 from .min_and_max_difficulties import *
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
@@ -60,8 +61,8 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                              difficulty_factors)
                     is_topic_chosen = True
             case "sequences":
-                if operations[0] <= entered_difficulty <= operations[1]:
-                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                if sequences[0] <= entered_difficulty <= sequences[1]:
+                    question, answer, difficulty_weighting = sequences_question_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True
@@ -99,10 +100,6 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
 # Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
 # Difficulty of values used: How big values used are, whether final answer is whole number
 
-# Linear, quadratic, geometric sequences
-def sequences_question_generation():
-    pass
-
 def hcf_lcm_prime_factors():
     pass
 
@@ -114,14 +111,3 @@ def calculus_question_generation():
 
 def triangles_question_generation():
     pass
-
-difficulty_factors = {
-        "maths_topic": [0, 0.2],  # Topic being tested
-        "question_type": [0, 0.1],  # Free-text, multiple choice, True/False
-        "answers_similarity": [0, 0.15],  # Similarity of potential answers in MCQs
-        "difficulty_of_values": [0, 0.15],  # Values used in the question
-        "number_of_steps": [0, 0.1],  # Steps needed to find answer
-        "depth_of_knowledge": [0, 0.1],  # Extra information needed to answer question, like formulae, certain values
-        "difficulty_of_answer": [0, 0.15],  # Value of the answer
-        "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
-    }

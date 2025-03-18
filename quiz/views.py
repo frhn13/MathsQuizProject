@@ -133,6 +133,10 @@ def quiz_selection():
                 session["min_difficulty"] = expressions[0]
         if request.form.get("sequences") is not None:
             topics_chosen.append("sequences")
+            if session["max_difficulty"] < sequences[1]:
+                session["max_difficulty"] = sequences[1]
+            if session["min_difficulty"] > sequences[0]:
+                session["min_difficulty"] = sequences[0]
         if request.form.get("hcf_lcm") is not None:
             topics_chosen.append("hcf_lcm")
         if request.form.get("percentages") is not None:
