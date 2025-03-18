@@ -109,5 +109,6 @@ def probability_question_generation():
 def calculus_question_generation():
     pass
 
+# Angles in triangle. area and perimeter, pythagoras, SOHCAHTOA (trig), sine and cosine rule
 def triangles_question_generation():
     pass
