@@ -4,8 +4,6 @@ from .helper_functions import answer_generation, calculate_difficulty
 
 # BIDMAS
 def operations_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
-
-    question_type_chosen = random.choice(question_types)
     have_division_chance = random.random()
     difficulty_weighting = 0
     question = ""
@@ -14,6 +12,7 @@ def operations_question_generation(entered_difficulty: int, question_types: list
     answer = 0
 
     while True:
+        question_type_chosen = random.choice(question_types)
         difficulty_factors["maths_topic"][0] = 0
         difficulty_factors["difficulty_of_values"][0] = 1
         difficulty_factors["depth_of_knowledge"][0] = 1

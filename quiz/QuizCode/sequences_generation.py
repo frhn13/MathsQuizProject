@@ -91,4 +91,4 @@ difficulty_factors = {
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
 
-sequences_question_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
+# sequences_question_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)

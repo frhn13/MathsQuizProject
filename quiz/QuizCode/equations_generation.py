@@ -3,7 +3,6 @@ from .helper_functions import generate_equation, answer_generation_equations, ca
 
 # Linear equations, quadratic equations, quadratic formula, completing the square, simultaneous equations, quadratic simultaneous equations, inequalities, quadratic inequalities
 def equations_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
-    question_type_chosen = random.choice(question_types)
     question_type_chosen = "free_text"
     question = ""
     answer = []
@@ -11,6 +10,7 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
     multiple_answers = "No"
     while True:
         equation_type = random.choice(["linear", "whole_quadratic", "floating_quadratic", "linear_simultaneous"])
+        question_type_chosen = random.choice(question_types)
         if entered_difficulty >= 8:
             equation_type = "quadratic_simultaneous"
 

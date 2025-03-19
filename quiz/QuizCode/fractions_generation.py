@@ -5,7 +5,6 @@ from .helper_functions import answer_generation_decimals, answer_generation, ans
 
 # Fraction conversion, fraction operations, algebraic fractions, surds
 def fractions_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
-    question_type_chosen = random.choice(question_types)
     # fractions_topic = random.choice(["conversion", "operations", "algebra", "surds"])
     is_division = random.random()
     fractions_topic = "algebra"
@@ -18,6 +17,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
 
     while True:
         fractions_topic = random.choice(["conversion", "operations", "algebra"])
+        question_type_chosen = random.choice(question_types)
         match fractions_topic:
             case "conversion":
                 difficulty_factors["maths_topic"][0] = 1
