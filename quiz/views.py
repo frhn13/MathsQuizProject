@@ -1,7 +1,11 @@
-from flask import render_template, redirect, url_for, request, flash, session
+import matplotlib
+# matplotlib.use('Agg')  # Use a backend that doesn't require the main thread
+import matplotlib.pyplot as plt
+from flask import render_template, redirect, url_for, request, flash, session, send_file
 from sympy import sympify, factor, expand, simplify
 from flask_login import login_user, logout_user, login_required, current_user
 import bcrypt
+from io import BytesIO
 
 from quiz import app, db
 from .QuizCode.min_and_max_difficulties import *
@@ -100,6 +104,8 @@ def quiz_selection():
     session.pop("score", None)
     session.pop("difficulty_counter", None)
     session.pop("topic_counter", None)
+    session.pop("image_values", None)
+    session.pop("image_added", None)
     session["max_difficulty"] = 0
     session["min_difficulty"] = 10
 
@@ -147,6 +153,10 @@ def quiz_selection():
                 session["min_difficulty"] = percentages[0]
         if request.form.get("triangles") is not None:
             topics_chosen.append("triangles")
+            if session["max_difficulty"] < triangles[1]:
+                session["max_difficulty"] = triangles[1]
+            if session["min_difficulty"] > triangles[0]:
+                session["min_difficulty"] = triangles[0]
         if len(topics_chosen) == 0:
             flash("Please select a topic.", category="danger")
             # return redirect(url_for("quiz_selection"))
@@ -180,6 +190,104 @@ def quiz_selection():
 
     return render_template("quiz_selection.html", form=form)
 
+@app.route("/image")
+def get_image():
+    point_a = session["image_values"].get("point_a")
+    point_b = session["image_values"].get("point_b")
+    point_c = session["image_values"].get("point_c")
+    length_a = session["image_values"].get("length_a")
+    length_b = session["image_values"].get("length_b")
+    length_c = session["image_values"].get("length_c")
+    angle_a = session["image_values"].get("angle_a")
+    angle_b = session["image_values"].get("angle_b")
+    angle_c = session["image_values"].get("angle_c")
+    question_topic = session["image_values"].get("question_topic")
+    question_subtopic = session["image_values"].get("question_subtopic")
+
+    print(f"{question_topic} {question_subtopic}")
+
+    x_coordinates = [point_a[0], point_b[0], point_c[0], point_a[0]]
+    y_coordinates = [point_a[1], point_b[1], point_c[1], point_a[1]]
+
+    plt.figure(figsize=(20, 8))
+
+    if question_topic == "pythagoras":
+        if question_subtopic == "missing_side":
+            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+        else:
+            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, "x")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+    elif question_topic == "trigonometry":
+        if question_subtopic == "missing_side":
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x")
+        else:
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+    elif question_topic == "sine_cosine_area":
+        if question_subtopic == "sine_side":
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x")
+        elif question_subtopic == "sine_angle":
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+        elif question_subtopic == "cosine_side":
+            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+        elif question_subtopic == "cosine_angle":
+            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+        elif question_subtopic == "area":
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+
+    else:
+        plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm")
+        plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
+        plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+
+    if question_topic == "simple_angles":
+        plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
+        plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
+        plt.text(point_c[0], point_c[1], "x")
+    elif question_topic == "trigonometry":
+        if question_subtopic == "missing_side":
+            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
+            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
+        else:
+            plt.text(point_a[0], point_a[1], "x")
+            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
+    elif question_topic == "sine_cosine_area":
+        if question_subtopic == "sine_side":
+            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
+            plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°")
+        elif question_subtopic == "sine_angle":
+            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
+            plt.text(point_c[0], point_c[1], "x")
+        elif question_subtopic == "cosine_side":
+            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
+        elif question_subtopic == "cosine_angle":
+            plt.text(point_a[0], point_a[1], "x")
+        elif question_subtopic == "area":
+            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
+    else:
+        plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
+        plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
+        plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°")
+
+    plt.gca().set_aspect("equal", adjustable="box")
+    plt.axis("off")
+    plt.plot(x_coordinates, y_coordinates, color="blue", linestyle="-", marker=".")
+    triangle_img = BytesIO()
+    plt.savefig(triangle_img, format="png")
+    triangle_img.seek(0)
+    plt.close()
+    return send_file(triangle_img, mimetype="image/png")
 
 @app.route("/quiz", methods=["GET", "POST"])
 @login_required
@@ -191,7 +299,7 @@ def quiz_page():
         form = AnswerForm()
         difficulty_boundary = 30
         if "final_answer" not in session:
-            topic, question, answer, difficulty_weighting, multiple_answers = question_topic_selection(
+            topic, question, answer, difficulty_weighting, multiple_answers, image_values = question_topic_selection(
                 session.get("topic_selection"), int(session.get("current_difficulty")),
     ["free_text", "multiple-choice", "true/false"])
             session["current_topic"] = topic
@@ -199,6 +307,12 @@ def quiz_page():
             session["final_question"] = question
             session["final_difficulty_weighting"] = difficulty_weighting
             session["multiple_answers"] = multiple_answers
+            if image_values is not None:
+                session["image_values"] = image_values
+                session["image_added"] = True
+            else:
+                session.pop("image_values", None)
+                session.pop("image_added", None)
 
         if session["multiple_answers"] == "No":
             form = AnswerForm()
@@ -371,6 +485,7 @@ def quiz_page():
         score = session.get("score")
         question_number = session.get("question_number")
         multiple_answers = session.get("multiple_answers")
+        image_added = session.get("image_added")
         return render_template("quiz.html", form=form, final_question=final_question,
                                current_difficulty=current_difficulty, score=score, question_number=question_number,
-                               multiple_answers=multiple_answers)
+                               multiple_answers=multiple_answers, image_added=image_added)

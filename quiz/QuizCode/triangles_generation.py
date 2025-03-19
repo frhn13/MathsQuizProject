@@ -1,23 +1,27 @@
 from io import BytesIO
+import matplotlib
+matplotlib.use('Agg')  # Use a backend that doesn't require the main thread
 import matplotlib.pyplot as plt
 import random
 from numpy import sqrt, degrees, rad2deg
 from numpy.ma.core import arccos, sin
 
-from helper_functions import calculate_difficulty, answer_generation
+from .helper_functions import calculate_difficulty, answer_generation
 
 # Angles in triangle, area and perimeter, pythagoras, SOHCAHTOA (trig), sine and cosine rule
 def triangles_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     answer = 0
     question = ""
+    triangle_img = None
     while True:
         question_type_chosen = random.choice(question_types)
         question_topic_chosen = random.choice(["simple_area_perimeter", "simple_angles", "pythagoras", "trigonometry", "sine_cosine_area"])
+        question_subtopic = ""
 
         match question_topic_chosen:
             case "simple_area_perimeter":
                 point_a, point_b, point_c = generate_right_angled_triangle()
-                triangle_img, x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(point_a, point_b, point_c, question_topic_chosen, "")
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(point_a, point_b, point_c)
                 if random.random() > 0.5:
                     question = "What is the perimeter of this triangle? Answer to the nearest whole number."
                     answer = length_a + length_b + length_c
@@ -26,29 +30,29 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                     answer = 0.5 * length_a * length_c
             case "simple_angles":
                 point_a, point_b, point_c = generate_triangle()
-                triangle_img, x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
-            point_a, point_b, point_c, question_topic_chosen, "")
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
+            point_a, point_b, point_c)
                 question = "What is x? Answer to the nearest whole number."
                 answer = angle_c
             case "pythagoras":
                 question_subtopic = "missing_side" if random.random() > 0.5 else "missing_hypotenuse"
                 point_a, point_b, point_c = generate_right_angled_triangle()
-                triangle_img, x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
-                    point_a, point_b, point_c, question_topic_chosen, question_subtopic)
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
+                    point_a, point_b, point_c)
                 question = "What is x? Answer to the nearest whole number."
                 answer = length_a if question_subtopic == "missing_side" else length_b
             case "trigonometry":
                 question_subtopic = random.choice(["missing_side", "missing_angle"])
                 point_a, point_b, point_c = generate_right_angled_triangle()
-                triangle_img, x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
-                    point_a, point_b, point_c, question_topic_chosen, question_subtopic)
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
+                    point_a, point_b, point_c)
                 question = "What is x? Answer to the nearest whole number."
                 answer = angle_a if question_subtopic == "missing_angle" else length_c
             case "sine_cosine_area":
                 question_subtopic = random.choice(["sine_side", "sine_angle", "cosine_side", "cosine_angle", "area"])
                 point_a, point_b, point_c = generate_triangle()
-                triangle_img, x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
-                    point_a, point_b, point_c, question_topic_chosen, question_subtopic)
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
+                    point_a, point_b, point_c)
                 match question_subtopic:
                     case "sine_side":
                         answer = length_c
@@ -63,7 +67,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 question = "What is the area of this triangle? Answer to the nearest whole number." if question_subtopic == "area" else "What is x? Answer to the nearest whole number."
             case _:
                 pass
-        answer = int(answer)
+        answer = int(round(answer, 0))
         answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
@@ -72,9 +76,23 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
             print(difficulty_weighting)
             break
 
+    image_values = {
+        "point_a": point_a,
+        "point_b": point_b,
+        "point_c": point_c,
+        "length_a": length_a,
+        "length_b": length_b,
+        "length_c": length_c,
+        "angle_a": angle_a,
+        "angle_b": angle_b,
+        "angle_c": angle_c,
+        "question_topic": question_topic_chosen,
+        "question_subtopic": question_subtopic
+    }
+
     match question_type_chosen:
         case "free_text":
-            question = f"What is {question}?"
+            question = question
         case "multiple-choice":
             question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
         case "true/false":
@@ -86,7 +104,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
         case _:
             pass
 
-    return question, answer, difficulty_weighting
+    return question, answer, difficulty_weighting, image_values
 
 def generate_triangle():
     while True:
@@ -113,7 +131,7 @@ def generate_right_angled_triangle():
 
     return point_a, point_b, point_c
 
-def draw_triangle(point_a, point_b, point_c, question_topic, question_subtopic):
+def draw_triangle(point_a, point_b, point_c):
     x_coordinates = [point_a[0], point_b[0], point_c[0], point_a[0]]
     y_coordinates = [point_a[1], point_b[1], point_c[1], point_a[1]]
 
@@ -124,97 +142,15 @@ def draw_triangle(point_a, point_b, point_c, question_topic, question_subtopic):
     angle_a = arccos((length_b ** 2 + length_c ** 2 - length_a ** 2) / (2 * length_b * length_c))
     angle_b = arccos((length_a ** 2 + length_c ** 2 - length_b ** 2) / (2 * length_a * length_c))
     angle_c = arccos((length_a ** 2 + length_b ** 2 - length_c ** 2) / (2 * length_a * length_b))
-    angle_a = degrees(angle_a)
-    angle_b = degrees(angle_b)
-    angle_c = degrees(angle_c)
 
     perimeter = length_c + length_b + length_a
     area = 0.5 * length_a * length_b * sin(angle_c)
 
-    if question_topic == "pythagoras":
-        if question_subtopic == "missing_side":
-            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x")
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
-        else:
-            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm")
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, "x")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
-    elif question_topic == "trigonometry":
-        if question_subtopic == "missing_side":
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x")
-        else:
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
-    elif question_topic == "sine_cosine_area":
-        if question_subtopic == "sine_side":
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x")
-        elif question_subtopic == "sine_angle":
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
-        elif question_subtopic == "cosine_side":
-            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x")
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
-        elif question_subtopic == "cosine_angle":
-            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm")
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
-        elif question_subtopic == "area":
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+    angle_a = degrees(angle_a)
+    angle_b = degrees(angle_b)
+    angle_c = degrees(angle_c)
 
-    else:
-        plt.text((point_b[0] + point_c[0])/2, (point_b[1] + point_c[1])/2, f"Side a = {length_a:.2f}cm")
-        plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-        plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
-
-    if question_topic == "simple_angles":
-        plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
-        plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-        plt.text(point_c[0], point_c[1], "x")
-    elif question_topic == "trigonometry":
-        if question_subtopic == "missing_side":
-            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
-            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-        else:
-            plt.text(point_a[0], point_a[1], "x")
-            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-    elif question_topic == "sine_cosine_area":
-        if question_subtopic == "sine_side":
-            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-            plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°")
-        elif question_subtopic == "sine_angle":
-            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-            plt.text(point_c[0], point_c[1], "x")
-        elif question_subtopic == "cosine_side":
-            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
-        elif question_subtopic == "cosine_angle":
-            plt.text(point_a[0], point_a[1], "x")
-        elif question_subtopic == "area":
-            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
-    else:
-        plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
-        plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-        plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°")
-
-    plt.gca().set_aspect("equal", adjustable="box")
-
-    print(question_topic)
-    print(f"{angle_a}, {angle_b}, {angle_c}")
-
-    plt.plot(x_coordinates, y_coordinates, color="blue", linestyle="-", marker=".")
-
-    triangle_img = BytesIO()
-    plt.savefig(triangle_img, format="png")
-    triangle_img.seek(0)
-    plt.show()
-    return triangle_img, x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area
-
-#a, b, c = generate_triangle()
-#draw_triangle(a, b, c, "sine_cosine_area", "area")
+    return x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested
@@ -227,7 +163,4 @@ difficulty_factors = {
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
 
-question, answer, difficulty_weighting = triangles_question_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
-
-print(question)
-print(answer)
+# question, answer, difficulty_weighting, img = triangles_question_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
