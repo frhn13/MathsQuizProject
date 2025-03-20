@@ -208,8 +208,8 @@ def answer_generation(real_answer : int, question_type : str, difficulty_factors
 
     elif question_type == "multiple-choice":
         difficulty_factors["question_type"][0] = 5
-        difficulty_factors["answers_similarity"][0] = 6
         while True:
+            difficulty_factors["answers_similarity"][0] = 6
             answers = []
             for i in range(3):
                 answers.append(random.randint(real_answer - 20, real_answer + 20))
@@ -222,7 +222,7 @@ def answer_generation(real_answer : int, question_type : str, difficulty_factors
 
     elif question_type == "true/false":
         difficulty_factors["question_type"][0] = 2
-        difficulty_factors["answers_similarity"][0] = 5
+        difficulty_factors["answers_similarity"][0] = 4
         if random.random() > 0.5:
             answers = [random.randint(real_answer - 20, real_answer + 20)]
             if abs(answers[0] - real_answer) >= 10:

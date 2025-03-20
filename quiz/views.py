@@ -1,5 +1,5 @@
 import matplotlib
-# matplotlib.use('Agg')  # Use a backend that doesn't require the main thread
+matplotlib.use('Agg')  # Use a backend that doesn't require the main thread
 import matplotlib.pyplot as plt
 from flask import render_template, redirect, url_for, request, flash, session, send_file
 from sympy import sympify, factor, expand, simplify
@@ -209,76 +209,76 @@ def get_image():
     x_coordinates = [point_a[0], point_b[0], point_c[0], point_a[0]]
     y_coordinates = [point_a[1], point_b[1], point_c[1], point_a[1]]
 
-    plt.figure(figsize=(20, 8))
+    plt.figure(figsize=(30, 20))
 
     if question_topic == "pythagoras":
         if question_subtopic == "missing_side":
-            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x")
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x", fontsize="20")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
         else:
-            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm")
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, "x")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm", fontsize="20")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, "x", fontsize="20")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
     elif question_topic == "trigonometry":
         if question_subtopic == "missing_side":
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x", fontsize="20")
         else:
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
     elif question_topic == "sine_cosine_area":
         if question_subtopic == "sine_side":
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x", fontsize="20")
         elif question_subtopic == "sine_angle":
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
         elif question_subtopic == "cosine_side":
-            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x")
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x", fontsize="20")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
         elif question_subtopic == "cosine_angle":
-            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm")
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+            plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm", fontsize="20")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
         elif question_subtopic == "area":
-            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+            plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
+            plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
 
     else:
-        plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm")
-        plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm")
-        plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm")
+        plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm", fontsize="20")
+        plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
+        plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
 
     if question_topic == "simple_angles":
-        plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
-        plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-        plt.text(point_c[0], point_c[1], "x")
+        plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
+        plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
+        plt.text(point_c[0], point_c[1], "x", fontsize="20")
     elif question_topic == "trigonometry":
         if question_subtopic == "missing_side":
-            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
-            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
+            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
+            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
         else:
-            plt.text(point_a[0], point_a[1], "x")
-            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
+            plt.text(point_a[0], point_a[1], "x", fontsize="20")
+            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
     elif question_topic == "sine_cosine_area":
         if question_subtopic == "sine_side":
-            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-            plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°")
+            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
+            plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°", fontsize="20")
         elif question_subtopic == "sine_angle":
-            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-            plt.text(point_c[0], point_c[1], "x")
+            plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
+            plt.text(point_c[0], point_c[1], "x", fontsize="20")
         elif question_subtopic == "cosine_side":
-            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
+            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
         elif question_subtopic == "cosine_angle":
-            plt.text(point_a[0], point_a[1], "x")
+            plt.text(point_a[0], point_a[1], "x", fontsize="20")
         elif question_subtopic == "area":
-            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
+            plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
     else:
-        plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°")
-        plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°")
-        plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°")
+        plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
+        plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
+        plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°", fontsize="20")
 
     plt.gca().set_aspect("equal", adjustable="box")
     plt.axis("off")

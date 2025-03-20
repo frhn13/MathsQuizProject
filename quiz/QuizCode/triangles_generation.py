@@ -1,10 +1,6 @@
-from io import BytesIO
-import matplotlib
-matplotlib.use('Agg')  # Use a backend that doesn't require the main thread
-import matplotlib.pyplot as plt
 import random
 from numpy import sqrt, degrees, rad2deg
-from numpy.ma.core import arccos, sin
+from numpy.ma.core import arccos, sin, masked
 
 from .helper_functions import calculate_difficulty, answer_generation
 
@@ -12,7 +8,6 @@ from .helper_functions import calculate_difficulty, answer_generation
 def triangles_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     answer = 0
     question = ""
-    triangle_img = None
     while True:
         question_type_chosen = random.choice(question_types)
         question_topic_chosen = random.choice(["simple_area_perimeter", "simple_angles", "pythagoras", "trigonometry", "sine_cosine_area"])
@@ -20,28 +15,55 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
 
         match question_topic_chosen:
             case "simple_area_perimeter":
+                difficulty_factors["maths_topic"][0] = 2
+                difficulty_factors["difficulty_of_values"][0] = 2
+                difficulty_factors["depth_of_knowledge"][0] = 2
+                difficulty_factors["multiple_topics"][0] = 2
+                difficulty_factors["difficulty_of_answer"][0] = 2
+                difficulty_factors["number_of_steps"][0] = 2
                 point_a, point_b, point_c = generate_right_angled_triangle()
                 x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(point_a, point_b, point_c)
                 if random.random() > 0.5:
                     question = "What is the perimeter of this triangle? Answer to the nearest whole number."
-                    answer = length_a + length_b + length_c
+                    answer = perimeter
                 else:
                     question = "What is the area of this triangle? Answer to the nearest whole number."
-                    answer = 0.5 * length_a * length_c
+                    answer = area
             case "simple_angles":
+                difficulty_factors["maths_topic"][0] = 3
+                difficulty_factors["difficulty_of_values"][0] = 2
+                difficulty_factors["depth_of_knowledge"][0] = 3
+                difficulty_factors["multiple_topics"][0] = 3
+                difficulty_factors["difficulty_of_answer"][0] = 2
+                difficulty_factors["number_of_steps"][0] = 2
                 point_a, point_b, point_c = generate_triangle()
                 x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
             point_a, point_b, point_c)
                 question = "What is x? Answer to the nearest whole number."
                 answer = angle_c
             case "pythagoras":
+                difficulty_factors["maths_topic"][0] = 4
+                difficulty_factors["difficulty_of_values"][0] = 3
+                difficulty_factors["depth_of_knowledge"][0] = 4
+                difficulty_factors["multiple_topics"][0] = 4
+                difficulty_factors["difficulty_of_answer"][0] = 3
+                difficulty_factors["number_of_steps"][0] = 5
                 question_subtopic = "missing_side" if random.random() > 0.5 else "missing_hypotenuse"
                 point_a, point_b, point_c = generate_right_angled_triangle()
                 x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
                     point_a, point_b, point_c)
                 question = "What is x? Answer to the nearest whole number."
                 answer = length_a if question_subtopic == "missing_side" else length_b
+                if question_subtopic == "missing_side":
+                    difficulty_factors["difficulty_of_values"][0] += 1
+                    difficulty_factors["difficulty_of_answer"][0] += 1
             case "trigonometry":
+                difficulty_factors["maths_topic"][0] = 5
+                difficulty_factors["difficulty_of_values"][0] = 4
+                difficulty_factors["depth_of_knowledge"][0] = 6
+                difficulty_factors["multiple_topics"][0] = 5
+                difficulty_factors["difficulty_of_answer"][0] = 5
+                difficulty_factors["number_of_steps"][0] = 6
                 question_subtopic = random.choice(["missing_side", "missing_angle"])
                 point_a, point_b, point_c = generate_right_angled_triangle()
                 x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
@@ -49,6 +71,12 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 question = "What is x? Answer to the nearest whole number."
                 answer = angle_a if question_subtopic == "missing_angle" else length_c
             case "sine_cosine_area":
+                difficulty_factors["maths_topic"][0] = 6
+                difficulty_factors["difficulty_of_values"][0] = 6
+                difficulty_factors["depth_of_knowledge"][0] = 6
+                difficulty_factors["multiple_topics"][0] = 6
+                difficulty_factors["difficulty_of_answer"][0] = 5
+                difficulty_factors["number_of_steps"][0] = 6
                 question_subtopic = random.choice(["sine_side", "sine_angle", "cosine_side", "cosine_angle", "area"])
                 point_a, point_b, point_c = generate_triangle()
                 x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
@@ -60,18 +88,29 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                         answer = angle_c
                     case "cosine_side":
                         answer = length_a
+                        difficulty_factors["difficulty_of_values"][0] += 1
+                        difficulty_factors["difficulty_of_answer"][0] += 1
+                        difficulty_factors["depth_of_knowledge"][0] += 1
+                        difficulty_factors["number_of_steps"][0] += 1
                     case "cosine_angle":
                         answer = angle_a
+                        difficulty_factors["difficulty_of_values"][0] += 1
+                        difficulty_factors["difficulty_of_answer"][0] += 1
+                        difficulty_factors["depth_of_knowledge"][0] += 1
+                        difficulty_factors["number_of_steps"][0] += 1
                     case "area":
                         answer = area
                 question = "What is the area of this triangle? Answer to the nearest whole number." if question_subtopic == "area" else "What is x? Answer to the nearest whole number."
             case _:
                 pass
-        answer = int(round(answer, 0))
+        if answer is not masked:
+            answer = int(round(answer, 0))
+        else:
+            answer = 0
         answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
-        if final_difficulty == entered_difficulty or 1==1:
+        if final_difficulty == entered_difficulty:
             print(difficulty_factors)
             print(difficulty_weighting)
             break
@@ -108,9 +147,9 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
 
 def generate_triangle():
     while True:
-        point_a = (random.randint(1, 10), random.randint(1, 10))
-        point_b = (random.randint(1, 10), random.randint(1, 10))
-        point_c = (random.randint(1, 10), random.randint(1, 10))
+        point_a = (random.randint(10, 40), random.randint(10, 40))
+        point_b = (random.randint(10, 40), random.randint(10, 40))
+        point_c = (random.randint(10, 40), random.randint(10, 40))
         if point_a != point_b and point_a != point_c and point_b != point_c and not \
             (point_a[0] == point_b[0] and point_a[0] == point_c[0]) and not (point_a[1] == point_b[1] and point_a[1] == point_c[1]):
             break
