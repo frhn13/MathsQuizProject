@@ -8,6 +8,7 @@ from .equations_generation import equations_question_generation
 from .percentages_generation import percentages_question_generation
 from .sequences_generation import sequences_question_generation
 from .triangles_generation import triangles_question_generation
+from .calculus_generation import calculus_questions_generation
 from .min_and_max_difficulties import *
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
@@ -19,6 +20,7 @@ from .min_and_max_difficulties import *
 
 def question_topic_selection(selected_topics : list, entered_difficulty : int, question_types : list):
     image_values = None
+    is_topic_chosen = False
     multiple_answers = "No"
 
     difficulty_factors = {
@@ -31,7 +33,6 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
         "difficulty_of_answer": [0, 0.15],  # Value of the answer
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
-    is_topic_chosen = False
     while not is_topic_chosen:
         chosen_topic = random.choice(selected_topics)
         match chosen_topic:
@@ -48,8 +49,8 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                            difficulty_factors)
                     is_topic_chosen = True
             case "calculus":
-                if operations[0] <= entered_difficulty <= operations[1]:
-                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                if calculus[0] <= entered_difficulty <= calculus[1]:
+                    question, answer, difficulty_weighting = calculus_questions_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True
@@ -105,12 +106,6 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
 # Difficulty of values used: How big values used are, whether final answer is whole number
 
 def hcf_lcm_prime_factors():
-    pass
-
-def calculus_question_generation():
-    pass
-
-def probability_question_generation():
     pass
 
 def circles_question_generation():

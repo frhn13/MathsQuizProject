@@ -125,6 +125,10 @@ def quiz_selection():
                 session["min_difficulty"] = fractions[0]
         if request.form.get("calculus") is not None:
             topics_chosen.append("calculus")
+            if session["max_difficulty"] < calculus[1]:
+                session["max_difficulty"] = calculus[1]
+            if session["min_difficulty"] > calculus[0]:
+                session["min_difficulty"] = calculus[0]
         if request.form.get("equations") is not None:
             topics_chosen.append("equations")
             if session["max_difficulty"] < equations[1]:
@@ -385,8 +389,8 @@ def quiz_page():
                         return redirect(url_for("quiz_page"))
                     elif final_answer == str and "x" in final_answer:
                         if "/" in answer:
-                            final_answer = simplify(sympify(final_answer))
-                            answer = simplify(sympify(answer))
+                            final_answer = str(simplify(sympify(final_answer)))
+                            # answer = simplify(sympify(answer))
                         else:
                             flash("You must write your answer as a fraction. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
@@ -402,8 +406,17 @@ def quiz_page():
                             flash("Expression must be entered in correct format. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
                         else:
-                            final_answer = simplify(sympify(final_answer))
-                            answer = simplify(sympify(answer))
+                            answer = answer.replace(" ", "")
+                            final_answer = str(simplify(sympify(final_answer))).replace(" ", "")
+                            # answer = simplify(sympify(answer))
+                case "calculus":
+                    answer = request.form.get("answer")
+                    if not final_answer.isnumeric() and "y" not in final_answer:
+                        final_answer = sympify(final_answer)
+                        answer = sympify(answer)
+                    else:
+                        final_answer = final_answer.replace(" ", "")
+                        answer = answer.replace(" ", "")
                 case _:
                     try:
                         answer = request.form.get("answer")

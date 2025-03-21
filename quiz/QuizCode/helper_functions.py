@@ -133,7 +133,6 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
         case _:
             pass
     final_answer = list(final_answer)
-    #print(final_answer)
     return equation, final_answer
 
 def generate_expression(quadratic_value_added : bool, linear_value_added : bool, number_value_added : bool):

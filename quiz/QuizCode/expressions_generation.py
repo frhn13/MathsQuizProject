@@ -34,6 +34,8 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                 else:
                     answers, difficulty_factors = answer_generation(answer, question_type_chosen,
                                                                               difficulty_factors)
+                    difficulty_factors["question_type"][0] = 8
+                    difficulty_factors["answers_similarity"][0] = 8
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
                     if final_difficulty == entered_difficulty:

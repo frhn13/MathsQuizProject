@@ -18,8 +18,6 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
         difficulty_factors["question_type"][0] = 8
         difficulty_factors["answers_similarity"][0] = 8
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors=difficulty_factors)
-        #print(f"Answers in function: {final_answer}")
-        #print(f"Difficulty: {final_difficulty}")
         if final_difficulty == entered_difficulty:
             print(difficulty_factors)
             print(difficulty_weighting)
