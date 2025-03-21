@@ -287,6 +287,7 @@ def get_image():
     plt.gca().set_aspect("equal", adjustable="box")
     plt.axis("off")
     plt.plot(x_coordinates, y_coordinates, color="blue", linestyle="-", marker=".")
+    # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
     triangle_img = BytesIO()
     plt.savefig(triangle_img, format="png")
     triangle_img.seek(0)
