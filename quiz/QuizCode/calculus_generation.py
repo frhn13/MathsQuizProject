@@ -1,5 +1,5 @@
 import random
-from sympy import diff, integrate, symbols, limit, solveset, solve
+from sympy import diff, integrate, symbols, limit, solveset, solve, zoo
 
 from .helper_functions import calculate_difficulty, answer_generation
 
@@ -13,11 +13,10 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
                 question_subtopic_chosen = random.choice(["basic_differentiation", "second_order_differentiation", "answer_from_derivative", "finding_x", "tangents", "normals"])
                 question, answer, difficulty_factors, is_valid = differentiation_questions(question_subtopic_chosen, difficulty_factors)
                 if is_valid:
-                    difficulty_factors["question_type"][0] = 10
-                    difficulty_factors["answers_similarity"][0] = 9
-                    calculate_difficulty(difficulty_factors)
+                    # difficulty_factors["question_type"][0] = 10
+                    # difficulty_factors["answers_similarity"][0] = 9
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                    if entered_difficulty == final_difficulty or 1 == 1:
+                    if entered_difficulty == final_difficulty:
                         print(difficulty_factors)
                         print(difficulty_weighting)
                         break
@@ -30,9 +29,8 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
                 if is_valid:
                     difficulty_factors["question_type"][0] = 10
                     difficulty_factors["answers_similarity"][0] = 9
-                    calculate_difficulty(difficulty_factors)
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                    if entered_difficulty == final_difficulty or 1 == 1:
+                    if entered_difficulty == final_difficulty:
                         print(difficulty_factors)
                         print(difficulty_weighting)
                         break
@@ -52,44 +50,120 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
         return question, answer, difficulty_factors, False
     f = cubic_value * x ** 3 + quadratic_value * x ** 2 + linear_value * x + number_value
 
+    difficulty_factors["difficulty_of_values"][0] = 7
+    difficulty_factors["difficulty_of_answer"][0] = 7
+    difficulty_factors["number_of_steps"][0] = 7
+
+    if cubic_value == 0:
+        difficulty_factors["difficulty_of_values"][0] += 0.5
+        difficulty_factors["number_of_steps"][0] += 0.5
+        difficulty_factors["difficulty_of_answer"][0] += 0.5
+    if quadratic_value == 0:
+        difficulty_factors["difficulty_of_values"][0] += 0.5
+        difficulty_factors["number_of_steps"][0] += 0.5
+        difficulty_factors["difficulty_of_answer"][0] += 0.5
+    if linear_value == 0:
+        difficulty_factors["difficulty_of_values"][0] += 0.5
+        difficulty_factors["number_of_steps"][0] += 0.5
+        difficulty_factors["difficulty_of_answer"][0] += 0.5
+
     match question_subtopic_chosen:
         case "basic_differentiation":
+            difficulty_factors["maths_topic"][0] = 8
+            difficulty_factors["depth_of_knowledge"][0] = 7
+            difficulty_factors["multiple_topics"][0] = 7
+            difficulty_factors["question_type"][0] = 7
+            difficulty_factors["answers_similarity"][0] = 8
             df = diff(f, x)
             answer = df
             question = f"What is the first order derivative of {f}?"
             if "x" not in str(answer):
                 return "", "", difficulty_factors, False
         case "second_order_differentiation":
+            difficulty_factors["difficulty_of_values"][0] += 1
+            difficulty_factors["difficulty_of_answer"][0] += 1
+            difficulty_factors["number_of_steps"][0] += 1
+            difficulty_factors["maths_topic"][0] = 8
+            difficulty_factors["depth_of_knowledge"][0] = 7
+            difficulty_factors["multiple_topics"][0] = 7
+            difficulty_factors["question_type"][0] = 7
+            difficulty_factors["answers_similarity"][0] = 8
             d2f = diff(f, x, 2)
             answer = d2f
             question = f"What is the second order derivative of {f}?"
             if "x" not in str(answer):
                 return "", "", difficulty_factors, False
         case "answer_from_derivative":
+            difficulty_factors["difficulty_of_values"][0] += 1.5
+            difficulty_factors["difficulty_of_answer"][0] += 1.5
+            difficulty_factors["number_of_steps"][0] += 1.5
+            difficulty_factors["maths_topic"][0] = 8
+            difficulty_factors["depth_of_knowledge"][0] = 8
+            difficulty_factors["multiple_topics"][0] = 8
+            difficulty_factors["question_type"][0] = 10
+            difficulty_factors["answers_similarity"][0] = 9
             df = diff(f, x)
             x_value = random.randint(1, 5)
             question = f"What is the answer to f\'({x_value}) when f(x) = {f}"
             answer = df.subs(x, x_value)
         case "finding_x":
+            if cubic_value != 0:
+                difficulty_factors["difficulty_of_values"][0] += 2
+                difficulty_factors["difficulty_of_answer"][0] += 2
+                difficulty_factors["number_of_steps"][0] += 2
+            else:
+                difficulty_factors["difficulty_of_values"][0] += 1.5
+                difficulty_factors["difficulty_of_answer"][0] += 1.5
+                difficulty_factors["number_of_steps"][0] += 1.5
+            difficulty_factors["maths_topic"][0] = 8
+            difficulty_factors["depth_of_knowledge"][0] = 8
+            difficulty_factors["multiple_topics"][0] = 8
+            difficulty_factors["question_type"][0] = 10
+            difficulty_factors["answers_similarity"][0] = 9
             df = diff(f, x)
             question = f"What is the value of x when f\'(x) = 0 and f(x) = {f}"
             answer = solve(df, x)
         case "tangents":
+            difficulty_factors["difficulty_of_values"][0] += 2
+            difficulty_factors["difficulty_of_answer"][0] += 2
+            difficulty_factors["number_of_steps"][0] += 2
+            difficulty_factors["maths_topic"][0] = 10
+            difficulty_factors["depth_of_knowledge"][0] = 10
+            difficulty_factors["multiple_topics"][0] = 10
+            difficulty_factors["question_type"][0] = 10
+            difficulty_factors["answers_similarity"][0] = 9
             df = diff(f, x)
             x_value = random.randint(1, 5)
             y_value = f.subs(x, x_value)
             gradient = df.subs(x, x_value)
             y_intercept = y_value - (x_value * gradient)
             question = f"What is the equation of the tangent to the curve with the equation y={f} at the point ({x_value}, {y_value}). Give your answer in the form y=mx+c"
-            answer = f"y={gradient}x+{y_intercept}" if y_intercept > 0 else f"y={gradient}x{y_intercept}"
+            if y_intercept == zoo or y_intercept == 0:
+                answer = f"y={gradient}x"
+            elif y_intercept > 0:
+                answer = f"y={gradient}x+{y_intercept}"
+            else:
+                answer = f"y={gradient}x{y_intercept}"
         case "normals":
+            difficulty_factors["difficulty_of_values"][0] += 2.5
+            difficulty_factors["difficulty_of_answer"][0] += 2.5
+            difficulty_factors["number_of_steps"][0] += 2.5
+            difficulty_factors["maths_topic"][0] = 11
+            difficulty_factors["depth_of_knowledge"][0] = 11
+            difficulty_factors["multiple_topics"][0] = 11
             df = diff(f, x)
             x_value = random.randint(1, 5)
             y_value = f.subs(x, x_value)
             gradient = -1 / (df.subs(x, x_value))
             y_intercept = y_value - (x_value * gradient)
             question = f"What is the equation of the normal to the curve with the equation y={f} at the point ({x_value}, {y_value}). Give your answer in the form y=mx+c and give answers in the form of fractions where needed."
-            answer = f"y={gradient}x+{y_intercept}" if y_intercept > 0 else f"y={gradient}x{y_intercept}"
+            if y_intercept == zoo or y_intercept == 0:
+                answer = f"y={gradient}x"
+            elif y_intercept > 0:
+                answer = f"y={gradient}x+{y_intercept}"
+            else:
+                answer = f"y={gradient}x{y_intercept}"
+            # answer = f"y={gradient}x+{y_intercept}" if y_intercept > 0 else f"y={gradient}x{y_intercept}"
 
     return question, answer, difficulty_factors, True
 
@@ -106,20 +180,44 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
     f = cubic_value * x ** 3 + quadratic_value * x ** 2 + linear_value * x + number_value
     match question_subtopic_chosen:
         case "basic_integration":
+            difficulty_factors["difficulty_of_values"][0] = 7
+            difficulty_factors["difficulty_of_answer"][0] = 7
+            difficulty_factors["number_of_steps"][0] = 6
+            difficulty_factors["maths_topic"][0] = 8
+            difficulty_factors["depth_of_knowledge"][0] = 7
+            difficulty_factors["multiple_topics"][0] = 7
             integral_f = integrate(f, x)
             answer = f"{integrate(f, x)} + c"
             question = f"What is ∫ f(x) dx when f(x) = {f}?"
         case "definite_integrals":
+            difficulty_factors["difficulty_of_values"][0] = 9
+            difficulty_factors["difficulty_of_answer"][0] = 9
+            difficulty_factors["number_of_steps"][0] = 8
+            difficulty_factors["maths_topic"][0] = 9
+            difficulty_factors["depth_of_knowledge"][0] = 8
+            difficulty_factors["multiple_topics"][0] = 8
             lower_point = random.randint(0, 3)
             upper_point = random.randint(lower_point+1, 6)
             answer = integrate(f, (x, lower_point, upper_point))
             question = f"What is ∫ f(x) from {lower_point} to {upper_point} when f(x) = {f}? Give answers in the form of fractions where needed."
         case "finding_area":
+            difficulty_factors["difficulty_of_values"][0] = 9
+            difficulty_factors["difficulty_of_answer"][0] = 9
+            difficulty_factors["number_of_steps"][0] = 9
+            difficulty_factors["maths_topic"][0] = 10
+            difficulty_factors["depth_of_knowledge"][0] = 10
+            difficulty_factors["multiple_topics"][0] = 10
             lower_point = random.randint(0, 3)
             upper_point = random.randint(lower_point + 1, 6)
             answer = abs(integrate(f, (x, lower_point, upper_point)))
             question = f"What is the area of under the curve y=f(x) over the interval {lower_point} < x < {upper_point} where f(x) = {f}? Give answers in the form of fractions where needed."
         case "finding_complex_area":
+            difficulty_factors["difficulty_of_values"][0] = 10
+            difficulty_factors["difficulty_of_answer"][0] = 10
+            difficulty_factors["number_of_steps"][0] = 11
+            difficulty_factors["maths_topic"][0] = 10
+            difficulty_factors["depth_of_knowledge"][0] = 11
+            difficulty_factors["multiple_topics"][0] = 11
             lower_point = random.randint(-4, 1)
             upper_point = random.randint(1, 4)
             integral_1 = integrate(f, (x, lower_point, 0))
@@ -140,4 +238,4 @@ difficulty_factors = {
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
 
-calculus_questions_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
+# calculus_questions_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
