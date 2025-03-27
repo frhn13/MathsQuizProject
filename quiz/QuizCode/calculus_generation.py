@@ -6,7 +6,7 @@ from .helper_functions import calculate_difficulty, answer_generation
 def calculus_questions_generation(entered_difficulty : int, question_types : list, difficulty_factors: dict):
     while True:
         question_type_chosen = random.choice(question_types)
-        question_topic_chosen = random.choice(["integration"])
+        question_topic_chosen = random.choice(["differentiation", "integration"])
         x = symbols("x")
         match question_topic_chosen:
             case "differentiation":

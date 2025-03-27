@@ -9,6 +9,7 @@ from .percentages_generation import percentages_question_generation
 from .sequences_generation import sequences_question_generation
 from .triangles_generation import triangles_question_generation
 from .calculus_generation import calculus_questions_generation
+from .graphs_generation import graphs_questions_generation
 from .min_and_max_difficulties import *
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,

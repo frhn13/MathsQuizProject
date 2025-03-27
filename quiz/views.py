@@ -161,6 +161,11 @@ def quiz_selection():
                 session["max_difficulty"] = triangles[1]
             if session["min_difficulty"] > triangles[0]:
                 session["min_difficulty"] = triangles[0]
+        if request.form.get("circles") is not None:
+            topics_chosen.append("circles")
+        if request.form.get("graphs") is not None:
+            topics_chosen.append("circles")
+
         if len(topics_chosen) == 0:
             flash("Please select a topic.", category="danger")
             # return redirect(url_for("quiz_selection"))
@@ -182,7 +187,10 @@ def quiz_selection():
                 "percentages": [0, 0],
                 "calculus": [0, 0],
                 "triangles": [0, 0],
+                "circles": [0, 0],
+                "graphs": [0, 0]
             }
+
             session["topic_selection"] = topics_chosen
             session["current_difficulty"] = int(request.form.get("difficulty"))
             session["number_of_questions"] = int(request.form.get("questions"))

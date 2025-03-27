@@ -33,6 +33,12 @@ def update_topic_information(topic_counter : dict):
         question_topics.hcf_lcm_right += topic_counter["hcf_lcm"][0]
         question_topics.hcf_lcm_wrong += topic_counter["hcf_lcm"][1]
 
+        question_topics.circles_right += topic_counter["circles"][0]
+        question_topics.circles_wrong += topic_counter["circles"][1]
+
+        question_topics.graphs_right += topic_counter["graphs"][0]
+        question_topics.graphs_wrong += topic_counter["graphs"][1]
+
         db.session.commit()
 
         question_topics.operations_percentage = question_topics.operations_right / (question_topics.operations_right + question_topics.operations_wrong) if (question_topics.operations_right + question_topics.operations_wrong) != 0 else 0
@@ -44,6 +50,8 @@ def update_topic_information(topic_counter : dict):
         question_topics.percentages_percentage = question_topics.percentages_right / (question_topics.percentages_right + question_topics.percentages_wrong) if (question_topics.percentages_right + question_topics.percentages_wrong) != 0 else 0
         question_topics.triangles_percentage = question_topics.triangles_right / (question_topics.triangles_right + question_topics.triangles_wrong) if (question_topics.triangles_right + question_topics.triangles_wrong) != 0 else 0
         question_topics.hcf_lcm_percentage = question_topics.hcf_lcm_right / (question_topics.hcf_lcm_right + question_topics.hcf_lcm_wrong) if (question_topics.hcf_lcm_right + question_topics.hcf_lcm_wrong) != 0 else 0
+        question_topics.circles_percentage = question_topics.circles_right / (question_topics.circles_right + question_topics.circles_wrong) if (question_topics.circles_right + question_topics.circles_wrong) != 0 else 0
+        question_topics.graphs_percentage = question_topics.graphs_right / (question_topics.graphs_right + question_topics.graphs_wrong) if (question_topics.graphs_right + question_topics.graphs_wrong) != 0 else 0
 
         db.session.commit()
 

@@ -59,6 +59,14 @@ class QuestionTopics(db.Model):
     triangles_wrong = db.Column(db.Integer(), default=0)
     triangles_percentage = db.Column(db.Float(), default=0.0)
 
+    circles_right = db.Column(db.Integer(), default=0)
+    circles_wrong = db.Column(db.Integer(), default=0)
+    circles_percentage = db.Column(db.Float(), default=0.0)
+
+    graphs_right = db.Column(db.Integer(), default=0)
+    graphs_wrong = db.Column(db.Integer(), default=0)
+    graphs_percentage = db.Column(db.Float(), default=0.0)
+
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id"), nullable=False)
 
 class QuestionDifficulties(db.Model):
