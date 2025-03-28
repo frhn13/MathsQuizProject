@@ -10,6 +10,9 @@
    {% if image_added %}
       <img src="{{ url_for('get_image') }}" class="mx-auto w-100"/>
    {% endif %}
+   {% if graph_added %}
+      <img src="{{ url_for('get_graph') }}"/>
+   {% endif %}
    {% if multiple_answers == "No" %}
       <div class="container mt-3 mx-auto w-50">
          <p>{{ final_question }}</p>

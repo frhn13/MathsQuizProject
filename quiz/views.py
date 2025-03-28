@@ -106,6 +106,8 @@ def quiz_selection():
     session.pop("topic_counter", None)
     session.pop("image_values", None)
     session.pop("image_added", None)
+    session.pop("graph_values", None)
+    session.pop("graph_added", None)
     session["max_difficulty"] = 0
     session["min_difficulty"] = 10
 
@@ -164,7 +166,11 @@ def quiz_selection():
         if request.form.get("circles") is not None:
             topics_chosen.append("circles")
         if request.form.get("graphs") is not None:
-            topics_chosen.append("circles")
+            topics_chosen.append("graphs")
+            if session["max_difficulty"] < graphs[1]:
+                session["max_difficulty"] = graphs[1]
+            if session["min_difficulty"] > graphs[0]:
+                session["min_difficulty"] = graphs[0]
 
         if len(topics_chosen) == 0:
             flash("Please select a topic.", category="danger")
@@ -302,6 +308,57 @@ def get_image():
     plt.close()
     return send_file(triangle_img, mimetype="image/png")
 
+@app.route("/graph")
+def get_graph():
+    graph_values = {
+        "time_values": session["graph_values"].get("time_values"),
+        "distance_values": session["graph_values"].get("distance_values"),
+        "speed_values": session["graph_values"].get("speed_values"),
+        "pie_chart_values": session["graph_values"].get("pie_chart_values"),
+        "pie_chart_labels": session["graph_values"].get("pie_chart_labels")
+    }
+
+    # plt.figure(figsize=(20, 20))
+
+    if graph_values["distance_values"] != []:
+        plt.gca().set_aspect("equal", adjustable="box")
+        plt.plot(graph_values["time_values"], graph_values["distance_values"], linestyle="-", marker=".", color="blue")
+        plt.xlabel("Time in Minutes")
+        plt.ylabel("Distance")
+        plt.grid()
+        # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+        graph_image = BytesIO()
+        plt.savefig(graph_image, format="png")
+        graph_image.seek(0)
+        plt.close()
+    elif graph_values["speed_values"] != []:
+        plt.gca().set_aspect("equal", adjustable="box")
+        plt.plot(graph_values["time_values"], graph_values["speed_values"], linestyle="-", marker=".", color="blue")
+        plt.xlabel("Time in Seconds")
+        plt.ylabel("Speed")
+        plt.grid()
+        # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+        graph_image = BytesIO()
+        plt.savefig(graph_image, format="png")
+        graph_image.seek(0)
+        plt.close()
+    elif graph_values["pie_chart_values"] != []:
+        def angle_generation(percentage):
+            angle = (percentage / 100) * 360
+            return f"{angle:.0f}°"
+
+        plt.gca().set_aspect("equal", adjustable="box")
+        plt.pie(graph_values["pie_chart_values"], labels=graph_values["pie_chart_labels"], startangle=90,
+                wedgeprops={"edgecolor": "black"}, autopct=angle_generation)
+        # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+        graph_image = BytesIO()
+        plt.savefig(graph_image, format="png")
+        graph_image.seek(0)
+        plt.close()
+
+    return send_file(graph_image, mimetype="image/png")
+
+
 @app.route("/quiz", methods=["GET", "POST"])
 @login_required
 def quiz_page():
@@ -312,7 +369,7 @@ def quiz_page():
         form = AnswerForm()
         difficulty_boundary = 30
         if "final_answer" not in session:
-            topic, question, answer, difficulty_weighting, multiple_answers, image_values = question_topic_selection(
+            topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values = question_topic_selection(
                 session.get("topic_selection"), int(session.get("current_difficulty")),
     ["free_text", "multiple-choice", "true/false"])
             session["current_topic"] = topic
@@ -326,6 +383,12 @@ def quiz_page():
             else:
                 session.pop("image_values", None)
                 session.pop("image_added", None)
+            if graph_values is not None:
+                session["graph_values"] = graph_values
+                session["graph_added"] = True
+            else:
+                session.pop("graph_values", None)
+                session.pop("graph_added", None)
 
         if session["multiple_answers"] == "No":
             form = AnswerForm()
@@ -426,6 +489,24 @@ def quiz_page():
                     else:
                         final_answer = final_answer.replace(" ", "")
                         answer = answer.replace(" ", "")
+
+                case "graphs":
+                    answer = request.form.get("answer")
+                    try:
+                        answer = request.form.get("answer")
+                        if type(final_answer) == int:
+                            answer = int(answer)
+                        elif type(final_answer) == float:
+                            answer = float(answer)
+                        else:
+                            if "y=" in final_answer or "y =" in final_answer:
+                                final_answer = final_answer.replace(" ", "")
+                                answer = answer.replace(" ", "")
+                    except Exception:
+                        flash("You must enter a number. Try again.", category="danger")
+                        return redirect(url_for("quiz_page"))
+
+
                 case _:
                     try:
                         answer = request.form.get("answer")
@@ -508,6 +589,7 @@ def quiz_page():
         question_number = session.get("question_number")
         multiple_answers = session.get("multiple_answers")
         image_added = session.get("image_added")
+        graph_added = session.get("graph_added")
         return render_template("quiz.html", form=form, final_question=final_question,
                                current_difficulty=current_difficulty, score=score, question_number=question_number,
-                               multiple_answers=multiple_answers, image_added=image_added)
+                               multiple_answers=multiple_answers, image_added=image_added, graph_added=graph_added)

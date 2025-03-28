@@ -3,15 +3,23 @@ from matplotlib import pyplot as plt
 import numpy as np
 from sympy import symbols
 
-# from .helper_functions import answer_generation, calculate_difficulty
+from .helper_functions import answer_generation, calculate_difficulty
 
 # DT graphs, VT graphs, pie charts, solving equations graphically, transforming graphs
 def graphs_questions_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     while True:
+        is_valid = True
         question = ""
         answer = 0
+        graph_values = {
+            "time_values": [],
+            "distance_values": [],
+            "speed_values": [],
+            "pie_chart_values": [],
+            "pie_chart_labels": []
+        }
         question_type_chosen = "free-text"
-        question_topic_chosen = random.choice(["graph_transformation"])
+        question_topic_chosen = random.choice(["DT_graphs", "VT_graphs", "pie_charts", "perpendicular_lines", "graph_transformation"])
         question_subtopic_chosen = ""
 
         match question_topic_chosen:
@@ -41,6 +49,8 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                         if distance_values[1] == distance_values[2]:
                             question = f"How long does the person wait for before continuing?"
                             answer = time_values[2] - time_values[1]
+                        else:
+                            is_valid = False
                     case "total_distance":
                         question = "What is the total distance travelled?"
                         answer = max(distance_values) * 2 if distance_values[-1] == 0 else max(distance_values)
@@ -51,15 +61,9 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                         else:
                             question = "What is the average speed at the start?"
                             answer = abs((distance_values[0] - distance_values[1]) / (time_values[0] - time_values[1]))
-                print(question)
-                print(answer)
-                plt.plot(time_values, distance_values, linestyle="-", marker=".", color="blue")
-                plt.xlabel("Time in Minutes")
-                plt.ylabel("Distance")
-                plt.grid()
-                plt.show()
 
-                break
+                graph_values["time_values"] = time_values
+                graph_values["distance_values"] = distance_values
 
             case "VT_graphs":
                 num_datapoints = random.randint(3, 4)
@@ -81,13 +85,8 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                         area3 = 0 if num_datapoints == 3 else 0.5 * (time_values[3] - time_values[2]) * (speed_values[2] + speed_values[3])
                         answer = area1 + area2 + area3
 
-                print(question)
-                print(answer)
-                plt.plot(time_values, speed_values, linestyle="-", marker=".", color="blue")
-                plt.xlabel("Time in seconds")
-                plt.ylabel("Speed")
-                plt.grid()
-                plt.show()
+                graph_values["time_values"] = time_values
+                graph_values["speed_values"] = speed_values
 
             case "pie_charts":
                 values = [random.randint(13, 18), random.randint(6, 12), random.randint(13, 18), random.randint(6, 12)]
@@ -108,14 +107,9 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                         question = f"People were asked to choose there favourite sport. If {sum(values)} people were asking in total, then how many people chose {labels[0]}?"
                         answer = values[0]
 
-                def angle_generation(percentage):
-                    angle = (percentage / 100) * 360
-                    return f"{angle:.0f}°"
+                graph_values["pie_chart_values"] = values
+                graph_values["pie_chart_labels"] = labels
 
-                print(question)
-                print(answer)
-                plt.pie(values, labels=labels, startangle=90, wedgeprops={"edgecolor": "black"}, autopct=angle_generation)
-                plt.show()
             case "graph_transformation":
                 x_coordinate = random.randint(1, 10) * random.choice([-1, 1])
                 y_coordinate = random.randint(1, 10) * random.choice([-1, 1])
@@ -150,11 +144,9 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                     y_enlargement_str = f"{y_enlargement}"
 
                 equation = f"y = {y_enlargement_str}f({x_enlargement_str}x{x_translation_str}){y_translation_str}"
-
                 question = f"If ({x_coordinate},{y_coordinate}) is the maximum point of the curve y=f(x) then find the coordinates of the maximum point of the curve with the equation: {equation}"
                 answer = f"({new_x},{new_y})"
-                print(question)
-                print(answer)
+                graph_values = None
 
             case "perpendicular_lines":
                 x = symbols("x")
@@ -172,6 +164,12 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                     gradient = int(gradient)
                 if gradient == 1:
                     gradient = ""
+                if gradient == -1:
+                    gradient = "-"
+                if linear_value == 1:
+                    linear_value = ""
+                if linear_value == -1:
+                    linear_value = "-"
                 question = f"What is the equation of a perpendicular line to y = {linear_value}x + {number_value:.0f} which passed through the point ({x_value}, {y_value:.0f}). Give your answer in the form y=mx+c and give answers in the form of decimals where needed."
                 if y_intercept == 0:
                     answer = f"y={gradient}x"
@@ -179,10 +177,17 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                     answer = f"y={gradient}x{y_intercept:.0f}"
                 else:
                     answer = f"y={gradient}x+{y_intercept:.0f}"
+                graph_values = None
 
-                print(question)
-                print(answer)
-                break
+        answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+        difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+
+        if (final_difficulty == entered_difficulty or 1==1) and is_valid:
+            print(difficulty_factors)
+            print(difficulty_weighting)
+            break
+
+    return question, answer, difficulty_weighting, graph_values
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested
@@ -195,4 +200,4 @@ difficulty_factors = {
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
 
-graphs_questions_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
+# graphs_questions_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)

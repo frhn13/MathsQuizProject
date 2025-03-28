@@ -21,6 +21,7 @@ from .min_and_max_difficulties import *
 
 def question_topic_selection(selected_topics : list, entered_difficulty : int, question_types : list):
     image_values = None
+    graph_values = None
     is_topic_chosen = False
     multiple_answers = "No"
 
@@ -90,6 +91,12 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True
+            case "graphs":
+                if graphs[0] <= entered_difficulty <= graphs[1]:
+                    question, answer, difficulty_weighting, graph_values = graphs_questions_generation(entered_difficulty,
+                                                                                            question_types,
+                                                                                            difficulty_factors)
+                    is_topic_chosen = True
             case _:
                 if operations[0] <= entered_difficulty <= operations[1]:
                     question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
@@ -97,7 +104,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             difficulty_factors)
                     is_topic_chosen = True
 
-    return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values
+    return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
 # ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
@@ -110,7 +117,4 @@ def hcf_lcm_prime_factors():
     pass
 
 def circles_question_generation():
-    pass
-
-def graphs_question_generation():
     pass
