@@ -1,5 +1,7 @@
 import random
 from matplotlib import pyplot as plt
+import numpy as np
+from sympy import symbols
 
 # from .helper_functions import answer_generation, calculate_difficulty
 
@@ -9,7 +11,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
         question = ""
         answer = 0
         question_type_chosen = "free-text"
-        question_topic_chosen = random.choice(["VT_graphs"])
+        question_topic_chosen = random.choice(["graph_transformation"])
         question_subtopic_chosen = ""
 
         match question_topic_chosen:
@@ -49,13 +51,14 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                         else:
                             question = "What is the average speed at the start?"
                             answer = abs((distance_values[0] - distance_values[1]) / (time_values[0] - time_values[1]))
+                print(question)
+                print(answer)
                 plt.plot(time_values, distance_values, linestyle="-", marker=".", color="blue")
                 plt.xlabel("Time in Minutes")
                 plt.ylabel("Distance")
                 plt.grid()
                 plt.show()
-                print(question)
-                print(answer)
+
                 break
 
             case "VT_graphs":
@@ -78,18 +81,108 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                         area3 = 0 if num_datapoints == 3 else 0.5 * (time_values[3] - time_values[2]) * (speed_values[2] + speed_values[3])
                         answer = area1 + area2 + area3
 
+                print(question)
+                print(answer)
                 plt.plot(time_values, speed_values, linestyle="-", marker=".", color="blue")
                 plt.xlabel("Time in seconds")
                 plt.ylabel("Speed")
                 plt.grid()
                 plt.show()
+
+            case "pie_charts":
+                values = [random.randint(13, 18), random.randint(6, 12), random.randint(13, 18), random.randint(6, 12)]
+                values.append(60-sum(values))
+                multiplier = random.randint(1, 4)
+                values = [x*multiplier for x in values]
+                labels = ["Football", "Cricket", "Rugby", "Basketball", "Tennis"]
+
+                question_subtopic_chosen = random.choice(["missing_value", "total", "missing_value_from_total"])
+                match question_subtopic_chosen:
+                    case "missing_value":
+                        question = f"People were asked to choose there favourite sport. If {values[4]} chose {labels[4]}, then how many people chose {labels[0]}?"
+                        answer = values[0]
+                    case "total":
+                        question = f"People were asked to choose there favourite sport. If {values[4]} chose {labels[4]}, then how many people were asked in total?"
+                        answer = sum(values)
+                    case "missing_value_from_total":
+                        question = f"People were asked to choose there favourite sport. If {sum(values)} people were asking in total, then how many people chose {labels[0]}?"
+                        answer = values[0]
+
+                def angle_generation(percentage):
+                    angle = (percentage / 100) * 360
+                    return f"{angle:.0f}°"
+
+                print(question)
+                print(answer)
+                plt.pie(values, labels=labels, startangle=90, wedgeprops={"edgecolor": "black"}, autopct=angle_generation)
+                plt.show()
+            case "graph_transformation":
+                x_coordinate = random.randint(1, 10) * random.choice([-1, 1])
+                y_coordinate = random.randint(1, 10) * random.choice([-1, 1])
+                x_translation = 0 if random.random() > 0.5 else random.randint(1, 5) * random.choice([-1, 1])
+                y_translation = 0 if random.random() > 0.5 else random.randint(1, 5) * random.choice([-1, 1])
+                x_enlargement = 1 if random.random() > 0.5 else random.choice([2, 4, 0.5, (1/3), 0.25]) * random.choice([-1, 1])
+                y_enlargement = 1 if random.random() > 0.5 else random.choice([2, 3, 4, 0.5, 0.25]) * random.choice([-1, 1])
+
+                new_x = (x_coordinate / x_enlargement) - x_translation
+                new_y = (y_coordinate * y_enlargement) + y_translation
+                if x_translation == 0:
+                    x_translation_str = ""
+                elif x_translation < 0:
+                    x_translation_str = f"{x_translation}"
+                else:
+                    x_translation_str = f"+{x_translation}"
+                if y_translation == 0:
+                    y_translation_str = ""
+                elif y_translation < 0:
+                    y_translation_str = f"{y_translation}"
+                else:
+                    y_translation_str = f"+{y_translation}"
+                if x_enlargement == 1:
+                    x_enlargement_str = ""
+                elif abs(x_enlargement) == abs(1/3):
+                    x_enlargement_str = f"{x_enlargement:.2f}"
+                else:
+                    x_enlargement_str = f"{x_enlargement}"
+                if y_enlargement == 1:
+                    y_enlargement_str = ""
+                else:
+                    y_enlargement_str = f"{y_enlargement}"
+
+                equation = f"y = {y_enlargement_str}f({x_enlargement_str}x{x_translation_str}){y_translation_str}"
+
+                question = f"If ({x_coordinate},{y_coordinate}) is the maximum point of the curve y=f(x) then find the coordinates of the maximum point of the curve with the equation: {equation}"
+                answer = f"({new_x},{new_y})"
                 print(question)
                 print(answer)
 
-            case "pie_charts":
-                pass
-            case "graph_transformation":
-                pass
+            case "perpendicular_lines":
+                x = symbols("x")
+                while True:
+                    linear_value = random.choice([1, 2, 4, 5, 10, 0.1, 0.2, 0.25, 0.5]) * random.choice([1, -1])
+                    number_value = random.randint(1, 10) * random.choice([1, -1])
+                    f = linear_value * x + number_value
+                    x_value = random.randint(1, 5)
+                    y_value = f.subs(x, x_value)
+                    gradient = -1 / linear_value
+                    y_intercept = y_value - (x_value * gradient)
+                    if y_intercept == round(y_intercept, 0):
+                        break
+                if gradient == int(gradient):
+                    gradient = int(gradient)
+                if gradient == 1:
+                    gradient = ""
+                question = f"What is the equation of a perpendicular line to y = {linear_value}x + {number_value:.0f} which passed through the point ({x_value}, {y_value:.0f}). Give your answer in the form y=mx+c and give answers in the form of decimals where needed."
+                if y_intercept == 0:
+                    answer = f"y={gradient}x"
+                elif y_intercept < 0:
+                    answer = f"y={gradient}x{y_intercept:.0f}"
+                else:
+                    answer = f"y={gradient}x+{y_intercept:.0f}"
+
+                print(question)
+                print(answer)
+                break
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested
