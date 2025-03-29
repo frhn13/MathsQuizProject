@@ -1,11 +1,16 @@
 import random
-from matplotlib import pyplot as plt
-import numpy as np
 from sympy import symbols
 
-from .helper_functions import answer_generation, calculate_difficulty
+from .helper_functions import answer_generation, calculate_difficulty, answer_generation_decimals
 
-# DT graphs, VT graphs, pie charts, solving equations graphically, transforming graphs
+
+def increase_graph_difficulty(difficulty_factors: dict):
+    difficulty_factors["difficulty_of_answer"][0] += 0.5
+    difficulty_factors["number_of_steps"][0] += 0.5
+    difficulty_factors["difficulty_of_values"][0] += 0.5
+    difficulty_factors["depth_of_knowledge"][0] += 0.5
+    return difficulty_factors
+
 def graphs_questions_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     while True:
         is_valid = True
@@ -18,7 +23,6 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
             "pie_chart_values": [],
             "pie_chart_labels": []
         }
-        question_type_chosen = "free-text"
         question_topic_chosen = random.choice(["DT_graphs", "VT_graphs", "pie_charts", "perpendicular_lines", "graph_transformation"])
         question_subtopic_chosen = ""
 
@@ -36,25 +40,47 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                     distance_values.append(0) if random.random() > 0.5 else distance_values.append(random.randint(12, 30))
                 elif num_datapoints == 3:
                     distance_values.append(0) if random.random() > 0.5 else distance_values.append(distance_values[1])
-                print(time_values)
-                print(distance_values)
                 question_subtopic_chosen = random.choice(["distance_travelled", "time_waited", "total_distance", "average_speed"])
 
                 match question_subtopic_chosen:
                     case "distance_travelled":
+                        difficulty_factors["maths_topic"][0] = 2
+                        difficulty_factors["difficulty_of_values"][0] = 2
+                        difficulty_factors["depth_of_knowledge"][0] = 2
+                        difficulty_factors["multiple_topics"][0] = 3
+                        difficulty_factors["difficulty_of_answer"][0] = 2
+                        difficulty_factors["number_of_steps"][0] = 3
                         time_travelled = random.randint(1, 4)
                         question = f"What is the distance travelled after {time_travelled} minutes?"
                         answer = time_travelled/time_values[1] * distance_values[1]
                     case "time_waited":
+                        difficulty_factors["maths_topic"][0] = 2
+                        difficulty_factors["difficulty_of_values"][0] = 2
+                        difficulty_factors["depth_of_knowledge"][0] = 2
+                        difficulty_factors["multiple_topics"][0] = 3
+                        difficulty_factors["difficulty_of_answer"][0] = 2
+                        difficulty_factors["number_of_steps"][0] = 3
                         if distance_values[1] == distance_values[2]:
                             question = f"How long does the person wait for before continuing?"
                             answer = time_values[2] - time_values[1]
                         else:
                             is_valid = False
                     case "total_distance":
+                        difficulty_factors["maths_topic"][0] = 2
+                        difficulty_factors["difficulty_of_values"][0] = 3
+                        difficulty_factors["depth_of_knowledge"][0] = 3
+                        difficulty_factors["multiple_topics"][0] = 3
+                        difficulty_factors["difficulty_of_answer"][0] = 3
+                        difficulty_factors["number_of_steps"][0] = 3
                         question = "What is the total distance travelled?"
                         answer = max(distance_values) * 2 if distance_values[-1] == 0 else max(distance_values)
                     case "average_speed":
+                        difficulty_factors["maths_topic"][0] = 3
+                        difficulty_factors["difficulty_of_values"][0] = 3
+                        difficulty_factors["depth_of_knowledge"][0] = 4
+                        difficulty_factors["multiple_topics"][0] = 4
+                        difficulty_factors["difficulty_of_answer"][0] = 4
+                        difficulty_factors["number_of_steps"][0] = 4
                         if num_datapoints >= 4:
                             question = "What is the average speed at the end?"
                             answer = abs((distance_values[-1] - distance_values[-2]) / (time_values[-1] - time_values[-2]))
@@ -66,6 +92,12 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                 graph_values["distance_values"] = distance_values
 
             case "VT_graphs":
+                difficulty_factors["maths_topic"][0] = 8
+                difficulty_factors["difficulty_of_values"][0] = 8
+                difficulty_factors["depth_of_knowledge"][0] = 7
+                difficulty_factors["multiple_topics"][0] = 7
+                difficulty_factors["difficulty_of_answer"][0] = 8
+                difficulty_factors["number_of_steps"][0] = 7
                 num_datapoints = random.randint(3, 4)
                 time_values = [x * 5 for x in range(0, num_datapoints)]
                 speed_values = [random.randint(0, 3), random.randint(5, 10)]
@@ -79,6 +111,8 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                         question = f"What is the acceleration for the first {time_values[1]} seconds?"
                         answer = (speed_values[1] - speed_values[0]) / time_values[1]
                     case "distance":
+                        difficulty_factors["number_of_steps"][0] += 2
+                        difficulty_factors["multiple_topics"][0] += 2
                         question = f"What is the total distance covered in {time_values[-1]} seconds?"
                         area1 = 0.5 * time_values[1] * (speed_values[0] + speed_values[1])
                         area2 = (speed_values[2] - speed_values[1]) * (time_values[2] - time_values[1])
@@ -98,12 +132,30 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                 question_subtopic_chosen = random.choice(["missing_value", "total", "missing_value_from_total"])
                 match question_subtopic_chosen:
                     case "missing_value":
+                        difficulty_factors["maths_topic"][0] = 2
+                        difficulty_factors["difficulty_of_values"][0] = 2
+                        difficulty_factors["depth_of_knowledge"][0] = 3
+                        difficulty_factors["multiple_topics"][0] = 4
+                        difficulty_factors["difficulty_of_answer"][0] = 3
+                        difficulty_factors["number_of_steps"][0] = 4
                         question = f"People were asked to choose there favourite sport. If {values[4]} chose {labels[4]}, then how many people chose {labels[0]}?"
                         answer = values[0]
                     case "total":
+                        difficulty_factors["maths_topic"][0] = 2
+                        difficulty_factors["difficulty_of_values"][0] = 2
+                        difficulty_factors["depth_of_knowledge"][0] = 2
+                        difficulty_factors["multiple_topics"][0] = 3
+                        difficulty_factors["difficulty_of_answer"][0] = 2
+                        difficulty_factors["number_of_steps"][0] = 3
                         question = f"People were asked to choose there favourite sport. If {values[4]} chose {labels[4]}, then how many people were asked in total?"
                         answer = sum(values)
                     case "missing_value_from_total":
+                        difficulty_factors["maths_topic"][0] = 2
+                        difficulty_factors["difficulty_of_values"][0] = 2
+                        difficulty_factors["depth_of_knowledge"][0] = 2
+                        difficulty_factors["multiple_topics"][0] = 3
+                        difficulty_factors["difficulty_of_answer"][0] = 2
+                        difficulty_factors["number_of_steps"][0] = 3
                         question = f"People were asked to choose there favourite sport. If {sum(values)} people were asking in total, then how many people chose {labels[0]}?"
                         answer = values[0]
 
@@ -111,12 +163,27 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                 graph_values["pie_chart_labels"] = labels
 
             case "graph_transformation":
+                difficulty_factors["maths_topic"][0] = 8
+                difficulty_factors["difficulty_of_values"][0] = 8
+                difficulty_factors["depth_of_knowledge"][0] = 7
+                difficulty_factors["multiple_topics"][0] = 8
+                difficulty_factors["difficulty_of_answer"][0] = 7
+                difficulty_factors["number_of_steps"][0] = 7
                 x_coordinate = random.randint(1, 10) * random.choice([-1, 1])
                 y_coordinate = random.randint(1, 10) * random.choice([-1, 1])
                 x_translation = 0 if random.random() > 0.5 else random.randint(1, 5) * random.choice([-1, 1])
                 y_translation = 0 if random.random() > 0.5 else random.randint(1, 5) * random.choice([-1, 1])
                 x_enlargement = 1 if random.random() > 0.5 else random.choice([2, 4, 0.5, (1/3), 0.25]) * random.choice([-1, 1])
                 y_enlargement = 1 if random.random() > 0.5 else random.choice([2, 3, 4, 0.5, 0.25]) * random.choice([-1, 1])
+
+                if x_translation != 0:
+                    difficulty_factors = increase_graph_difficulty(difficulty_factors)
+                if y_translation != 0:
+                    difficulty_factors = increase_graph_difficulty(difficulty_factors)
+                if x_enlargement != 1:
+                    difficulty_factors = increase_graph_difficulty(difficulty_factors)
+                if y_enlargement != 1:
+                    difficulty_factors = increase_graph_difficulty(difficulty_factors)
 
                 new_x = (x_coordinate / x_enlargement) - x_translation
                 new_y = (y_coordinate * y_enlargement) + y_translation
@@ -144,11 +211,18 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                     y_enlargement_str = f"{y_enlargement}"
 
                 equation = f"y = {y_enlargement_str}f({x_enlargement_str}x{x_translation_str}){y_translation_str}"
-                question = f"If ({x_coordinate},{y_coordinate}) is the maximum point of the curve y=f(x) then find the coordinates of the maximum point of the curve with the equation: {equation}"
+                question = (f"If ({x_coordinate},{y_coordinate}) is the maximum point of the curve y=f(x) then find the "
+                            f"coordinates of the maximum point of the curve with the equation: {equation}")
                 answer = f"({new_x},{new_y})"
                 graph_values = None
 
             case "perpendicular_lines":
+                difficulty_factors["maths_topic"][0] = 8
+                difficulty_factors["difficulty_of_values"][0] = 8
+                difficulty_factors["depth_of_knowledge"][0] = 8
+                difficulty_factors["multiple_topics"][0] = 7
+                difficulty_factors["difficulty_of_answer"][0] = 9
+                difficulty_factors["number_of_steps"][0] = 8
                 x = symbols("x")
                 while True:
                     linear_value = random.choice([1, 2, 4, 5, 10, 0.1, 0.2, 0.25, 0.5]) * random.choice([1, -1])
@@ -164,30 +238,61 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                     gradient = int(gradient)
                 if gradient == 1:
                     gradient = ""
+                    difficulty_factors["difficulty_of_values"][0] -= 1
+                    difficulty_factors["difficulty_of_answer"][0] -= 1
                 if gradient == -1:
                     gradient = "-"
+                    difficulty_factors["difficulty_of_values"][0] -= 1
+                    difficulty_factors["difficulty_of_answer"][0] -= 1
                 if linear_value == 1:
                     linear_value = ""
                 if linear_value == -1:
                     linear_value = "-"
-                question = f"What is the equation of a perpendicular line to y = {linear_value}x + {number_value:.0f} which passed through the point ({x_value}, {y_value:.0f}). Give your answer in the form y=mx+c and give answers in the form of decimals where needed."
+                question = (f"What is the equation of a perpendicular line to y = {linear_value}x + {number_value:.0f} "
+                            f"which passed through the point ({x_value}, {y_value:.0f}). Give your answer in the form y=mx+c "
+                            f"and give answers in the form of decimals where needed.")
                 if y_intercept == 0:
                     answer = f"y={gradient}x"
+                    difficulty_factors["difficulty_of_answer"][0] -= 1
                 elif y_intercept < 0:
                     answer = f"y={gradient}x{y_intercept:.0f}"
                 else:
                     answer = f"y={gradient}x+{y_intercept:.0f}"
                 graph_values = None
 
-        answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+        question_type_chosen = random.choice(["free-text", "multiple_choice", "true/false"])
+        if type(answer) == int:
+            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+        elif type(answer) == float:
+            answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen, difficulty_factors)
+        else:
+            question_type_chosen = "free-text"
+            difficulty_factors["question_type"][0] = 8
+            difficulty_factors["answers_similarity"][0] = 9
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
-        if (final_difficulty == entered_difficulty or 1==1) and is_valid:
+        if final_difficulty == entered_difficulty and is_valid:
             print(difficulty_factors)
             print(difficulty_weighting)
             break
 
+    match question_type_chosen:
+        case "free_text":
+            question = question
+        case "multiple-choice":
+            question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
+        case "true/false":
+            question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
+            if answers[0] == answer:
+                answer = "True"
+            else:
+                answer = "False"
+        case _:
+            pass
+
     return question, answer, difficulty_weighting, graph_values
+
+
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested

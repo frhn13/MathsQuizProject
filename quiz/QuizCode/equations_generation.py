@@ -1,5 +1,7 @@
 import random
-from .helper_functions import generate_equation, answer_generation_equations, calculate_difficulty
+from sympy import expand, symbols, Eq, solveset, discriminant, solve
+
+from .helper_functions import answer_generation_equations, calculate_difficulty
 
 # Linear equations, quadratic equations, quadratic formula, completing the square, simultaneous equations, quadratic simultaneous equations, inequalities, quadratic inequalities
 def equations_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
@@ -63,6 +65,130 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
             pass
 
     return question, answer, difficulty_weighting, multiple_answers
+
+def generate_equation(equation_type : str, difficulty_factors : dict):
+    x = symbols("x")
+    y = symbols("y")
+    final_answer = 0
+    equation = ""
+
+    match equation_type:
+        case "linear":
+            difficulty_factors["maths_topic"][0] = 4
+            difficulty_factors["difficulty_of_values"][0] = 3
+            difficulty_factors["depth_of_knowledge"][0] = 4
+            difficulty_factors["multiple_topics"][0] = 4
+            difficulty_factors["difficulty_of_answer"][0] = 3
+            difficulty_factors["number_of_steps"][0] = 3
+            linear_value = random.choice([1, -1]) * random.randint(1, 10)
+            number_value = random.choice([1, -1]) * random.randint(1, 20)
+            final_answer = solveset(linear_value * x + number_value, x)
+            equation = f"{linear_value}x + {number_value} = 0"
+        case "whole_quadratic":
+            difficulty_factors["maths_topic"][0] = 5
+            difficulty_factors["difficulty_of_values"][0] = 3
+            difficulty_factors["depth_of_knowledge"][0] = 5
+            difficulty_factors["multiple_topics"][0] = 5
+            difficulty_factors["difficulty_of_answer"][0] = 4
+            difficulty_factors["number_of_steps"][0] = 5
+            root_1 = random.choice([1, -1]) * random.randint(1, 10)
+            root_2 = random.choice([1, -1]) * random.randint(1, 10)
+            common_factor = random.randint(1, 3)
+            if common_factor > 1:
+                difficulty_factors["difficulty_of_values"][0] += 1
+                difficulty_factors["difficulty_of_answer"][0] += 1
+                difficulty_factors["number_of_steps"][0] += 1
+            final_answer = solveset(common_factor * (x+root_1) * (x+root_2), x)
+            equation_start = expand(common_factor * (x+root_1) * (x+root_2))
+            equation = f"{equation_start.coeff(x, 2)}x**2 + {equation_start.coeff(x, 1)}x + {equation_start.coeff(x, 0)} = 0"
+        case "floating_quadratic":
+            while True:
+                difficulty_factors["maths_topic"][0] = 6
+                difficulty_factors["difficulty_of_values"][0] = 4
+                difficulty_factors["depth_of_knowledge"][0] = 7
+                difficulty_factors["multiple_topics"][0] = 6
+                difficulty_factors["difficulty_of_answer"][0] = 6
+                difficulty_factors["number_of_steps"][0] = 6
+                quadratic_value = 1
+                linear_value = random.choice([1, -1]) * random.randint(1, 10)
+                number_value = random.choice([1, -1]) * random.randint(1, 10)
+                common_factor = random.randint(1, 3)
+                if common_factor > 1:
+                    difficulty_factors["difficulty_of_values"][0] += 1
+                    difficulty_factors["difficulty_of_answer"][0] += 1
+                    difficulty_factors["number_of_steps"][0] += 1
+                equation_start = Eq(common_factor * x**2 + linear_value * x + number_value, 0)
+                if discriminant(equation_start) >= 0 and not math.sqrt(discriminant(equation_start)).is_integer():
+                    equation = f"{quadratic_value}x**2 + {linear_value}x + {number_value} = 0"
+                    final_answer = solveset(quadratic_value * x**2 + linear_value * x + number_value, x)
+                    break
+        case "completing_the_square":
+            pass
+        # Adapted from https://reliability.readthedocs.io/en/latest/Solving%20simultaneous%20equations%20with%20sympy.html
+        case "linear_simultaneous":
+            while True:
+                difficulty_factors["maths_topic"][0] = 4
+                difficulty_factors["difficulty_of_values"][0] = 4
+                difficulty_factors["depth_of_knowledge"][0] = 5
+                difficulty_factors["multiple_topics"][0] = 5
+                difficulty_factors["difficulty_of_answer"][0] = 5
+                difficulty_factors["number_of_steps"][0] = 6
+                x_value_1 = random.choice([1, -1]) * random.randint(1, 10)
+                y_value_1 = random.choice([1, -1]) * random.randint(1, 10)
+                number_value_1 = random.choice([1, -1]) * random.randint(1, 30)
+                x_value_2 = random.choice([1, -1]) * random.randint(1, 10)
+                y_value_2 = random.choice([1, -1]) * random.randint(1, 10)
+                number_value_2 = random.choice([1, -1]) * random.randint(1, 30)
+
+                if x_value_1 > 5:
+                    difficulty_factors["difficulty_of_values"][0] += 0.5
+                    difficulty_factors["difficulty_of_answer"][0] += 0.5
+                if x_value_2 > 5:
+                    difficulty_factors["difficulty_of_values"][0] += 0.5
+                    difficulty_factors["difficulty_of_answer"][0] += 0.5
+                if y_value_1 > 5:
+                    difficulty_factors["difficulty_of_values"][0] += 0.5
+                    difficulty_factors["difficulty_of_answer"][0] += 0.5
+                if y_value_1 > 5:
+                    difficulty_factors["difficulty_of_values"][0] += 0.5
+                    difficulty_factors["difficulty_of_answer"][0] += 0.5
+
+                equation_1 = Eq(x_value_1*x + y_value_1*y, number_value_1)
+                equation_2 = Eq(x_value_2*x + y_value_2*y, number_value_2)
+                equation = f"{equation_1} \n {equation_2}"
+
+                answers = solve((equation_1, equation_2), (x, y))
+                if type(answers) == dict:
+                    if list(answers.items())[0][1].is_integer and list(answers.items())[1][1].is_integer:
+                        final_answer = list(answers.items())
+                        break
+
+        # Adapted from https://reliability.readthedocs.io/en/latest/Solving%20simultaneous%20equations%20with%20sympy.html
+        case "quadratic_simultaneous":
+            while True:
+                difficulty_factors["maths_topic"][0] = 9
+                difficulty_factors["difficulty_of_values"][0] = 8
+                difficulty_factors["depth_of_knowledge"][0] = 8
+                difficulty_factors["multiple_topics"][0] = 8
+                difficulty_factors["difficulty_of_answer"][0] = 8
+                difficulty_factors["number_of_steps"][0] = 9
+                number_value_1 = random.choice([1, -1]) * random.randint(1, 30)
+                x_value_2 = random.choice([1, -1]) * random.randint(1, 10)
+                y_value_2 = random.choice([1, -1]) * random.randint(1, 10)
+                number_value_2 = random.choice([1, -1]) * random.randint(1, 30)
+
+                equation_1 = Eq(x**2 + y**2, number_value_1)
+                equation_2 = Eq(x_value_2 * x + y_value_2 * y, number_value_2)
+                equation = f"{equation_1} \n {equation_2}"
+
+                final_answer = solve((equation_1, equation_2), (x, y))
+                if (len(final_answer) == 2 and len(final_answer[0]) == 2 and len(final_answer[1]) == 2 and final_answer[0][0].is_integer and
+                        final_answer[0][1].is_integer and final_answer[1][0].is_integer and final_answer[1][1].is_integer):
+                    break
+        case _:
+            pass
+    final_answer = list(final_answer)
+    return equation, final_answer
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested
