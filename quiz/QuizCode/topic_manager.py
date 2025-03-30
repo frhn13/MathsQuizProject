@@ -1,5 +1,4 @@
 import random
-from io import BytesIO
 
 from .operations_generation import operations_question_generation
 from .fractions_generation import fractions_question_generation
@@ -10,6 +9,7 @@ from .sequences_generation import sequences_question_generation
 from .triangles_generation import triangles_question_generation
 from .calculus_generation import calculus_questions_generation
 from .graphs_generation import graphs_questions_generation
+from .circles_generation import circles_question_generation
 from .min_and_max_difficulties import *
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
@@ -96,6 +96,13 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                     question, answer, difficulty_weighting, graph_values = graphs_questions_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
+                    is_topic_chosen = True
+            case "circles":
+                if graphs[0] <= entered_difficulty <= graphs[1]:
+                    question, answer, difficulty_weighting, graph_values = graphs_questions_generation(
+                        entered_difficulty,
+                        question_types,
+                        difficulty_factors)
                     is_topic_chosen = True
             case _:
                 if operations[0] <= entered_difficulty <= operations[1]:

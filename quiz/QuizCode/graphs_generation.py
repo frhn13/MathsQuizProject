@@ -260,7 +260,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                     answer = f"y={gradient}x+{y_intercept:.0f}"
                 graph_values = None
 
-        question_type_chosen = random.choice(["free-text", "multiple_choice", "true/false"])
+        question_type_chosen = random.choice(question_types)
         if type(answer) == int:
             answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
         elif type(answer) == float:
