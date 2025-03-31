@@ -1,7 +1,7 @@
 import random
 import math
 
-from helper_functions import answer_generation, answer_generation_decimals, calculate_difficulty
+from .helper_functions import answer_generation, answer_generation_decimals, calculate_difficulty
 
 def circles_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     while True:
@@ -50,12 +50,15 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
                 triangle_area = 0.5 * math.pow(radius, 2) * math.sin(angle)
                 answer = round(sector_area - triangle_area, 2)
                 question = (f"If the radius of a circle is {radius}, and the circle has a sector with the angle {angle}° "
-                            f"then find the area of the shaded area")
+                            f"then find the area of the semicircle formed by the chord.") if random.random() > 0.5 \
+                    else (f"If the diameter of a circle is {radius * 2}, and the circle has a sector with the angle {angle}° "
+                     f"then find the area of the semicircle formed by the chord.")
 
         circle_image_values = {
             "radius": radius,
             "angle": angle,
-            "question_topic": question_topic_chosen
+            "question_topic": question_topic_chosen,
+            "use_diameter": True if "diameter" in question else False
         }
 
         if type(answer) == int:
@@ -67,15 +70,16 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
         if final_difficulty == entered_difficulty or 1==1:
             print(difficulty_factors)
             print(difficulty_weighting)
-            print(question)
-            print(answer)
             break
 
     match question_type_chosen:
         case "free_text":
             question = question
         case "multiple-choice":
-            question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
+            if type(answers[0]) == int:
+                question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
+            elif type(answers[0]) == float:
+                question = f"{question}\nIs it {answers[0]:.2f}, {answers[1]:.2f}, {answers[2]:.2f} or {answers[3]:.2f}?"
         case "true/false":
             question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
             if answers[0] == answer:
@@ -98,4 +102,4 @@ difficulty_factors = {
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
 
-circles_question_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)
+#circles_question_generation(8, ["free_text", "multiple-choice", "true/false"], difficulty_factors)

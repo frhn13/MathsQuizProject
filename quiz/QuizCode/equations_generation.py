@@ -1,5 +1,6 @@
 import random
 from sympy import expand, symbols, Eq, solveset, discriminant, solve
+import math
 
 from .helper_functions import answer_generation_equations, calculate_difficulty
 

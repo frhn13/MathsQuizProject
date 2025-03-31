@@ -280,7 +280,10 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
         case "free_text":
             question = question
         case "multiple-choice":
-            question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
+            if type(answers[0]) == int:
+                question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
+            elif type(answers[0]) == float:
+                question = f"{question}\nIs it {answers[0]:.2f}, {answers[1]:.2f}, {answers[2]:.2f} or {answers[3]:.2f}?"
         case "true/false":
             question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
             if answers[0] == answer:

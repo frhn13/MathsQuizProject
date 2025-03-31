@@ -13,6 +13,9 @@
    {% if graph_added %}
       <img src="{{ url_for('get_graph') }}"/>
    {% endif %}
+   {% if circle_image_added %}
+      <img src="{{ url_for('get_circle_image') }}"/>
+   {% endif %}
    {% if multiple_answers == "No" %}
       <div class="container mt-3 mx-auto w-50">
          <p>{{ final_question }}</p>

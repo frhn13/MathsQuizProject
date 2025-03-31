@@ -22,6 +22,7 @@ from .min_and_max_difficulties import *
 def question_topic_selection(selected_topics : list, entered_difficulty : int, question_types : list):
     image_values = None
     graph_values = None
+    circle_image_values = None
     is_topic_chosen = False
     multiple_answers = "No"
 
@@ -98,11 +99,10 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             difficulty_factors)
                     is_topic_chosen = True
             case "circles":
-                if graphs[0] <= entered_difficulty <= graphs[1]:
-                    question, answer, difficulty_weighting, graph_values = graphs_questions_generation(
-                        entered_difficulty,
-                        question_types,
-                        difficulty_factors)
+                if circles[0] <= entered_difficulty <= circles[1]:
+                    question, answer, difficulty_weighting, circle_image_values = circles_question_generation(entered_difficulty,
+                                                                                            question_types,
+                                                                                            difficulty_factors)
                     is_topic_chosen = True
             case _:
                 if operations[0] <= entered_difficulty <= operations[1]:
@@ -111,7 +111,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             difficulty_factors)
                     is_topic_chosen = True
 
-    return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values
+    return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
 # ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
@@ -121,7 +121,4 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
 # Difficulty of values used: How big values used are, whether final answer is whole number
 
 def hcf_lcm_prime_factors():
-    pass
-
-def circles_question_generation():
     pass

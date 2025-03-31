@@ -1,4 +1,6 @@
 import matplotlib
+import numpy as np
+from matplotlib import patches
 matplotlib.use('Agg')  # Use a backend that doesn't require the main thread
 import matplotlib.pyplot as plt
 from flask import render_template, redirect, url_for, request, flash, session, send_file
@@ -6,6 +8,7 @@ from sympy import sympify, factor, expand, simplify
 from flask_login import login_user, logout_user, login_required, current_user
 import bcrypt
 from io import BytesIO
+from math import sin, cos
 
 from quiz import app, db
 from .QuizCode.min_and_max_difficulties import *
@@ -108,6 +111,9 @@ def quiz_selection():
     session.pop("image_added", None)
     session.pop("graph_values", None)
     session.pop("graph_added", None)
+    session.pop("circle_image_values", None)
+    session.pop("circle_image_added", None)
+    session.pop("circle_image_added", None)
     session["max_difficulty"] = 0
     session["min_difficulty"] = 10
 
@@ -165,6 +171,10 @@ def quiz_selection():
                 session["min_difficulty"] = triangles[0]
         if request.form.get("circles") is not None:
             topics_chosen.append("circles")
+            if session["max_difficulty"] < circles[1]:
+                session["max_difficulty"] = circles[1]
+            if session["min_difficulty"] > circles[0]:
+                session["min_difficulty"] = circles[0]
         if request.form.get("graphs") is not None:
             topics_chosen.append("graphs")
             if session["max_difficulty"] < graphs[1]:
@@ -308,6 +318,55 @@ def get_image():
     plt.close()
     return send_file(triangle_img, mimetype="image/png")
 
+@app.route("/circle-image")
+def get_circle_image():
+    circle_image_values = {
+        "radius": session["circle_image_values"].get("radius"),
+        "angle": session["circle_image_values"].get("angle"),
+        "question_topic": session["circle_image_values"].get("question_topic"),
+        "use_diameter": session["circle_image_values"].get("use_diameter")
+    }
+
+    # Adapted from https://www.youtube.com/watch?v=i7ATPhd0nwc
+    fig, ax = plt.subplots()
+    ax.set_aspect("equal")
+    ax.set_xlim(-circle_image_values.get("radius") - 1, circle_image_values.get("radius") + 1)
+    ax.set_ylim(-circle_image_values.get("radius") - 1, circle_image_values.get("radius") + 1)
+
+    sector = patches.Wedge((0, 0), circle_image_values.get("radius"), 0, circle_image_values.get("angle"), color="lightblue", edgecolor="black")
+
+    angle1_rad = np.radians(0)
+    angle2_rad = np.radians(circle_image_values.get("angle"))
+    sector_1 = (circle_image_values.get("radius") * cos(angle1_rad), circle_image_values.get("radius") * sin(angle1_rad))
+    sector_2 = (circle_image_values.get("radius") * cos(angle2_rad), circle_image_values.get("radius") * sin(angle2_rad))
+
+    if not circle_image_values["use_diameter"]:
+        circle = plt.Circle((0, 0), radius=circle_image_values.get("radius"), color="blue", fill=False)
+        ax.plot([0, circle_image_values.get("radius")], [0, 0], linestyle="--", color="blue")
+        ax.text(circle_image_values.get("radius") / 1.5, 0.5, f"r = {circle_image_values.get('radius')}",
+                fontsize=10)
+    else:
+        circle = plt.Circle((0, 0), radius=circle_image_values.get("radius"), color="blue", fill=False)
+        ax.plot([-circle_image_values.get("radius"), circle_image_values.get("radius")], [0, 0], linestyle="--", color="blue")
+        ax.text(circle_image_values.get("radius") / 1.5, 0.5, f"d = {circle_image_values.get('radius') * 2}",
+                fontsize=10)
+
+    if circle_image_values["question_topic"] in ("sector", "arc", "area_of_shaded_area"):
+        ax.text(0, 0.5, f"{circle_image_values.get('angle')}°", fontsize=10)
+        ax.add_patch(sector)
+
+    if circle_image_values["question_topic"] == "area_of_shaded_area":
+        ax.plot([sector_1[0], sector_2[0]], [sector_1[1], sector_2[1]], linestyle="-", color="black")
+
+    ax.add_patch(circle)
+    ax.axis("off")
+
+    circle_image = BytesIO()
+    plt.savefig(circle_image, format="png")
+    circle_image.seek(0)
+    plt.close()
+    return send_file(circle_image, mimetype="image/png")
+
 @app.route("/graph")
 def get_graph():
     graph_values = {
@@ -369,8 +428,8 @@ def quiz_page():
         form = AnswerForm()
         difficulty_boundary = 30
         if "final_answer" not in session:
-            topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values = question_topic_selection(
-                session.get("topic_selection"), int(session.get("current_difficulty")),
+            topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values \
+                = question_topic_selection(session.get("topic_selection"), int(session.get("current_difficulty")),
     ["free_text", "multiple-choice", "true/false"])
             session["current_topic"] = topic
             session["final_answer"] = answer
@@ -389,6 +448,12 @@ def quiz_page():
             else:
                 session.pop("graph_values", None)
                 session.pop("graph_added", None)
+            if circle_image_values is not None:
+                session["circle_image_values"] = circle_image_values
+                session["circle_image_added"] = True
+            else:
+                session.pop("circle_image_values", None)
+                session.pop("circle_image_added", None)
 
         if session["multiple_answers"] == "No":
             form = AnswerForm()
@@ -590,6 +655,8 @@ def quiz_page():
         multiple_answers = session.get("multiple_answers")
         image_added = session.get("image_added")
         graph_added = session.get("graph_added")
+        circle_image_added = session.get("circle_image_added")
         return render_template("quiz.html", form=form, final_question=final_question,
                                current_difficulty=current_difficulty, score=score, question_number=question_number,
-                               multiple_answers=multiple_answers, image_added=image_added, graph_added=graph_added)
+                               multiple_answers=multiple_answers, image_added=image_added, graph_added=graph_added,
+                               circle_image_added=circle_image_added)
