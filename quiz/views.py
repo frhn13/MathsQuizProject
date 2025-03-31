@@ -1,7 +1,7 @@
 import matplotlib
 import numpy as np
 from matplotlib import patches
-matplotlib.use('Agg')  # Use a backend that doesn't require the main thread
+matplotlib.use("Agg")  # Use a backend that doesn't require the main thread
 import matplotlib.pyplot as plt
 from flask import render_template, redirect, url_for, request, flash, session, send_file
 from sympy import sympify, factor, expand, simplify

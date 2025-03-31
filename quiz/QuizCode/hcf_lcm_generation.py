@@ -8,33 +8,63 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
     question = ""
     answer = 0
     while True:
-        question_topic_chosen = random.choice(["prime_factors"])
+        question_topic_chosen = random.choice(["hcf", "lcm", "prime_factors"])
         question_type_chosen = random.choice(question_types)
         match question_topic_chosen:
             case "hcf":
+                difficulty_factors["maths_topic"][0] = 2
+                difficulty_factors["difficulty_of_values"][0] = 3
+                difficulty_factors["depth_of_knowledge"][0] = 3
+                difficulty_factors["multiple_topics"][0] = 3
+                difficulty_factors["difficulty_of_answer"][0] = 3
+                difficulty_factors["number_of_steps"][0] = 3
                 num1, num2 = random.randint(10, 200), random.randint(10, 200)
                 answer = gcd(num1, num2)
                 question = f"What is the highest common factor of {num1} and {num2}?"
+                if answer == num1 or answer == num2:
+                    difficulty_factors["difficulty_of_answer"][0] -= 1
+                    difficulty_factors["difficulty_of_values"][0] -= 1
             case "lcm":
-                answer = 2000
-                while answer > 1000:
+                difficulty_factors["maths_topic"][0] = 2
+                difficulty_factors["difficulty_of_values"][0] = 2
+                difficulty_factors["depth_of_knowledge"][0] = 3
+                difficulty_factors["multiple_topics"][0] = 3
+                difficulty_factors["difficulty_of_answer"][0] = 2
+                difficulty_factors["number_of_steps"][0] = 2
+                while True:
                     num1, num2 = random.randint(10, 100), random.randint(10, 100)
                     answer = lcm(num1, num2)
                     question = f"What is the lowest common multiple of {num1} and {num2}?"
+                    if answer <= 1000:
+                        break
+                if answer == num1 or answer == num2:
+                    difficulty_factors["difficulty_of_answer"][0] -= 1
+                    difficulty_factors["difficulty_of_values"][0] -= 1
             case "prime_factors":
+                difficulty_factors["maths_topic"][0] = 4
+                difficulty_factors["difficulty_of_values"][0] = 5
+                difficulty_factors["depth_of_knowledge"][0] = 4
+                difficulty_factors["multiple_topics"][0] = 4
+                difficulty_factors["difficulty_of_answer"][0] = 5
+                difficulty_factors["number_of_steps"][0] = 4
                 num1 = random.randint(50, 200)
                 answer = factorint(num1)
                 question = f"What are the prime factors of {num1}?"
+
+                if len(answer) == 1:
+                    difficulty_factors["difficulty_of_answer"][0] -= 1
+                    difficulty_factors["difficulty_of_values"][0] -= 1
 
         if type(answer) == int:
             answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
         else:
             question_type_chosen = "free_text"
-            difficulty_factors["question_type"][0] = 8
-            difficulty_factors["answers_similarity"][0] = 8
+            difficulty_factors["question_type"][0] = 7
+            difficulty_factors["answers_similarity"][0] = 7
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+        print(final_difficulty)
 
-        if final_difficulty == entered_difficulty or 1==1:
+        if final_difficulty == entered_difficulty:
             print(difficulty_factors)
             print(difficulty_weighting)
             break
