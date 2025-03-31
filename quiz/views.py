@@ -320,55 +320,58 @@ def get_image():
 
 @app.route("/circle-image")
 def get_circle_image():
-    circle_image_values = {
-        "radius": session["circle_image_values"].get("radius"),
-        "angle": session["circle_image_values"].get("angle"),
-        "question_topic": session["circle_image_values"].get("question_topic"),
-        "use_diameter": session["circle_image_values"].get("use_diameter")
-    }
+    radius = session["circle_image_values"].get("radius")
+    angle = session["circle_image_values"].get("angle")
+    question_topic = session["circle_image_values"].get("question_topic")
+    use_diameter = session["circle_image_values"].get("use_diameter")
 
     # Adapted from https://www.youtube.com/watch?v=i7ATPhd0nwc
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(5, 5), dpi=100)
     ax.set_aspect("equal")
-    ax.set_xlim(-circle_image_values.get("radius") - 1, circle_image_values.get("radius") + 1)
-    ax.set_ylim(-circle_image_values.get("radius") - 1, circle_image_values.get("radius") + 1)
+    ax.set_xlim(-radius - 1, radius + 1)
+    ax.set_ylim(-radius - 1, radius + 1)
 
-    sector = patches.Wedge((0, 0), circle_image_values.get("radius"), 0, circle_image_values.get("angle"), color="lightblue", edgecolor="black")
+    sector = patches.Wedge((0, 0), radius, 0, angle, color="lightblue", edgecolor="black")
 
     angle1_rad = np.radians(0)
-    angle2_rad = np.radians(circle_image_values.get("angle"))
-    sector_1 = (circle_image_values.get("radius") * cos(angle1_rad), circle_image_values.get("radius") * sin(angle1_rad))
-    sector_2 = (circle_image_values.get("radius") * cos(angle2_rad), circle_image_values.get("radius") * sin(angle2_rad))
+    angle2_rad = np.radians(angle)
+    sector_1 = (radius * cos(angle1_rad), radius * sin(angle1_rad))
+    sector_2 = (radius * cos(angle2_rad), radius * sin(angle2_rad))
 
-    if not circle_image_values["use_diameter"]:
-        circle = plt.Circle((0, 0), radius=circle_image_values.get("radius"), color="blue", fill=False)
-        ax.plot([0, circle_image_values.get("radius")], [0, 0], linestyle="--", color="blue")
-        ax.text(circle_image_values.get("radius") / 1.5, 0.5, f"r = {circle_image_values.get('radius')}",
+    circle = plt.Circle((0, 0), radius=radius, color="blue", fill=False)
+    if not use_diameter:
+        ax.plot([0, radius], [0, 0], linestyle="--", color="blue")
+        ax.text(radius / 1.5, 0.5, f"r = {radius}",
                 fontsize=10)
     else:
-        circle = plt.Circle((0, 0), radius=circle_image_values.get("radius"), color="blue", fill=False)
-        ax.plot([-circle_image_values.get("radius"), circle_image_values.get("radius")], [0, 0], linestyle="--", color="blue")
-        ax.text(circle_image_values.get("radius") / 1.5, 0.5, f"d = {circle_image_values.get('radius') * 2}",
+        ax.plot([-radius, radius], [0, 0], linestyle="--", color="blue")
+        ax.text(radius / 1.5, 0.5, f"d = {radius * 2}",
                 fontsize=10)
 
-    if circle_image_values["question_topic"] in ("sector", "arc", "area_of_shaded_area"):
-        ax.text(0, 0.5, f"{circle_image_values.get('angle')}°", fontsize=10)
+    if question_topic in ("sector", "arc", "area_of_shaded_area"):
+        ax.text(0, 0.5, f"{angle}°", fontsize=10)
         ax.add_patch(sector)
 
-    if circle_image_values["question_topic"] == "area_of_shaded_area":
+    if question_topic == "area_of_shaded_area":
         ax.plot([sector_1[0], sector_2[0]], [sector_1[1], sector_2[1]], linestyle="-", color="black")
 
     ax.add_patch(circle)
     ax.axis("off")
 
+    # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
     circle_image = BytesIO()
-    plt.savefig(circle_image, format="png")
+    plt.savefig(circle_image, format="png", bbox_inches="tight")
     circle_image.seek(0)
     plt.close()
     return send_file(circle_image, mimetype="image/png")
 
 @app.route("/graph")
 def get_graph():
+    time_values = session["graph_values"].get("time_values")
+    distance_values = session["graph_values"].get("distance_values")
+    speed_values = session["graph_values"].get("speed_values")
+    pie_chart_values = session["graph_values"].get("pie_chart_values")
+    pie_chart_labels = session["graph_values"].get("pie_chart_labels")
     graph_values = {
         "time_values": session["graph_values"].get("time_values"),
         "distance_values": session["graph_values"].get("distance_values"),
@@ -379,9 +382,9 @@ def get_graph():
 
     # plt.figure(figsize=(20, 20))
 
-    if graph_values["distance_values"] != []:
+    if distance_values != []:
         plt.gca().set_aspect("equal", adjustable="box")
-        plt.plot(graph_values["time_values"], graph_values["distance_values"], linestyle="-", marker=".", color="blue")
+        plt.plot(time_values, distance_values, linestyle="-", marker=".", color="blue")
         plt.xlabel("Time in Minutes")
         plt.ylabel("Distance")
         plt.grid()
@@ -390,9 +393,9 @@ def get_graph():
         plt.savefig(graph_image, format="png")
         graph_image.seek(0)
         plt.close()
-    elif graph_values["speed_values"] != []:
+    elif speed_values != []:
         plt.gca().set_aspect("equal", adjustable="box")
-        plt.plot(graph_values["time_values"], graph_values["speed_values"], linestyle="-", marker=".", color="blue")
+        plt.plot(time_values, speed_values, linestyle="-", marker=".", color="blue")
         plt.xlabel("Time in Seconds")
         plt.ylabel("Speed")
         plt.grid()
@@ -401,17 +404,17 @@ def get_graph():
         plt.savefig(graph_image, format="png")
         graph_image.seek(0)
         plt.close()
-    elif graph_values["pie_chart_values"] != []:
+    elif pie_chart_values != []:
         def angle_generation(percentage):
             angle = (percentage / 100) * 360
             return f"{angle:.0f}°"
 
         plt.gca().set_aspect("equal", adjustable="box")
-        plt.pie(graph_values["pie_chart_values"], labels=graph_values["pie_chart_labels"], startangle=90,
+        plt.pie(pie_chart_values, labels=pie_chart_labels, startangle=90,
                 wedgeprops={"edgecolor": "black"}, autopct=angle_generation)
         # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
         graph_image = BytesIO()
-        plt.savefig(graph_image, format="png")
+        plt.savefig(graph_image, format="png", bbox_inches="tight")
         graph_image.seek(0)
         plt.close()
 

@@ -75,12 +75,12 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                         question = "What is the total distance travelled?"
                         answer = max(distance_values) * 2 if distance_values[-1] == 0 else max(distance_values)
                     case "average_speed":
-                        difficulty_factors["maths_topic"][0] = 3
-                        difficulty_factors["difficulty_of_values"][0] = 3
+                        difficulty_factors["maths_topic"][0] = 5
+                        difficulty_factors["difficulty_of_values"][0] = 5
                         difficulty_factors["depth_of_knowledge"][0] = 4
-                        difficulty_factors["multiple_topics"][0] = 4
+                        difficulty_factors["multiple_topics"][0] = 5
                         difficulty_factors["difficulty_of_answer"][0] = 4
-                        difficulty_factors["number_of_steps"][0] = 4
+                        difficulty_factors["number_of_steps"][0] = 5
                         if num_datapoints >= 4:
                             question = "What is the average speed at the end?"
                             answer = abs((distance_values[-1] - distance_values[-2]) / (time_values[-1] - time_values[-2]))

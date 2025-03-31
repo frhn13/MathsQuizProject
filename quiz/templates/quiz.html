@@ -9,11 +9,9 @@
    <h5 class="mt-5">Question {{ question_number }}</h5>
    {% if image_added %}
       <img src="{{ url_for('get_image') }}" class="mx-auto w-100"/>
-   {% endif %}
-   {% if graph_added %}
+   {% elif graph_added %}
       <img src="{{ url_for('get_graph') }}"/>
-   {% endif %}
-   {% if circle_image_added %}
+   {% elif circle_image_added %}
       <img src="{{ url_for('get_circle_image') }}"/>
    {% endif %}
    {% if multiple_answers == "No" %}

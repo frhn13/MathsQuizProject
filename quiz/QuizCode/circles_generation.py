@@ -6,24 +6,41 @@ from .helper_functions import answer_generation, answer_generation_decimals, cal
 def circles_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     while True:
         question_topic_chosen = random.choice(["area", "circumference", "sector", "arc", "area_of_shaded_area"])
-        print(question_topic_chosen)
         question_type_chosen = random.choice(question_types)
         question = ""
         answer, radius, angle = 0, 0, 0
         match question_topic_chosen:
             case "area":
+                difficulty_factors["maths_topic"][0] = 3
+                difficulty_factors["difficulty_of_values"][0] = 3
+                difficulty_factors["depth_of_knowledge"][0] = 4
+                difficulty_factors["multiple_topics"][0] = 4
+                difficulty_factors["difficulty_of_answer"][0] = 3
+                difficulty_factors["number_of_steps"][0] = 3
                 radius = random.randint(2, 10)
                 answer = round(math.pi * math.pow(radius, 2), 2)
                 question = f"If the radius of a circle is {radius}, then what is its area? Give your answer correct to 2 decimal places." if random.random() > 0.5 \
                     else f"If the diameter of a circle is {radius*2}, then what is its area? Give your answer correct to 2 decimal places."
 
             case "circumference":
+                difficulty_factors["maths_topic"][0] = 3
+                difficulty_factors["difficulty_of_values"][0] = 3
+                difficulty_factors["depth_of_knowledge"][0] = 4
+                difficulty_factors["multiple_topics"][0] = 4
+                difficulty_factors["difficulty_of_answer"][0] = 3
+                difficulty_factors["number_of_steps"][0] = 3
                 radius = random.randint(2, 10)
                 answer = round(math.pi * radius * 2, 2)
                 question = f"If the radius of a circle is {radius}, then what is its circumference? Give your answer correct to 2 decimal places." if random.random() > 0.5 \
                     else f"If the diameter of a circle is {radius * 2}, then what is its circumference? Give your answer correct to 2 decimal places."
 
             case "sector":
+                difficulty_factors["maths_topic"][0] = 5
+                difficulty_factors["difficulty_of_values"][0] = 5
+                difficulty_factors["depth_of_knowledge"][0] = 6
+                difficulty_factors["multiple_topics"][0] = 6
+                difficulty_factors["difficulty_of_answer"][0] = 5
+                difficulty_factors["number_of_steps"][0] = 5
                 radius = random.randint(2, 10)
                 angle = random.randint(60, 170)
                 answer = round((angle/360) * math.pi * math.pow(radius, 2), 2)
@@ -33,6 +50,12 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
                             f"then what is the area of the sector? Give your answer correct to 2 decimal places.")
 
             case "arc":
+                difficulty_factors["maths_topic"][0] = 5
+                difficulty_factors["difficulty_of_values"][0] = 5
+                difficulty_factors["depth_of_knowledge"][0] = 6
+                difficulty_factors["multiple_topics"][0] = 6
+                difficulty_factors["difficulty_of_answer"][0] = 5
+                difficulty_factors["number_of_steps"][0] = 5
                 radius = random.randint(2, 10)
                 angle = random.randint(60, 170)
                 answer = round((angle/360) * math.pi * radius * 2, 2)
@@ -44,6 +67,12 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
                     f"then what is the length of the sector's arc? Give your answer correct to 2 decimal places.")
 
             case "area_of_shaded_area":
+                difficulty_factors["maths_topic"][0] = 6
+                difficulty_factors["difficulty_of_values"][0] = 6
+                difficulty_factors["depth_of_knowledge"][0] = 7
+                difficulty_factors["multiple_topics"][0] = 6
+                difficulty_factors["difficulty_of_answer"][0] = 6
+                difficulty_factors["number_of_steps"][0] = 7
                 radius = random.randint(2, 10)
                 angle = random.randint(60, 170)
                 sector_area = (angle/360) * math.pi * math.pow(radius, 2)
@@ -61,13 +90,17 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
             "use_diameter": True if "diameter" in question else False
         }
 
+        if "diameter" in question:
+            difficulty_factors["number_of_steps"][0] += 1
+            difficulty_factors["difficulty_of_values"][0] += 1
+
         if type(answer) == int:
             answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
         elif type(answer) == float:
             answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen, difficulty_factors)
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
-        if final_difficulty == entered_difficulty or 1==1:
+        if final_difficulty == entered_difficulty:
             print(difficulty_factors)
             print(difficulty_weighting)
             break
