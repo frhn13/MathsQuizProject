@@ -10,6 +10,7 @@ from .triangles_generation import triangles_question_generation
 from .calculus_generation import calculus_questions_generation
 from .graphs_generation import graphs_questions_generation
 from .circles_generation import circles_question_generation
+from .hcf_lcm_generation import hcf_lcm_question_generation
 from .min_and_max_difficulties import *
 
 # Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
@@ -75,8 +76,8 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             difficulty_factors)
                     is_topic_chosen = True
             case "hcf_lcm":
-                if operations[0] <= entered_difficulty <= operations[1]:
-                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                if hcf_lcm[0] <= entered_difficulty <= hcf_lcm[1]:
+                    question, answer, difficulty_weighting = hcf_lcm_question_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True
@@ -112,13 +113,3 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                     is_topic_chosen = True
 
     return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values
-
-# Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
-# ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
-# Type of question: Free text -> multiple-choice -> true/false
-# Topic: Calculus -> Trigonometry -> Quadratic questions -> Sequences -> Linear equations -> 3d shapes -> 2d shapes -> fractions and decimals -> operations
-# Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
-# Difficulty of values used: How big values used are, whether final answer is whole number
-
-def hcf_lcm_prime_factors():
-    pass

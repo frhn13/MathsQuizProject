@@ -157,6 +157,10 @@ def quiz_selection():
                 session["min_difficulty"] = sequences[0]
         if request.form.get("hcf_lcm") is not None:
             topics_chosen.append("hcf_lcm")
+            if session["max_difficulty"] < hcf_lcm[1]:
+                session["max_difficulty"] = hcf_lcm[1]
+            if session["min_difficulty"] > hcf_lcm[0]:
+                session["min_difficulty"] = hcf_lcm[0]
         if request.form.get("percentages") is not None:
             topics_chosen.append("percentages")
             if session["max_difficulty"] < percentages[1]:
@@ -474,7 +478,6 @@ def quiz_page():
         if request.method == "POST":
             answer = 0
             match session["current_topic"]:
-
                 case "equations":
                     match session["multiple_answers"]:
                         case "No":
@@ -536,6 +539,7 @@ def quiz_page():
                             return redirect(url_for("quiz_page"))
                     else:
                         final_answer = str(final_answer)
+
                 case "expressions":
                     answer = request.form.get("answer")
                     if final_answer in ("True", "False") and answer not in ("True", "False"):
@@ -549,6 +553,7 @@ def quiz_page():
                             answer = answer.replace(" ", "")
                             final_answer = str(simplify(sympify(final_answer))).replace(" ", "")
                             # answer = simplify(sympify(answer))
+
                 case "calculus":
                     answer = request.form.get("answer")
                     if not final_answer.isnumeric() and "y" not in final_answer:
@@ -574,6 +579,51 @@ def quiz_page():
                         flash("You must enter a number. Try again.", category="danger")
                         return redirect(url_for("quiz_page"))
 
+                case "hcf_lcm":
+                    answer = request.form.get("answer")
+                    total_number = ""
+                    final_answer_str = ""
+                    try:
+                        if type(final_answer) == int:
+                            answer = int(answer)
+                        elif type(final_answer) == dict:
+                            answer = answer.replace(" ", "")
+                            numbers_dict = {}
+                            for x, character in enumerate(answer):
+                                if not character.isnumeric() and character.lower() not in ("x", "*"):
+                                    flash("You must list the multiplication of prime factors like a x b x c. Try again.", category="danger")
+                                    return redirect(url_for("quiz_page"))
+                                elif character.isnumeric():
+                                    total_number += character
+                                    if x+1 == len(answer) or (x+1 < len(answer) and answer[x+1].lower() in ("x", "*")):
+                                        if total_number not in numbers_dict:
+                                            numbers_dict[total_number] = 1
+                                        else:
+                                            numbers_dict[total_number] += 1
+                                        total_number = ""
+                            for number in numbers_dict:
+                                if number not in final_answer:
+                                    answer = ""
+                                    break
+                                elif numbers_dict[number] != final_answer[number]:
+                                    answer = ""
+                                    break
+
+                            for number in final_answer:
+                                for x in range(final_answer[number]):
+                                    final_answer_str += f"{number}x"
+                            final_answer_str = final_answer_str[0:-1]
+                            final_answer = final_answer_str
+
+                            if answer != "":
+                                answer = final_answer
+                        else:
+                            if final_answer in ("True", "False") and answer not in ("True", "False"):
+                                flash("You must enter True or False. Try again", category="danger")
+                                return redirect(url_for("quiz_page"))
+                    except Exception:
+                        flash("You must enter a number. Try again.", category="danger")
+                        return redirect(url_for("quiz_page"))
 
                 case _:
                     try:
@@ -611,8 +661,8 @@ def quiz_page():
                 else:
                     session["difficulty_range"] = 50
                 flash(f"Well done! You got it right!", category="success")
-            else:
 
+            else:
                 session["topic_counter"][session["current_topic"]][1] += 1
                 difficulty_counter = session["difficulty_counter"]
                 difficulty_counter[f"level_{session['current_difficulty']}"][1] += 1
