@@ -13,10 +13,10 @@ from math import sin, cos
 from quiz import app, db
 from .QuizCode.min_and_max_difficulties import *
 from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm,
-                        AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm)
+                        AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm, ResultsForm)
 from .QuizCode.topic_manager import question_topic_selection
 from quiz.models import User, QuestionTopics, QuestionDifficulties
-from quiz.update_results import update_topic_information, update_difficulty_information
+from quiz.update_results import update_topic_information, update_difficulty_information, get_user_results
 
 @app.route("/", methods=["GET", "POST"])
 @app.route("/register", methods=["GET", "POST"])
@@ -551,7 +551,7 @@ def quiz_page():
                             return redirect(url_for("quiz_page"))
                         else:
                             answer = answer.replace(" ", "")
-                            final_answer = str(simplify(sympify(final_answer))).replace(" ", "")
+                            final_answer = final_answer.replace(" ", "")
                             # answer = simplify(sympify(answer))
 
                 case "calculus":
@@ -713,3 +713,31 @@ def quiz_page():
                                current_difficulty=current_difficulty, score=score, question_number=question_number,
                                multiple_answers=multiple_answers, image_added=image_added, graph_added=graph_added,
                                circle_image_added=circle_image_added)
+
+@app.route("/get-results-graph")
+def get_results_graph():
+    answer_correct = session["answer_correct"]
+    answer_incorrect = session["answer_incorrect"]
+    answer_percentage = session["answer_percentage"]
+
+    x_axis = ["Correct Answers", "Incorrect Answers"]
+    y_axis = [answer_correct, answer_incorrect]
+
+    plt.bar(x_axis, y_axis)
+    plt.xlabel("Number of Questions")
+    plt.ylabel("Right or Wrong")
+    plt.title(f"Number of questions {current_user.username} got right and wrong")
+    # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+    graph_image = BytesIO()
+    plt.savefig(graph_image, format="png")
+    graph_image.seek(0)
+    plt.close()
+
+    return send_file(graph_image, mimetype="image/png")
+
+@app.route("/view-results", methods=["GET", "POST"])
+@login_required
+def view_results():
+    session["answer_correct"], session["answer_incorrect"], session["answer_percentage"] = get_user_results(current_user)
+    form = ResultsForm()
+    return render_template("view_results.html", form=form)

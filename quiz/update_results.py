@@ -123,3 +123,32 @@ def update_difficulty_information(difficulty_counter : dict):
             if (question_difficulties.level_ten_right + question_difficulties.level_ten_wrong) != 0 else 0
 
         db.session.commit()
+
+def get_user_results(chosen_user):
+    question_difficulties = QuestionDifficulties.query.filter_by(user_id=chosen_user.id).first()
+    answers_correct = (question_difficulties.level_one_right + question_difficulties.level_two_right +
+                       question_difficulties.level_three_right + question_difficulties.level_four_right +
+                       question_difficulties.level_five_right + question_difficulties.level_six_right +
+                       question_difficulties.level_seven_right + question_difficulties.level_eight_right +
+                       question_difficulties.level_nine_right + question_difficulties.level_ten_right)
+
+    answers_incorrect = (question_difficulties.level_one_wrong + question_difficulties.level_two_wrong +
+                       question_difficulties.level_three_wrong + question_difficulties.level_four_wrong +
+                       question_difficulties.level_five_wrong + question_difficulties.level_six_wrong +
+                       question_difficulties.level_seven_wrong + question_difficulties.level_eight_wrong +
+                       question_difficulties.level_nine_wrong + question_difficulties.level_ten_wrong)
+
+    answers_percentage = (question_difficulties.level_one_percentage + question_difficulties.level_two_percentage +
+                       question_difficulties.level_three_percentage + question_difficulties.level_four_percentage +
+                       question_difficulties.level_five_percentage + question_difficulties.level_six_percentage +
+                       question_difficulties.level_seven_percentage + question_difficulties.level_eight_percentage +
+                       question_difficulties.level_nine_percentage + question_difficulties.level_ten_percentage) / 10
+
+    return answers_correct, answers_incorrect, answers_percentage
+
+
+def get_difficulty_results(chosen_user, chosen_difficulty):
+    pass
+
+def get_topic_results(chosen_user, chosen_topic):
+    pass

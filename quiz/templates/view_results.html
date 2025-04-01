@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Results{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+   <h1>Results Page</h1>
+    {% if form %}
+    <form method="POST" class="form-register mx-auto w-50 mt-5">
+        {{ form.csrf_token() }}
+
+        {{ form.results_returned.label() }}
+        {% for button in form.results_returned %}
+        <br>
+            {{ button.label() }}
+            {{ button }}
+        {% endfor %}
+        <br>
+        <br>
+        {{ form.topic_chosen.label() }}
+        {{ form.topic_chosen(class="form-control") }}
+        {{ form.difficulty_chosen.label() }}
+        {{ form.difficulty_chosen(class="form-control") }}
+        {{ form.user_chosen.label() }}
+        {{ form.user_chosen(class="form-control") }}
+
+        {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+      <div class="container mt-5">
+         <img src="{{ url_for('get_results_graph') }}"/>
+      </div>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

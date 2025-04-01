@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, BooleanField, FloatField, PasswordField
+from wtforms import StringField, SubmitField, IntegerField, BooleanField, PasswordField, RadioField
 from wtforms.validators import DataRequired, NumberRange, Email, Length, EqualTo
 import re
 
@@ -54,3 +54,11 @@ class LoginForm(FlaskForm):
     username = StringField(label="Username:", validators=[DataRequired(), Length(4, 20)])
     password = PasswordField(label="Password:", validators=[DataRequired(), Length(4, 20)])
     submit = SubmitField(label="Login")
+
+class ResultsForm(FlaskForm):
+    results_returned = RadioField("Choose results to return:",
+                                  choices=[("all", "All Results"), ("difficulty", "All results for a specific Difficulty"), ("topic", "All results for a specific Topic")])
+    topic_chosen = StringField(label="Select topic: ", validators=[DataRequired()])
+    difficulty_chosen = StringField(label="Select Difficulty: ", validators=[DataRequired()])
+    user_chosen = StringField(label="Select User: ", validators=[DataRequired()])
+    submit = SubmitField(label="Submit")
