@@ -1,4 +1,5 @@
 from flask_login import current_user
+import inflect
 
 from quiz import db
 from quiz.models import QuestionTopics, QuestionDifficulties
@@ -148,7 +149,83 @@ def get_user_results(chosen_user):
 
 
 def get_difficulty_results(chosen_user, chosen_difficulty):
-    pass
+    question_difficulties = QuestionDifficulties.query.filter_by(user_id=chosen_user.id).first()
+    answer_correct = 0
+    answer_incorrect = 0
+    match chosen_difficulty:
+        case 1:
+            answer_correct = question_difficulties.level_one_right
+            answer_incorrect = question_difficulties.level_one_wrong
+        case 2:
+            answer_correct = question_difficulties.level_two_right
+            answer_incorrect = question_difficulties.level_two_wrong
+        case 3:
+            answer_correct = question_difficulties.level_three_right
+            answer_incorrect = question_difficulties.level_three_wrong
+        case 4:
+            answer_correct = question_difficulties.level_four_right
+            answer_incorrect = question_difficulties.level_four_wrong
+        case 5:
+            answer_correct = question_difficulties.level_five_right
+            answer_incorrect = question_difficulties.level_five_wrong
+        case 6:
+            answer_correct = question_difficulties.level_six_right
+            answer_incorrect = question_difficulties.level_six_wrong
+        case 7:
+            answer_correct = question_difficulties.level_seven_right
+            answer_incorrect = question_difficulties.level_seven_wrong
+        case 8:
+            answer_correct = question_difficulties.level_eight_right
+            answer_incorrect = question_difficulties.level_eight_wrong
+        case 9:
+            answer_correct = question_difficulties.level_nine_right
+            answer_incorrect = question_difficulties.level_nine_wrong
+        case 10:
+            answer_correct = question_difficulties.level_ten_right
+            answer_incorrect = question_difficulties.level_ten_wrong
+
+    return answer_correct, answer_incorrect
 
 def get_topic_results(chosen_user, chosen_topic):
-    pass
+    question_topics = QuestionTopics.query.filter_by(user_id=chosen_user.id).first()
+    answer_correct = 0
+    answer_incorrect = 0
+    match chosen_topic:
+        case "operations":
+            answer_correct = question_topics.operations_right
+            answer_incorrect = question_topics.operations_wrong
+        case "fractions":
+            answer_correct = question_topics.fractions_right
+            answer_incorrect = question_topics.fractions_wrong
+        case "expressions":
+            answer_correct = question_topics.expressions_right
+            answer_incorrect = question_topics.expressions_wrong
+        case "equations":
+            answer_correct = question_topics.equations_right
+            answer_incorrect = question_topics.equations_wrong
+        case "percentages":
+            answer_correct = question_topics.percentages_right
+            answer_incorrect = question_topics.percentages_wrong
+        case "sequences":
+            answer_correct = question_topics.sequences_right
+            answer_incorrect = question_topics.sequences_wrong
+        case "triangles":
+            answer_correct = question_topics.triangles_right
+            answer_incorrect = question_topics.triangles_wrong
+        case "calculus":
+            answer_correct = question_topics.calculus_right
+            answer_incorrect = question_topics.calculus_wrong
+        case "hcf_lcm":
+            answer_correct = question_topics.hcf_lcm_right
+            answer_incorrect = question_topics.hcf_lcm_wrong
+        case "circles":
+            answer_correct = question_topics.circles_right
+            answer_incorrect = question_topics.circles_wrong
+        case "graphs":
+            answer_correct = question_topics.graphs_right
+            answer_incorrect = question_topics.graphs_wrong
+        case _:
+            answer_correct = question_topics.operations_right
+            answer_incorrect = question_topics.operations_wrong
+
+    return answer_correct, answer_incorrect

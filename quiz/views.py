@@ -16,7 +16,9 @@ from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, Restart
                         AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm, ResultsForm)
 from .QuizCode.topic_manager import question_topic_selection
 from quiz.models import User, QuestionTopics, QuestionDifficulties
-from quiz.update_results import update_topic_information, update_difficulty_information, get_user_results
+from quiz.update_results import update_topic_information, update_difficulty_information, get_user_results, \
+    get_difficulty_results, get_topic_results
+
 
 @app.route("/", methods=["GET", "POST"])
 @app.route("/register", methods=["GET", "POST"])
@@ -24,17 +26,22 @@ def register_page():
     if current_user.is_anonymous:
         form = RegisterForm()
         if form.validate_on_submit():
-            created_user = User(username=form.username.data, email=form.email.data, password=form.password.data)
-            db.session.add(created_user)
-            db.session.commit()
-            question_topics = QuestionTopics(user_id=created_user.id)
-            question_difficulties = QuestionDifficulties(user_id=created_user.id)
-            db.session.add(question_topics)
-            db.session.add(question_difficulties)
-            db.session.commit()
-            login_user(created_user)
-            flash("Account creation successful!", category="success")
-            return redirect(url_for("quiz_selection"))
+            preexisting_username = User.query.filter_by(username=form.username.data).first()
+            preexisting_email = User.query.filter_by(email=form.email.data).first()
+            if not preexisting_username and not preexisting_email:
+                created_user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+                db.session.add(created_user)
+                db.session.commit()
+                question_topics = QuestionTopics(user_id=created_user.id)
+                question_difficulties = QuestionDifficulties(user_id=created_user.id)
+                db.session.add(question_topics)
+                db.session.add(question_difficulties)
+                db.session.commit()
+                login_user(created_user)
+                flash("Account creation successful!", category="success")
+                return redirect(url_for("quiz_selection"))
+            else:
+                flash("Account already exists with that username or email.", category="danger")
 
         return render_template("register.html", form=form)
     else:
@@ -716,28 +723,88 @@ def quiz_page():
 
 @app.route("/get-results-graph")
 def get_results_graph():
-    answer_correct = session["answer_correct"]
-    answer_incorrect = session["answer_incorrect"]
-    answer_percentage = session["answer_percentage"]
+    print(session["username"])
+    print(session["graph_type"])
+    print(session["topic"])
+    print(session["difficulty"])
+    user = User.query.filter_by(username=session["username"]).first()
+    match session["graph_type"]:
+        case "all":
+            answer_correct, answer_incorrect, answer_percentage = get_user_results(user)
+            x_axis = ["Correct Answers", "Incorrect Answers"]
+            y_axis = [answer_correct, answer_incorrect]
 
-    x_axis = ["Correct Answers", "Incorrect Answers"]
-    y_axis = [answer_correct, answer_incorrect]
+            plt.bar(x_axis, y_axis)
+            plt.xlabel("Number of Questions")
+            plt.ylabel("Right or Wrong")
+            plt.title(f"Number of questions {session['username']} got right and wrong")
+            # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+            graph_image = BytesIO()
+            plt.savefig(graph_image, format="png")
+            graph_image.seek(0)
+            plt.close()
 
-    plt.bar(x_axis, y_axis)
-    plt.xlabel("Number of Questions")
-    plt.ylabel("Right or Wrong")
-    plt.title(f"Number of questions {current_user.username} got right and wrong")
-    # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
-    graph_image = BytesIO()
-    plt.savefig(graph_image, format="png")
-    graph_image.seek(0)
-    plt.close()
+        case "difficulty":
+            answer_correct, answer_incorrect = get_difficulty_results(user, session["difficulty"])
+            x_axis = ["Correct Answers", "Incorrect Answers"]
+            y_axis = [answer_correct, answer_incorrect]
+
+            plt.bar(x_axis, y_axis)
+            plt.xlabel("Number of Questions")
+            plt.ylabel("Right or Wrong")
+            plt.title(f"Number of questions {session['username']} got right and wrong on Difficulty {session['difficulty']}")
+            # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+            graph_image = BytesIO()
+            plt.savefig(graph_image, format="png")
+            graph_image.seek(0)
+            plt.close()
+
+        case "topic":
+            answer_correct, answer_incorrect = get_topic_results(user, session["topic"])
+            x_axis = ["Correct Answers", "Incorrect Answers"]
+            y_axis = [answer_correct, answer_incorrect]
+
+            plt.bar(x_axis, y_axis)
+            plt.xlabel("Number of Questions")
+            plt.ylabel("Right or Wrong")
+            if session["topic"] == "hcf_lcm":
+                plt.title(f"Number of HCF, LCM and prime factors questions {session['username']} got right and wrong")
+            else:
+                plt.title(f"Number of {session['topic']} questions {session['username']} got right and wrong")
+            # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+            graph_image = BytesIO()
+            plt.savefig(graph_image, format="png")
+            graph_image.seek(0)
+            plt.close()
+
+        case _:
+            answer_correct, answer_incorrect, answer_percentage = get_user_results(current_user)
+            x_axis = ["Correct Answers", "Incorrect Answers"]
+            y_axis = [answer_correct, answer_incorrect]
+
+            plt.bar(x_axis, y_axis)
+            plt.xlabel("Number of Questions")
+            plt.ylabel("Right or Wrong")
+            plt.title(f"Number of questions you got right and wrong")
+            # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+            graph_image = BytesIO()
+            plt.savefig(graph_image, format="png")
+            graph_image.seek(0)
+            plt.close()
 
     return send_file(graph_image, mimetype="image/png")
 
 @app.route("/view-results", methods=["GET", "POST"])
 @login_required
 def view_results():
-    session["answer_correct"], session["answer_incorrect"], session["answer_percentage"] = get_user_results(current_user)
-    form = ResultsForm()
+    users = User.query.all()
+    users_list = []
+    for user in users:
+        users_list.append((user.username, user.username))
+    form = ResultsForm(users_list)
+    if form.validate_on_submit():
+        session["graph_type"] = form.results_returned.data
+        session["topic"] = form.topic_chosen.data
+        session["difficulty"] = form.difficulty_chosen.data
+        session["username"] = form.user_chosen.data
     return render_template("view_results.html", form=form)

@@ -24,10 +24,10 @@
         {{ form.user_chosen(class="form-control") }}
 
         {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
-      <div class="container mt-5">
+    </form>
+    <div class="container mt-5">
          <img src="{{ url_for('get_results_graph') }}"/>
       </div>
-    </form>
     {% endif %}
 </div>
 {% endblock %}
