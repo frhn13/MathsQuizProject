@@ -723,88 +723,117 @@ def quiz_page():
 
 @app.route("/get-results-graph")
 def get_results_graph():
-    print(session["username"])
-    print(session["graph_type"])
-    print(session["topic"])
-    print(session["difficulty"])
     user = User.query.filter_by(username=session["username"]).first()
+    second_user = User.query.filter_by(username=session["second_username"]).first()
     match session["graph_type"]:
         case "all":
             answer_correct, answer_incorrect, answer_percentage = get_user_results(user)
+            if session["compare_results"]:
+                answer_correct_2, answer_incorrect_2, answer_percentage_2 = get_user_results(second_user)
+                y_axis_2 = [answer_correct_2, answer_incorrect_2]
+                plt.title(f"Number of questions {session['username']} and {session['second_username']} got right and wrong")
+            else:
+                plt.title(f"Number of questions {session['username']} got right and wrong")
+
             x_axis = ["Correct Answers", "Incorrect Answers"]
             y_axis = [answer_correct, answer_incorrect]
-
-            plt.bar(x_axis, y_axis)
-            plt.xlabel("Number of Questions")
-            plt.ylabel("Right or Wrong")
-            plt.title(f"Number of questions {session['username']} got right and wrong")
-            # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
-            graph_image = BytesIO()
-            plt.savefig(graph_image, format="png")
-            graph_image.seek(0)
-            plt.close()
+            plt.xlabel("Right or Wrong")
+            plt.ylabel("Number of Questions")
 
         case "difficulty":
             answer_correct, answer_incorrect = get_difficulty_results(user, session["difficulty"])
+            if session["compare_results"]:
+                answer_correct_2, answer_incorrect_2 = get_difficulty_results(second_user, session["difficulty"])
+                y_axis_2 = [answer_correct_2, answer_incorrect_2]
+                plt.title(f"Number of questions {session['username']} and {session['second_username']} got right and wrong on Difficulty {session['difficulty']}")
+            else:
+                plt.title(f"Number of questions {session['username']} got right and wrong on Difficulty {session['difficulty']}")
+
             x_axis = ["Correct Answers", "Incorrect Answers"]
             y_axis = [answer_correct, answer_incorrect]
-
-            plt.bar(x_axis, y_axis)
-            plt.xlabel("Number of Questions")
-            plt.ylabel("Right or Wrong")
-            plt.title(f"Number of questions {session['username']} got right and wrong on Difficulty {session['difficulty']}")
-            # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
-            graph_image = BytesIO()
-            plt.savefig(graph_image, format="png")
-            graph_image.seek(0)
-            plt.close()
+            plt.xlabel("Right or Wrong")
+            plt.ylabel("Number of Questions")
 
         case "topic":
             answer_correct, answer_incorrect = get_topic_results(user, session["topic"])
+            if session["compare_results"]:
+                answer_correct_2, answer_incorrect_2 = get_topic_results(second_user, session["topic"])
+                y_axis_2 = [answer_correct_2, answer_incorrect_2]
+                if session["topic"] == "hcf_lcm":
+                    plt.title(
+                        f"Number of HCF, LCM and prime factors questions {session['username']} and {session['second_username']} got right and wrong")
+                else:
+                    plt.title(f"Number of {session['topic']} questions {session['username']} and {session['second_username']} got right and wrong")
+            else:
+                if session["topic"] == "hcf_lcm":
+                    plt.title(
+                        f"Number of HCF, LCM and prime factors questions {session['username']} got right and wrong")
+                else:
+                    plt.title(
+                        f"Number of {session['topic']} questions {session['username']} got right and wrong")
+
             x_axis = ["Correct Answers", "Incorrect Answers"]
             y_axis = [answer_correct, answer_incorrect]
-
-            plt.bar(x_axis, y_axis)
-            plt.xlabel("Number of Questions")
-            plt.ylabel("Right or Wrong")
+            plt.xlabel("Right or Wrong")
+            plt.ylabel("Number of Questions")
             if session["topic"] == "hcf_lcm":
                 plt.title(f"Number of HCF, LCM and prime factors questions {session['username']} got right and wrong")
             else:
                 plt.title(f"Number of {session['topic']} questions {session['username']} got right and wrong")
-            # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
-            graph_image = BytesIO()
-            plt.savefig(graph_image, format="png")
-            graph_image.seek(0)
-            plt.close()
 
         case _:
             answer_correct, answer_incorrect, answer_percentage = get_user_results(current_user)
+            if session["compare_results"]:
+                pass
             x_axis = ["Correct Answers", "Incorrect Answers"]
             y_axis = [answer_correct, answer_incorrect]
-
-            plt.bar(x_axis, y_axis)
-            plt.xlabel("Number of Questions")
-            plt.ylabel("Right or Wrong")
+            plt.xlabel("Right or Wrong")
+            plt.ylabel("Number of Questions")
             plt.title(f"Number of questions you got right and wrong")
-            # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
-            graph_image = BytesIO()
-            plt.savefig(graph_image, format="png")
-            graph_image.seek(0)
-            plt.close()
+
+    if session["compare_results"]:
+        bar_1 = np.arange(len(x_axis))
+        bar_2 = [x+0.5 for x in bar_1]
+        bars_1 = plt.bar(bar_1, y_axis, 0.5, label=session["username"], align='center')
+        bars_2 = plt.bar(bar_2, y_axis_2, 0.5, label=session["second_username"], align='center')
+        plt.bar_label(bars_1, fmt="%d", padding=10, label_type="center")
+        plt.bar_label(bars_2, fmt="%d", padding=10, label_type="center")
+        plt.xticks(bar_1, x_axis)
+        plt.legend()
+    else:
+        bars = plt.bar(x_axis, y_axis)
+        plt.bar_label(bars, fmt="%d", padding=10, label_type="center")
+    # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+    graph_image = BytesIO()
+    plt.savefig(graph_image, format="png")
+    graph_image.seek(0)
+    plt.close()
 
     return send_file(graph_image, mimetype="image/png")
 
 @app.route("/view-results", methods=["GET", "POST"])
 @login_required
 def view_results():
+    form_is_submitted = False
+    session.pop("graph_type", None)
+    session.pop("topic", None)
+    session.pop("difficulty", None)
+    session.pop("username", None)
+    session.pop("compare_results", None)
+    session.pop("second_username", None)
+    session["graph_type"] = "NotChosen"
     users = User.query.all()
     users_list = []
     for user in users:
         users_list.append((user.username, user.username))
     form = ResultsForm(users_list)
     if form.validate_on_submit():
+        form_is_submitted = True
         session["graph_type"] = form.results_returned.data
         session["topic"] = form.topic_chosen.data
         session["difficulty"] = form.difficulty_chosen.data
         session["username"] = form.user_chosen.data
-    return render_template("view_results.html", form=form)
+        session["compare_results"] = form.compare_results.data
+        session["second_username"] = form.second_user_chosen.data
+        print(session["compare_results"])
+    return render_template("view_results.html", form=form, form_is_submitted=form_is_submitted)

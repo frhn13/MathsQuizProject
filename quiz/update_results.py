@@ -1,5 +1,4 @@
 from flask_login import current_user
-import inflect
 
 from quiz import db
 from quiz.models import QuestionTopics, QuestionDifficulties

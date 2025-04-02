@@ -72,7 +72,7 @@ class ResultsForm(FlaskForm):
     results_returned = RadioField("Choose results to return:",
                                   choices=[("all", "All Results"),
                                            ("difficulty", "All results for a specific Difficulty"),
-                                           ("topic", "All results for a specific Topic")])
+                                           ("topic", "All results for a specific Topic")], default="all")
     topic_chosen = SelectField(label="Select Topic: ",
                                choices=[("operations", "Operations"), ("fractions", "Fractions"),
                                         ("expressions", "Expressions"),
@@ -80,11 +80,16 @@ class ResultsForm(FlaskForm):
                                         ("sequences", "Sequences"),
                                         ("triangles", "Triangles"), ("calculus", "Calculus"),
                                         ("hcf_lcm", "HCF, LCM and Prime Factors"),
-                                        ("circles", "Circles"), ("graphs", "Graphs")])
-    difficulty_chosen = IntegerField(label="Select Difficulty: ", validators=[NumberRange(1, 10)])
+                                        ("circles", "Circles"), ("graphs", "Graphs")], default="operations")
+    difficulty_chosen = IntegerField(label="Select Difficulty: ", validators=[NumberRange(1, 10)], default=5)
     user_chosen = SelectField(label="Select User: ")
+
+    compare_results = BooleanField(label="Compare Results with Another Person?")
+    second_user_chosen = SelectField(label="Select Second User: ")
+
     submit = SubmitField(label="Submit")
 
     def __init__(self, user_list):
         super().__init__()
         self.user_chosen.choices = user_list
+        self.second_user_chosen.choices = user_list

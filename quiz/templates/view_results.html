@@ -12,22 +12,67 @@
         {% for button in form.results_returned %}
         <br>
             {{ button.label() }}
-            {{ button }}
+            {{ button(onchange="toggleFormFields()")}}
         {% endfor %}
         <br>
         <br>
-        {{ form.topic_chosen.label() }}
-        {{ form.topic_chosen(class="form-control") }}
-        {{ form.difficulty_chosen.label() }}
-        {{ form.difficulty_chosen(class="form-control") }}
+        <div id="topicField">
+            {{ form.topic_chosen.label() }}
+            {{ form.topic_chosen(class="form-control") }}
+        </div>
+        <div id="difficultyField">
+            {{ form.difficulty_chosen.label() }}
+            {{ form.difficulty_chosen(class="form-control") }}
+        </div>
         {{ form.user_chosen.label() }}
         {{ form.user_chosen(class="form-control") }}
 
+        <br>
+        {{ form.compare_results.label() }}
+        {{ form.compare_results(id="CompareResults", onchange="toggleSecondUser()") }}
+        <div id="CompareUser" class="mt-3">
+            {{ form.second_user_chosen.label() }}
+            {{ form.second_user_chosen(class="form-control") }}
+        </div>
+        <br>
         {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
     </form>
+    {% if form_is_submitted %}
     <div class="container mt-5">
          <img src="{{ url_for('get_results_graph') }}"/>
-      </div>
+  </div>
+    {% endif %}
     {% endif %}
 </div>
+<script>
+        function toggleFormFields() {
+            let selectedValue = document.querySelector('input[name="results_returned"]:checked').value;
+
+            let topicField = document.getElementById("topicField");
+            let difficultyField = document.getElementById("difficultyField");
+
+            if (selectedValue == "all") {
+                topicField.style.display = "none";
+                difficultyField.style.display = "none";
+            } else if (selectedValue == "difficulty") {
+                topicField.style.display = "none";
+                difficultyField.style.display = "block";
+            } else {
+                topicField.style.display = "block";
+                difficultyField.style.display = "none";
+            }
+        }
+
+        function toggleSecondUser() {
+            let secondUserField = document.getElementById("CompareUser");
+            if (CompareResults.checked) {
+                secondUserField.style.display = "block";
+            }
+            else {
+                secondUserField.style.display = "none";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", toggleFormFields);
+        document.addEventListener("DOMContentLoaded", toggleSecondUser);
+</script>
 {% endblock %}
