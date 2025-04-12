@@ -1,6 +1,5 @@
 import random
-from numpy import sqrt, degrees, rad2deg
-from numpy.ma.core import arccos, sin, masked
+from math import sqrt, degrees, acos, sin
 
 from .helper_functions import calculate_difficulty, answer_generation
 
@@ -8,6 +7,7 @@ from .helper_functions import calculate_difficulty, answer_generation
 def triangles_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     answer = 0
     question = ""
+    drawing_failed = False
     while True:
         question_type_chosen = random.choice(question_types)
         question_topic_chosen = random.choice(["simple_area_perimeter", "simple_angles", "pythagoras", "trigonometry", "sine_cosine_area"])
@@ -22,7 +22,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 difficulty_factors["difficulty_of_answer"][0] = 2
                 difficulty_factors["number_of_steps"][0] = 2
                 point_a, point_b, point_c = generate_right_angled_triangle()
-                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(point_a, point_b, point_c)
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area, drawing_failed = draw_triangle(point_a, point_b, point_c)
                 if random.random() > 0.5:
                     question = "What is the perimeter of this triangle? Answer to the nearest whole number."
                     answer = perimeter
@@ -37,7 +37,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 difficulty_factors["difficulty_of_answer"][0] = 2
                 difficulty_factors["number_of_steps"][0] = 2
                 point_a, point_b, point_c = generate_triangle()
-                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area, drawing_failed = draw_triangle(
             point_a, point_b, point_c)
                 question = "What is x? Answer to the nearest whole number."
                 answer = angle_c
@@ -50,7 +50,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 difficulty_factors["number_of_steps"][0] = 5
                 question_subtopic = "missing_side" if random.random() > 0.5 else "missing_hypotenuse"
                 point_a, point_b, point_c = generate_right_angled_triangle()
-                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area, drawing_failed = draw_triangle(
                     point_a, point_b, point_c)
                 question = "What is x? Answer to the nearest whole number."
                 answer = length_a if question_subtopic == "missing_side" else length_b
@@ -66,7 +66,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 difficulty_factors["number_of_steps"][0] = 6
                 question_subtopic = random.choice(["missing_side", "missing_angle"])
                 point_a, point_b, point_c = generate_right_angled_triangle()
-                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area, drawing_failed = draw_triangle(
                     point_a, point_b, point_c)
                 question = "What is x? Answer to the nearest whole number."
                 answer = angle_a if question_subtopic == "missing_angle" else length_c
@@ -79,7 +79,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 difficulty_factors["number_of_steps"][0] = 6
                 question_subtopic = random.choice(["sine_side", "sine_angle", "cosine_side", "cosine_angle", "area"])
                 point_a, point_b, point_c = generate_triangle()
-                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area = draw_triangle(
+                x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area, drawing_failed = draw_triangle(
                     point_a, point_b, point_c)
                 match question_subtopic:
                     case "sine_side":
@@ -103,14 +103,11 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 question = "What is the area of this triangle? Answer to the nearest whole number." if question_subtopic == "area" else "What is x? Answer to the nearest whole number."
             case _:
                 pass
-        if answer is not masked:
-            answer = int(round(answer, 0))
-        else:
-            answer = 0
+        answer = int(round(answer, 0))
         answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
-        if final_difficulty == entered_difficulty:
+        if final_difficulty == entered_difficulty and not drawing_failed:
             print(difficulty_factors)
             print(difficulty_weighting)
             break
@@ -171,6 +168,7 @@ def generate_right_angled_triangle():
     return point_a, point_b, point_c
 
 def draw_triangle(point_a, point_b, point_c):
+    drawing_failed = False
     x_coordinates = [point_a[0], point_b[0], point_c[0], point_a[0]]
     y_coordinates = [point_a[1], point_b[1], point_c[1], point_a[1]]
 
@@ -178,9 +176,18 @@ def draw_triangle(point_a, point_b, point_c):
     length_b = sqrt((point_a[0] - point_c[0]) ** 2 + (point_a[1] - point_c[1]) ** 2)
     length_a = sqrt((point_b[0] - point_c[0]) ** 2 + (point_b[1] - point_c[1]) ** 2)
 
-    angle_a = arccos((length_b ** 2 + length_c ** 2 - length_a ** 2) / (2 * length_b * length_c))
-    angle_b = arccos((length_a ** 2 + length_c ** 2 - length_b ** 2) / (2 * length_a * length_c))
-    angle_c = arccos((length_a ** 2 + length_b ** 2 - length_c ** 2) / (2 * length_a * length_b))
+    print(f"Length A: {length_a}")
+    print(f"Length B: {length_b}")
+    print(f"Length C: {length_c}")
+    try:
+        angle_a = acos((length_b ** 2 + length_c ** 2 - length_a ** 2) / (2 * length_b * length_c))
+        angle_b = acos((length_a ** 2 + length_c ** 2 - length_b ** 2) / (2 * length_a * length_c))
+        angle_c = acos((length_a ** 2 + length_b ** 2 - length_c ** 2) / (2 * length_a * length_b))
+    except Exception:
+        angle_a = 0
+        angle_b = 0
+        angle_c = 0
+        drawing_failed = True
 
     perimeter = length_c + length_b + length_a
     area = 0.5 * length_a * length_b * sin(angle_c)
@@ -189,7 +196,7 @@ def draw_triangle(point_a, point_b, point_c):
     angle_b = degrees(angle_b)
     angle_c = degrees(angle_c)
 
-    return x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area
+    return x_coordinates, y_coordinates, length_a, length_b, length_c, angle_a, angle_b, angle_c, perimeter, area, drawing_failed
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested

@@ -792,6 +792,7 @@ def get_results_graph():
             plt.title(f"Number of questions you got right and wrong")
 
     if session["compare_results"]:
+        # Adapted from https://www.youtube.com/watch?v=ZjQCPMO7LBE
         bar_1 = np.arange(len(x_axis))
         bar_2 = [x+0.5 for x in bar_1]
         bars_1 = plt.bar(bar_1, y_axis, 0.5, label=session["username"], align='center')
