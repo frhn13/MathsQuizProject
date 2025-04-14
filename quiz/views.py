@@ -13,7 +13,8 @@ from math import sin, cos
 from quiz import app, db
 from .QuizCode.min_and_max_difficulties import *
 from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm,
-                        AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm, ResultsForm)
+                        AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm, ResultsForm,
+                        MaxResultsForm)
 from .QuizCode.topic_manager import question_topic_selection
 from quiz.models import User, QuestionTopics, QuestionDifficulties
 from quiz.update_results import update_topic_information, update_difficulty_information, get_user_results, \
@@ -722,6 +723,7 @@ def quiz_page():
                                circle_image_added=circle_image_added)
 
 @app.route("/get-results-graph")
+@login_required
 def get_results_graph():
     user = User.query.filter_by(username=session["username"]).first()
     second_user = User.query.filter_by(username=session["second_username"]).first()
@@ -812,6 +814,14 @@ def get_results_graph():
 
     return send_file(graph_image, mimetype="image/png")
 
+@app.route("/get-max-results-graph")
+@login_required
+def get_max_results_graph():
+    users = User.query.all()
+    question_topics = QuestionTopics.query.all()
+    question_difficulties = QuestionDifficulties.query.all()
+
+
 @app.route("/view-results", methods=["GET", "POST"])
 @login_required
 def view_results():
@@ -828,6 +838,7 @@ def view_results():
     for user in users:
         users_list.append((user.username, user.username))
     form = ResultsForm(users_list)
+
     if form.validate_on_submit():
         form_is_submitted = True
         session["graph_type"] = form.results_returned.data
@@ -837,4 +848,24 @@ def view_results():
         session["compare_results"] = form.compare_results.data
         session["second_username"] = form.second_user_chosen.data
         print(session["compare_results"])
+
     return render_template("view_results.html", form=form, form_is_submitted=form_is_submitted)
+
+@app.route("/view-max-results", methods=["GET", "POST"])
+@login_required
+def view_max_results():
+    form_is_submitted = False
+    session.pop("number_or_percentage", None)
+    session.pop("graph_type", None)
+    session.pop("topic", None)
+    session.pop("difficulty", None)
+    form = MaxResultsForm()
+
+    if form.validate_on_submit():
+        form_is_submitted = True
+        session["number_or_percentage"] = form.number_or_percentage_returned.data
+        session["graph_type"] = form.results_returned.data
+        session["topic"] = form.topic_chosen.data
+        session["difficulty"] = form.difficulty_chosen.data
+
+    return render_template("view_max_results.html", form=form, form_is_submitted=form_is_submitted)

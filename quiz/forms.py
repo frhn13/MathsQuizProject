@@ -3,9 +3,6 @@ from wtforms import StringField, SubmitField, IntegerField, BooleanField, Passwo
 from wtforms.validators import DataRequired, NumberRange, Email, Length, EqualTo
 import re
 
-from quiz.models import User
-
-
 class AnswerForm(FlaskForm):
     answer = StringField(label="Answer: ", validators=[DataRequired()])
     submit = SubmitField(label="Submit Answer")
@@ -93,3 +90,24 @@ class ResultsForm(FlaskForm):
         super().__init__()
         self.user_chosen.choices = user_list
         self.second_user_chosen.choices = user_list
+
+class MaxResultsForm(FlaskForm):
+    number_or_percentage_returned = RadioField("Choose whether you want to see the players with the highest number or the "
+                               "highest percentage of correct questions:",
+                               choices=[("number", "Highest Number"),
+                                        ("percentage", "Highest Percentage")], default="number")
+    results_returned = RadioField("Choose results to return:",
+                                  choices=[("all", "All Results"),
+                                           ("difficulty", "All results for a specific Difficulty"),
+                                           ("topic", "All results for a specific Topic")], default="all")
+    topic_chosen = SelectField(label="Select Topic:",
+                               choices=[("operations", "Operations"), ("fractions", "Fractions"),
+                                        ("expressions", "Expressions"),
+                                        ("equations", "Equations"), ("percentages", "Percentages"),
+                                        ("sequences", "Sequences"),
+                                        ("triangles", "Triangles"), ("calculus", "Calculus"),
+                                        ("hcf_lcm", "HCF, LCM and Prime Factors"),
+                                        ("circles", "Circles"), ("graphs", "Graphs")], default="operations")
+    difficulty_chosen = IntegerField(label="Select Difficulty: ", validators=[NumberRange(1, 10)], default=5)
+
+    submit = SubmitField(label="Submit")

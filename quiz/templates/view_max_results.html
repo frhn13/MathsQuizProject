@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Results{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+   <h1>Results Page</h1>
+    {% if form %}
+    <form method="POST" class="form-register mx-auto w-50 mt-5">
+        {{ form.csrf_token() }}
+
+        {{ form.number_or_percentage_returned.label() }}
+        {% for button in form.number_or_percentage_returned %}
+        <br>
+            {{ button.label() }}
+            {{ button() }}
+        {% endfor %}
+        <br>
+        <br>
+        {{ form.results_returned.label() }}
+        {% for button in form.results_returned %}
+        <br>
+            {{ button.label() }}
+            {{ button(onchange="toggleFormFields()")}}
+        {% endfor %}
+        <br>
+        <br>
+        <div id="topicField">
+            {{ form.topic_chosen.label() }}
+            {{ form.topic_chosen(class="form-control") }}
+        </div>
+        <div id="difficultyField">
+            {{ form.difficulty_chosen.label() }}
+            {{ form.difficulty_chosen(class="form-control") }}
+        </div>
+        <br>
+        {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+    </form>
+    {% if form_is_submitted %}
+    <div class="container mt-5">
+         <img src="{{ url_for('get_results_graph') }}"/>
+  </div>
+    {% endif %}
+    {% endif %}
+</div>
+
+<script>
+        function toggleFormFields() {
+            let selectedValue = document.querySelector('input[name="results_returned"]:checked').value;
+
+            let topicField = document.getElementById("topicField");
+            let difficultyField = document.getElementById("difficultyField");
+
+            if (selectedValue == "all") {
+                topicField.style.display = "none";
+                difficultyField.style.display = "none";
+            } else if (selectedValue == "difficulty") {
+                topicField.style.display = "none";
+                difficultyField.style.display = "block";
+            } else {
+                topicField.style.display = "block";
+                difficultyField.style.display = "none";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", toggleFormFields);
+</script>
+{% endblock %}
