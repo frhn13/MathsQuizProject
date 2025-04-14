@@ -743,9 +743,9 @@ def get_results_graph():
             plt.ylabel("Number of Questions")
 
         case "difficulty":
-            answer_correct, answer_incorrect = get_difficulty_results(user, session["difficulty"])
+            answer_correct, answer_incorrect, answer_percentage = get_difficulty_results(user, session["difficulty"])
             if session["compare_results"]:
-                answer_correct_2, answer_incorrect_2 = get_difficulty_results(second_user, session["difficulty"])
+                answer_correct_2, answer_incorrect_2, answer_percentage_2 = get_difficulty_results(second_user, session["difficulty"])
                 y_axis_2 = [answer_correct_2, answer_incorrect_2]
                 plt.title(f"Number of questions {session['username']} and {session['second_username']} got right and wrong on Difficulty {session['difficulty']}")
             else:
@@ -757,9 +757,9 @@ def get_results_graph():
             plt.ylabel("Number of Questions")
 
         case "topic":
-            answer_correct, answer_incorrect = get_topic_results(user, session["topic"])
+            answer_correct, answer_incorrect, answer_percentage = get_topic_results(user, session["topic"])
             if session["compare_results"]:
-                answer_correct_2, answer_incorrect_2 = get_topic_results(second_user, session["topic"])
+                answer_correct_2, answer_incorrect_2, answer_percentage_2 = get_topic_results(second_user, session["topic"])
                 y_axis_2 = [answer_correct_2, answer_incorrect_2]
                 if session["topic"] == "hcf_lcm":
                     plt.title(
@@ -818,9 +818,48 @@ def get_results_graph():
 @login_required
 def get_max_results_graph():
     users = User.query.all()
-    question_topics = QuestionTopics.query.all()
-    question_difficulties = QuestionDifficulties.query.all()
+    user_results = []
 
+    match session["graph_type"]:
+        case "all":
+            for user in users:
+                answer_correct, answer_incorrect, answer_percentage = get_user_results(user)
+                user_results.append([user.username, answer_correct, answer_incorrect, answer_percentage])
+        case "difficulty":
+            for user in users:
+                answer_correct, answer_incorrect, answer_percentage = get_difficulty_results(user, session["difficulty"])
+                user_results.append([user.username, answer_correct, answer_incorrect, answer_percentage])
+        case "topic":
+            for user in users:
+                answer_correct, answer_incorrect, answer_percentage = get_topic_results(user, session["topic"])
+                user_results.append([user.username, answer_correct, answer_incorrect, answer_percentage])
+
+    if session["number_or_percentage"] == "number":
+        user_results.sort(key=lambda x: x[1], reverse=True)
+    else:
+        user_results.sort(key=lambda x: x[3], reverse=True)
+    user_results = user_results if len(user_results) <= 5 else user_results[0:5]
+    x_axis = [x[0] for x in user_results]
+    y_axis = []
+    if session["number_or_percentage"] == "number":
+        y_axis = [x[1] for x in user_results]
+    else:
+        for user in user_results:
+            if user[3] is not None:
+                y_axis.append(user[3])
+
+    print(y_axis)
+    bars = plt.bar(x_axis, y_axis)
+    plt.bar_label(bars, fmt="%d", padding=10, label_type="center")
+
+    # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+    graph_image = BytesIO()
+    if y_axis != []:
+        plt.savefig(graph_image, format="png")
+        graph_image.seek(0)
+        plt.close()
+
+    return send_file(graph_image, mimetype="image/png")
 
 @app.route("/view-results", methods=["GET", "POST"])
 @login_required

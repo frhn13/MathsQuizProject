@@ -41,17 +41,17 @@ def update_topic_information(topic_counter : dict):
 
         db.session.commit()
 
-        question_topics.operations_percentage = question_topics.operations_right / (question_topics.operations_right + question_topics.operations_wrong) if (question_topics.operations_right + question_topics.operations_wrong) != 0 else 0
-        question_topics.fractions_percentage = question_topics.fractions_right / (question_topics.fractions_right + question_topics.fractions_wrong) if (question_topics.fractions_right + question_topics.fractions_wrong) != 0 else 0
-        question_topics.calculus_percentage = question_topics.calculus_right / (question_topics.calculus_right + question_topics.calculus_wrong) if (question_topics.calculus_right + question_topics.calculus_wrong) != 0 else 0
-        question_topics.equations_percentage = question_topics.equations_right / (question_topics.equations_right + question_topics.equations_wrong) if (question_topics.equations_right + question_topics.equations_wrong) != 0 else 0
-        question_topics.expressions_percentage = question_topics.expressions_right / (question_topics.expressions_right + question_topics.expressions_wrong) if (question_topics.expressions_right + question_topics.expressions_wrong) != 0 else 0
+        question_topics.operations_percentage = question_topics.operations_right / (question_topics.operations_right + question_topics.operations_wrong) if (question_topics.operations_right + question_topics.operations_wrong) != 0 else None
+        question_topics.fractions_percentage = question_topics.fractions_right / (question_topics.fractions_right + question_topics.fractions_wrong) if (question_topics.fractions_right + question_topics.fractions_wrong) != 0 else None
+        question_topics.calculus_percentage = question_topics.calculus_right / (question_topics.calculus_right + question_topics.calculus_wrong) if (question_topics.calculus_right + question_topics.calculus_wrong) != 0 else None
+        question_topics.equations_percentage = question_topics.equations_right / (question_topics.equations_right + question_topics.equations_wrong) if (question_topics.equations_right + question_topics.equations_wrong) != 0 else None
+        question_topics.expressions_percentage = question_topics.expressions_right / (question_topics.expressions_right + question_topics.expressions_wrong) if (question_topics.expressions_right + question_topics.expressions_wrong) != 0 else None
         question_topics.sequences_percentage = question_topics.sequences_right / (question_topics.sequences_right + question_topics.sequences_wrong) if (question_topics.sequences_right + question_topics.sequences_wrong) != 0 else 0
-        question_topics.percentages_percentage = question_topics.percentages_right / (question_topics.percentages_right + question_topics.percentages_wrong) if (question_topics.percentages_right + question_topics.percentages_wrong) != 0 else 0
-        question_topics.triangles_percentage = question_topics.triangles_right / (question_topics.triangles_right + question_topics.triangles_wrong) if (question_topics.triangles_right + question_topics.triangles_wrong) != 0 else 0
-        question_topics.hcf_lcm_percentage = question_topics.hcf_lcm_right / (question_topics.hcf_lcm_right + question_topics.hcf_lcm_wrong) if (question_topics.hcf_lcm_right + question_topics.hcf_lcm_wrong) != 0 else 0
-        question_topics.circles_percentage = question_topics.circles_right / (question_topics.circles_right + question_topics.circles_wrong) if (question_topics.circles_right + question_topics.circles_wrong) != 0 else 0
-        question_topics.graphs_percentage = question_topics.graphs_right / (question_topics.graphs_right + question_topics.graphs_wrong) if (question_topics.graphs_right + question_topics.graphs_wrong) != 0 else 0
+        question_topics.percentages_percentage = question_topics.percentages_right / (question_topics.percentages_right + question_topics.percentages_wrong) if (question_topics.percentages_right + question_topics.percentages_wrong) != 0 else None
+        question_topics.triangles_percentage = question_topics.triangles_right / (question_topics.triangles_right + question_topics.triangles_wrong) if (question_topics.triangles_right + question_topics.triangles_wrong) != 0 else None
+        question_topics.hcf_lcm_percentage = question_topics.hcf_lcm_right / (question_topics.hcf_lcm_right + question_topics.hcf_lcm_wrong) if (question_topics.hcf_lcm_right + question_topics.hcf_lcm_wrong) != 0 else None
+        question_topics.circles_percentage = question_topics.circles_right / (question_topics.circles_right + question_topics.circles_wrong) if (question_topics.circles_right + question_topics.circles_wrong) != 0 else None
+        question_topics.graphs_percentage = question_topics.graphs_right / (question_topics.graphs_right + question_topics.graphs_wrong) if (question_topics.graphs_right + question_topics.graphs_wrong) != 0 else None
 
         db.session.commit()
 
@@ -93,34 +93,34 @@ def update_difficulty_information(difficulty_counter : dict):
 
         question_difficulties.level_one_percentage = (question_difficulties.level_one_right /
                                                       (question_difficulties.level_one_right + question_difficulties.level_one_wrong)) \
-            if (question_difficulties.level_one_right + question_difficulties.level_one_wrong) != 0 else 0
+            if (question_difficulties.level_one_right + question_difficulties.level_one_wrong) != 0 else None
         question_difficulties.level_two_percentage = (question_difficulties.level_two_right /
                                                       (question_difficulties.level_two_right + question_difficulties.level_two_wrong)) \
-            if (question_difficulties.level_two_right + question_difficulties.level_two_wrong) != 0 else 0
+            if (question_difficulties.level_two_right + question_difficulties.level_two_wrong) != 0 else None
         question_difficulties.level_three_percentage = (question_difficulties.level_three_right /
                                                         (question_difficulties.level_three_right + question_difficulties.level_three_wrong)) \
-            if (question_difficulties.level_three_right + question_difficulties.level_three_wrong) != 0 else 0
+            if (question_difficulties.level_three_right + question_difficulties.level_three_wrong) != 0 else None
         question_difficulties.level_four_percentage = (question_difficulties.level_four_right /
                                                        (question_difficulties.level_four_right + question_difficulties.level_four_wrong)) \
-            if (question_difficulties.level_four_right + question_difficulties.level_four_wrong) != 0 else 0
+            if (question_difficulties.level_four_right + question_difficulties.level_four_wrong) != 0 else None
         question_difficulties.level_five_percentage = (question_difficulties.level_five_right /
                                                        (question_difficulties.level_five_right + question_difficulties.level_five_wrong)) \
-            if (question_difficulties.level_five_right + question_difficulties.level_five_wrong) != 0 else 0
+            if (question_difficulties.level_five_right + question_difficulties.level_five_wrong) != 0 else None
         question_difficulties.level_six_percentage = (question_difficulties.level_six_right /
                                                       (question_difficulties.level_six_right + question_difficulties.level_six_wrong)) \
-            if (question_difficulties.level_six_right + question_difficulties.level_six_wrong) != 0 else 0
+            if (question_difficulties.level_six_right + question_difficulties.level_six_wrong) != 0 else None
         question_difficulties.level_seven_percentage = (question_difficulties.level_seven_right /
                                                         (question_difficulties.level_seven_right + question_difficulties.level_seven_wrong)) \
-            if (question_difficulties.level_seven_right + question_difficulties.level_seven_wrong) != 0 else 0
+            if (question_difficulties.level_seven_right + question_difficulties.level_seven_wrong) != 0 else None
         question_difficulties.level_eight_percentage = (question_difficulties.level_eight_right /
                                                         (question_difficulties.level_eight_right + question_difficulties.level_eight_wrong)) \
-            if (question_difficulties.level_eight_right + question_difficulties.level_eight_wrong) != 0 else 0
+            if (question_difficulties.level_eight_right + question_difficulties.level_eight_wrong) != 0 else None
         question_difficulties.level_nine_percentage = (question_difficulties.level_nine_right /
                                                        (question_difficulties.level_nine_right + question_difficulties.level_nine_wrong)) \
-            if (question_difficulties.level_nine_right + question_difficulties.level_nine_wrong) != 0 else 0
+            if (question_difficulties.level_nine_right + question_difficulties.level_nine_wrong) != 0 else None
         question_difficulties.level_ten_percentage = (question_difficulties.level_ten_right /
                                                       (question_difficulties.level_ten_right + question_difficulties.level_ten_wrong)) \
-            if (question_difficulties.level_ten_right + question_difficulties.level_ten_wrong) != 0 else 0
+            if (question_difficulties.level_ten_right + question_difficulties.level_ten_wrong) != 0 else None
 
         db.session.commit()
 
@@ -138,11 +138,7 @@ def get_user_results(chosen_user):
                        question_difficulties.level_seven_wrong + question_difficulties.level_eight_wrong +
                        question_difficulties.level_nine_wrong + question_difficulties.level_ten_wrong)
 
-    answers_percentage = (question_difficulties.level_one_percentage + question_difficulties.level_two_percentage +
-                       question_difficulties.level_three_percentage + question_difficulties.level_four_percentage +
-                       question_difficulties.level_five_percentage + question_difficulties.level_six_percentage +
-                       question_difficulties.level_seven_percentage + question_difficulties.level_eight_percentage +
-                       question_difficulties.level_nine_percentage + question_difficulties.level_ten_percentage) / 10
+    answers_percentage = (answers_correct / (answers_correct + answers_incorrect)) * 100
 
     return answers_correct, answers_incorrect, answers_percentage
 
@@ -151,80 +147,101 @@ def get_difficulty_results(chosen_user, chosen_difficulty):
     question_difficulties = QuestionDifficulties.query.filter_by(user_id=chosen_user.id).first()
     answer_correct = 0
     answer_incorrect = 0
+    answer_percentage = 0
     match chosen_difficulty:
         case 1:
             answer_correct = question_difficulties.level_one_right
             answer_incorrect = question_difficulties.level_one_wrong
+            answer_percentage = round(question_difficulties.level_one_right + (question_difficulties.level_one_right + question_difficulties.level_one_wrong), 2)
         case 2:
             answer_correct = question_difficulties.level_two_right
             answer_incorrect = question_difficulties.level_two_wrong
+            answer_percentage = round(question_difficulties.level_two_right + (question_difficulties.level_two_right + question_difficulties.level_two_wrong), 2)
         case 3:
             answer_correct = question_difficulties.level_three_right
             answer_incorrect = question_difficulties.level_three_wrong
+            answer_percentage = round(question_difficulties.level_three_right + (question_difficulties.level_three_right + question_difficulties.level_three_wrong), 2)
         case 4:
             answer_correct = question_difficulties.level_four_right
             answer_incorrect = question_difficulties.level_four_wrong
+            answer_percentage = round(question_difficulties.level_four_right + (question_difficulties.level_four_right + question_difficulties.level_four_wrong), 2)
         case 5:
             answer_correct = question_difficulties.level_five_right
             answer_incorrect = question_difficulties.level_five_wrong
+            answer_percentage = round(question_difficulties.level_five_right + (question_difficulties.level_five_right + question_difficulties.level_five_wrong), 2)
         case 6:
             answer_correct = question_difficulties.level_six_right
             answer_incorrect = question_difficulties.level_six_wrong
+            answer_percentage = round(question_difficulties.level_six_right + (question_difficulties.level_six_right + question_difficulties.level_six_wrong), 2)
         case 7:
             answer_correct = question_difficulties.level_seven_right
             answer_incorrect = question_difficulties.level_seven_wrong
+            answer_percentage = round(question_difficulties.level_seven_right + (question_difficulties.level_seven_right + question_difficulties.level_seven_wrong), 2)
         case 8:
             answer_correct = question_difficulties.level_eight_right
             answer_incorrect = question_difficulties.level_eight_wrong
+            answer_percentage = round(question_difficulties.level_eight_right + (question_difficulties.level_eight_right + question_difficulties.level_eight_wrong), 2)
         case 9:
             answer_correct = question_difficulties.level_nine_right
             answer_incorrect = question_difficulties.level_nine_wrong
+            answer_percentage = round(question_difficulties.level_nine_right + (question_difficulties.level_nine_right + question_difficulties.level_nine_wrong), 2)
         case 10:
             answer_correct = question_difficulties.level_ten_right
             answer_incorrect = question_difficulties.level_ten_wrong
+            answer_percentage = round(question_difficulties.level_ten_right + (question_difficulties.level_ten_right + question_difficulties.level_ten_wrong), 2)
 
-    return answer_correct, answer_incorrect
+    return answer_correct, answer_incorrect, answer_percentage
 
 def get_topic_results(chosen_user, chosen_topic):
     question_topics = QuestionTopics.query.filter_by(user_id=chosen_user.id).first()
-    answer_correct = 0
-    answer_incorrect = 0
     match chosen_topic:
         case "operations":
             answer_correct = question_topics.operations_right
             answer_incorrect = question_topics.operations_wrong
+            answer_percentage = round(question_topics.operations_right + (question_topics.operations_right + question_topics.operations_wrong), 2)
         case "fractions":
             answer_correct = question_topics.fractions_right
             answer_incorrect = question_topics.fractions_wrong
+            answer_percentage = round(question_topics.fractions_right + (question_topics.fractions_right + question_topics.fractions_wrong), 2)
         case "expressions":
             answer_correct = question_topics.expressions_right
             answer_incorrect = question_topics.expressions_wrong
+            answer_percentage = round(question_topics.expressions_right + (question_topics.expressions_right + question_topics.expressions_wrong), 2)
         case "equations":
             answer_correct = question_topics.equations_right
             answer_incorrect = question_topics.equations_wrong
+            answer_percentage = round(question_topics.equations_right + (question_topics.equations_right + question_topics.equations_wrong), 2)
         case "percentages":
             answer_correct = question_topics.percentages_right
             answer_incorrect = question_topics.percentages_wrong
+            answer_percentage = round(question_topics.percentages_right + (question_topics.percentages_right + question_topics.percentages_wrong), 2)
         case "sequences":
             answer_correct = question_topics.sequences_right
             answer_incorrect = question_topics.sequences_wrong
+            answer_percentage = round(question_topics.sequences_right + (question_topics.sequences_right + question_topics.sequences_wrong), 2)
         case "triangles":
             answer_correct = question_topics.triangles_right
             answer_incorrect = question_topics.triangles_wrong
+            answer_percentage = round(question_topics.triangles_right + (question_topics.triangles_right + question_topics.triangles_wrong), 2)
         case "calculus":
             answer_correct = question_topics.calculus_right
             answer_incorrect = question_topics.calculus_wrong
+            answer_percentage = round(question_topics.calculus_right + (question_topics.calculus_right + question_topics.calculus_wrong), 2)
         case "hcf_lcm":
             answer_correct = question_topics.hcf_lcm_right
             answer_incorrect = question_topics.hcf_lcm_wrong
+            answer_percentage = round(question_topics.hcf_lcm_right + (question_topics.hcf_lcm_right + question_topics.hcf_lcm_wrong), 2)
         case "circles":
             answer_correct = question_topics.circles_right
             answer_incorrect = question_topics.circles_wrong
+            answer_percentage = round(question_topics.circles_right + (question_topics.circles_right + question_topics.circles_wrong), 2)
         case "graphs":
             answer_correct = question_topics.graphs_right
             answer_incorrect = question_topics.graphs_wrong
+            answer_percentage = round(question_topics.graphs_right + (question_topics.graphs_right + question_topics.graphs_wrong), 2)
         case _:
             answer_correct = question_topics.operations_right
             answer_incorrect = question_topics.operations_wrong
+            answer_percentage = round(question_topics.operations_right + (question_topics.operations_right + question_topics.operations_wrong), 2)
 
-    return answer_correct, answer_incorrect
+    return answer_correct, answer_incorrect, answer_percentage
