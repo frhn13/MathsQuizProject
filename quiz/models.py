@@ -25,47 +25,36 @@ class QuestionTopics(db.Model):
 
     operations_right = db.Column(db.Integer(), default=0)
     operations_wrong = db.Column(db.Integer(), default=0)
-    operations_percentage = db.Column(db.Float(), default=None)
 
     expressions_right = db.Column(db.Integer(), default=0)
     expressions_wrong = db.Column(db.Integer(), default=0)
-    expressions_percentage = db.Column(db.Float(), default=None)
 
     fractions_right = db.Column(db.Integer(), default=0)
     fractions_wrong = db.Column(db.Integer(), default=0)
-    fractions_percentage = db.Column(db.Float(), default=None)
 
     equations_right = db.Column(db.Integer(), default=0)
     equations_wrong = db.Column(db.Integer(), default=0)
-    equations_percentage = db.Column(db.Float(), default=None)
 
     sequences_right = db.Column(db.Integer(), default=0)
     sequences_wrong = db.Column(db.Integer(), default=0)
-    sequences_percentage = db.Column(db.Float(), default=None)
 
     hcf_lcm_right = db.Column(db.Integer(), default=0)
     hcf_lcm_wrong = db.Column(db.Integer(), default=0)
-    hcf_lcm_percentage = db.Column(db.Float(), default=None)
 
     percentages_right = db.Column(db.Integer(), default=0)
     percentages_wrong = db.Column(db.Integer(), default=0)
-    percentages_percentage = db.Column(db.Float(), default=None)
 
     calculus_right = db.Column(db.Integer(), default=0)
     calculus_wrong = db.Column(db.Integer(), default=0)
-    calculus_percentage = db.Column(db.Float(), default=None)
 
     triangles_right = db.Column(db.Integer(), default=0)
     triangles_wrong = db.Column(db.Integer(), default=0)
-    triangles_percentage = db.Column(db.Float(), default=None)
 
     circles_right = db.Column(db.Integer(), default=0)
     circles_wrong = db.Column(db.Integer(), default=0)
-    circles_percentage = db.Column(db.Float(), default=None)
 
     graphs_right = db.Column(db.Integer(), default=0)
     graphs_wrong = db.Column(db.Integer(), default=0)
-    graphs_percentage = db.Column(db.Float(), default=None)
 
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id"), nullable=False)
 
@@ -74,42 +63,32 @@ class QuestionDifficulties(db.Model):
 
     level_one_right = db.Column(db.Integer(), default=0)
     level_one_wrong = db.Column(db.Integer(), default=0)
-    level_one_percentage = db.Column(db.Float(), default=None)
 
     level_two_right = db.Column(db.Integer(), default=0)
     level_two_wrong = db.Column(db.Integer(), default=0)
-    level_two_percentage = db.Column(db.Float(), default=None)
 
     level_three_right = db.Column(db.Integer(), default=0)
     level_three_wrong = db.Column(db.Integer(), default=0)
-    level_three_percentage = db.Column(db.Float(), default=None)
 
     level_four_right = db.Column(db.Integer(), default=0)
     level_four_wrong = db.Column(db.Integer(), default=0)
-    level_four_percentage = db.Column(db.Float(), default=None)
 
     level_five_right = db.Column(db.Integer(), default=0)
     level_five_wrong = db.Column(db.Integer(), default=0)
-    level_five_percentage = db.Column(db.Float(), default=None)
 
     level_six_right = db.Column(db.Integer(), default=0)
     level_six_wrong = db.Column(db.Integer(), default=0)
-    level_six_percentage = db.Column(db.Float(), default=None)
 
     level_seven_right = db.Column(db.Integer(), default=0)
     level_seven_wrong = db.Column(db.Integer(), default=0)
-    level_seven_percentage = db.Column(db.Float(), default=None)
 
     level_eight_right = db.Column(db.Integer(), default=0)
     level_eight_wrong = db.Column(db.Integer(), default=0)
-    level_eight_percentage = db.Column(db.Float(), default=None)
 
     level_nine_right = db.Column(db.Integer(), default=0)
     level_nine_wrong = db.Column(db.Integer(), default=0)
-    level_nine_percentage = db.Column(db.Float(), default=None)
 
     level_ten_right = db.Column(db.Integer(), default=0)
     level_ten_wrong = db.Column(db.Integer(), default=0)
-    level_ten_percentage = db.Column(db.Float(), default=None)
 
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id"), nullable=False)

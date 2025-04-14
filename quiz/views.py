@@ -820,6 +820,9 @@ def get_max_results_graph():
     users = User.query.all()
     user_results = []
 
+    plt.title("Top 5 Users with the Highest Number of Correct Answers")
+    plt.figure(figsize=(10, 10))
+
     match session["graph_type"]:
         case "all":
             for user in users:
@@ -836,17 +839,49 @@ def get_max_results_graph():
 
     if session["number_or_percentage"] == "number":
         user_results.sort(key=lambda x: x[1], reverse=True)
+        plt.ylabel("Number of Correct Answers")
     else:
         user_results.sort(key=lambda x: x[3], reverse=True)
+        plt.ylabel("Percentage of Correct Answers")
+
     user_results = user_results if len(user_results) <= 5 else user_results[0:5]
     x_axis = [x[0] for x in user_results]
-    y_axis = []
+    plt.xlabel("Users")
     if session["number_or_percentage"] == "number":
         y_axis = [x[1] for x in user_results]
+        match session["graph_type"]:
+            case "all":
+                plt.title(f"Top {len(user_results)} Users with the Highest Number of Correct Answers") if len(user_results) > 1 \
+                    else plt.title(f"User with the Highest Number of Correct Answers")
+            case "difficulty":
+                plt.title(f"Top {len(user_results)} Users with the Highest Number of Correct Answers for Difficulty {session['difficulty']}") if len(user_results) > 1 \
+                    else plt.title(f"User with the Highest Number of Correct Answers for Difficulty {session['difficulty']}")
+            case "topic":
+                if session["topic"] == "hcf_lcm":
+                    plt.title(f"Top {len(user_results)} Users with the Highest Number of Correct Answers for HCF, LCM and prime factors Questions") if len(user_results) > 1 \
+                        else plt.title(f"User with the Highest Number of Correct Answers for HCF, LCM and prime factors Questions")
+                else:
+                    plt.title(f"Top {len(user_results)} Users with the Highest Number of Correct Answers for {session['topic']} Questions") if len(user_results) > 1 \
+                        else plt.title(f"User with the Highest Number of Correct Answers for {session['topic']} Questions")
     else:
-        for user in user_results:
-            if user[3] is not None:
-                y_axis.append(user[3])
+        y_axis = [x[3] for x in user_results]
+        match session["graph_type"]:
+            case "all":
+                plt.title(f"Top {len(user_results)} Users with the Highest Percentage of Correct Answers") if len(user_results) > 1 \
+                    else plt.title(f"User with the Highest Percentage of Correct Answers")
+            case "difficulty":
+                plt.title(
+                    f"Top {len(user_results)} Users with the Highest Percentage of Correct Answers for Difficulty {session['difficulty']}") if len(user_results) > 1 \
+                    else plt.title(f"User with the Highest Percentage of Correct Answers for Difficulty {session['difficulty']}")
+            case "topic":
+                if session["topic"] == "hcf_lcm":
+                    plt.title(
+                        f"Top {len(user_results)} Users with the Highest Percentage of Correct Answers for HCF, LCM and prime factors Questions") if len(user_results) > 1 \
+                        else plt.title(f"User with the Highest Percentage of Correct Answers for HCF, LCM and prime factors Questions")
+                else:
+                    plt.title(
+                        f"Top {len(user_results)} Users with the Highest Percentage of Correct Answers for {session['topic']} Questions") if len(user_results) > 1 \
+                        else plt.title(f"User with the Highest Percentage of Correct Answers for {session['topic']} Questions")
 
     print(y_axis)
     bars = plt.bar(x_axis, y_axis)
