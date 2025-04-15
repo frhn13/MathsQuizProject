@@ -15,6 +15,6 @@ def init_db():
         db.session.commit()
 
 if __name__ == "__main__":
-    init_db()
+    # init_db()
     print(app.url_map)
     app.run(debug=True)

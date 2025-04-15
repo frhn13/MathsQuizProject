@@ -78,10 +78,12 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             difficulty_factors["question_type"][0] = 7
             difficulty_factors["answers_similarity"][0] = 8
             df = diff(f, x)
+            f_str = simplify_f(f)
             answer = df
-            question = f"What is the first order derivative of {f}?"
+            question = f"What is the first order derivative of {f_str}?"
             if "x" not in str(answer):
                 return "", "", difficulty_factors, False
+
         case "second_order_differentiation":
             difficulty_factors["difficulty_of_values"][0] += 1
             difficulty_factors["difficulty_of_answer"][0] += 1
@@ -92,10 +94,12 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             difficulty_factors["question_type"][0] = 7
             difficulty_factors["answers_similarity"][0] = 8
             d2f = diff(f, x, 2)
+            f_str = simplify_f(f)
             answer = d2f
-            question = f"What is the second order derivative of {f}?"
+            question = f"What is the second order derivative of {f_str}?"
             if "x" not in str(answer):
                 return "", "", difficulty_factors, False
+
         case "answer_from_derivative":
             difficulty_factors["difficulty_of_values"][0] += 1.5
             difficulty_factors["difficulty_of_answer"][0] += 1.5
@@ -106,9 +110,11 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             difficulty_factors["question_type"][0] = 10
             difficulty_factors["answers_similarity"][0] = 9
             df = diff(f, x)
+            f_str = simplify_f(f)
             x_value = random.randint(1, 5)
-            question = f"What is the answer to f\'({x_value}) when f(x) = {f}"
+            question = f"What is the answer to f\'({x_value}) when f(x) = {f_str}?"
             answer = df.subs(x, x_value)
+
         case "finding_x":
             if cubic_value != 0:
                 difficulty_factors["difficulty_of_values"][0] += 2
@@ -124,8 +130,10 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             difficulty_factors["question_type"][0] = 10
             difficulty_factors["answers_similarity"][0] = 9
             df = diff(f, x)
-            question = f"What is the value of x when f\'(x) = 0 and f(x) = {f}"
+            f_str = simplify_f(f)
+            question = f"What is the value of x when f\'(x) = 0 and f(x) = {f_str}?"
             answer = solve(df, x)
+
         case "tangents":
             difficulty_factors["difficulty_of_values"][0] += 2
             difficulty_factors["difficulty_of_answer"][0] += 2
@@ -140,13 +148,15 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             y_value = f.subs(x, x_value)
             gradient = df.subs(x, x_value)
             y_intercept = y_value - (x_value * gradient)
-            question = f"What is the equation of the tangent to the curve with the equation y={f} at the point ({x_value}, {y_value}). Give your answer in the form y=mx+c"
+            f_str = simplify_f(f)
+            question = f"What is the equation of the tangent to the curve with the equation y={f_str} at the point ({x_value}, {y_value}). Give your answer in the form y=mx+c"
             if y_intercept == zoo or y_intercept == 0:
                 answer = f"y={gradient}x"
             elif y_intercept > 0:
                 answer = f"y={gradient}x+{y_intercept}"
             else:
                 answer = f"y={gradient}x{y_intercept}"
+
         case "normals":
             difficulty_factors["difficulty_of_values"][0] += 2.5
             difficulty_factors["difficulty_of_answer"][0] += 2.5
@@ -159,7 +169,8 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             y_value = f.subs(x, x_value)
             gradient = -1 / (df.subs(x, x_value))
             y_intercept = y_value - (x_value * gradient)
-            question = f"What is the equation of the normal to the curve with the equation y={f} at the point ({x_value}, {y_value}). Give your answer in the form y=mx+c and give answers in the form of fractions where needed."
+            f_str = simplify_f(f)
+            question = f"What is the equation of the normal to the curve with the equation y={f_str} at the point ({x_value}, {y_value}). Give your answer in the form y=mx+c and give answers in the form of fractions where needed."
             if y_intercept == zoo or y_intercept == 0:
                 answer = f"y={gradient}x"
             elif y_intercept > 0:
@@ -181,6 +192,7 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
     if cubic_value == 0 and quadratic_value == 0 and linear_value == 0:
         return question, answer, difficulty_factors, False
     f = cubic_value * x ** 3 + quadratic_value * x ** 2 + linear_value * x + number_value
+
     match question_subtopic_chosen:
         case "basic_integration":
             difficulty_factors["difficulty_of_values"][0] = 7
@@ -189,9 +201,10 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             difficulty_factors["maths_topic"][0] = 8
             difficulty_factors["depth_of_knowledge"][0] = 7
             difficulty_factors["multiple_topics"][0] = 7
-            integral_f = integrate(f, x)
             answer = f"{integrate(f, x)} + c"
-            question = f"What is ∫ f(x) dx when f(x) = {f}?"
+            f_str = simplify_f(f)
+            question = f"What is ∫ f(x) dx when f(x) = {f_str}?"
+
         case "definite_integrals":
             difficulty_factors["difficulty_of_values"][0] = 9
             difficulty_factors["difficulty_of_answer"][0] = 9
@@ -202,7 +215,9 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             lower_point = random.randint(0, 3)
             upper_point = random.randint(lower_point+1, 6)
             answer = integrate(f, (x, lower_point, upper_point))
-            question = f"What is ∫ f(x) from {lower_point} to {upper_point} when f(x) = {f}? Give answers in the form of fractions where needed."
+            f_str = simplify_f(f)
+            question = f"What is ∫ f(x) from {lower_point} to {upper_point} when f(x) = {f_str}? Give answers in the form of fractions where needed."
+
         case "finding_area":
             difficulty_factors["difficulty_of_values"][0] = 9
             difficulty_factors["difficulty_of_answer"][0] = 9
@@ -213,7 +228,9 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             lower_point = random.randint(0, 3)
             upper_point = random.randint(lower_point + 1, 6)
             answer = abs(integrate(f, (x, lower_point, upper_point)))
-            question = f"What is the area of under the curve y=f(x) over the interval {lower_point} < x < {upper_point} where f(x) = {f}? Give answers in the form of fractions where needed."
+            f_str = simplify_f(f)
+            question = f"What is the area of under the curve y=f(x) over the interval {lower_point} < x < {upper_point} where f(x) = {f_str}? Give answers in the form of fractions where needed."
+
         case "finding_complex_area":
             difficulty_factors["difficulty_of_values"][0] = 10
             difficulty_factors["difficulty_of_answer"][0] = 10
@@ -226,9 +243,19 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             integral_1 = integrate(f, (x, lower_point, 0))
             integral_2 = integrate(f, (x, 0, upper_point))
             answer = abs(integral_1) + abs(integral_2)
-            question = f"What is the area of under the curve y=f(x) over the interval {lower_point} < x < {upper_point} where f(x) = {f}? Give answers in the form of fractions where needed."
+            f_str = simplify_f(f)
+            question = f"What is the area of under the curve y=f(x) over the interval {lower_point} < x < {upper_point} where f(x) = {f_str}? Give answers in the form of fractions where needed."
 
     return question, answer, difficulty_factors, True
+
+def simplify_f(f):
+    f_str = str(f)
+    for x in range(len(f_str)):
+        if x < len(f_str) - 1 and f_str[x] == "*" and f_str[x + 1] == "*":
+            f_str = f"{f_str[0:x]}^{f_str[x + 2:]}"
+        elif x < len(f_str) - 1 and f_str[x] == "*":
+            f_str = f"{f_str[0:x]}{f_str[x + 1:]}"
+    return f_str
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested

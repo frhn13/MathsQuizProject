@@ -15,7 +15,16 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
             case "simplification":
                 difficulty_factors, expression = factorisation_and_simplification(difficulty_factors)
                 factorised = factor(expression)
-                question = f"Expand {factorised}."
+
+                expression_str = str(factorised)
+
+                for x in range(len(expression_str)):
+                    if x < len(expression_str) - 1 and expression_str[x] == "*" and expression_str[x + 1] == "*":
+                        expression_str = f"{expression_str[0:x]}^{expression_str[x + 2:]}"
+                    elif x < len(expression_str) - 1 and expression_str[x] == "*":
+                        expression_str = f"{expression_str[0:x]}{expression_str[x + 1:]}"
+
+                question = f"Expand {expression_str}."
                 answer = expression
                 if expression is None or expression == factorised:
                     pass
@@ -27,7 +36,16 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                         break
             case "factorisation":
                 difficulty_factors, expression = factorisation_and_simplification(difficulty_factors)
-                question = f"Factorise {expression}."
+
+                expression_str = str(expression)
+
+                for x in range(len(expression_str)):
+                    if x < len(expression_str) - 1 and expression_str[x] == "*" and expression_str[x + 1] == "*":
+                        expression_str = f"{expression_str[0:x]}^{expression_str[x + 2:]}"
+                    elif x < len(expression_str) - 1 and expression_str[x] == "*":
+                        expression_str = f"{expression_str[0:x]}{expression_str[x + 1:]}"
+
+                question = f"Factorise {expression_str}."
                 answer = factor(expression)
                 if expression is None or expression == answer:
                     pass

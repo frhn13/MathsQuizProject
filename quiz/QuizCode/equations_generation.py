@@ -20,6 +20,15 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
             equation_type = "quadratic_simultaneous"
 
         equation, final_answer = generate_equation(equation_type, difficulty_factors)
+
+        equation_str = str(equation)
+
+        for x in range(len(equation_str)):
+            if x < len(equation_str) - 1 and equation_str[x] == "*" and equation_str[x + 1] == "*":
+                equation_str = f"{equation_str[0:x]}^{equation_str[x + 2:]}"
+            elif x < len(equation_str) - 1 and equation_str[x] == "*":
+                equation_str = f"{equation_str[0:x]}{equation_str[x + 1:]}"
+
         difficulty_factors["question_type"][0] = 8
         difficulty_factors["answers_similarity"][0] = 8
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors=difficulty_factors)
@@ -32,24 +41,24 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
         case "free_text":
             match equation_type:
                 case "linear":
-                    question = f"{equation} \t Find x to 2 decimal places."
+                    question = f"{equation_str} \t Find x to 2 decimal places."
                     answer = [round(float(final_answer[0]), 2)]
                 case "whole_quadratic":
-                    question = f"{equation} \t Find both values of x to 2 decimal places."
+                    question = f"{equation_str} \t Find both values of x to 2 decimal places."
                     answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
                     multiple_answers = "TwoSame"
                 case "floating_quadratic":
                     calculator_needed = True
-                    question = f"{equation} \t Find both values of x to 2 decimal places."
+                    question = f"{equation_str} \t Find both values of x to 2 decimal places."
                     answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
                     multiple_answers = "TwoSame"
                 case "linear_simultaneous":
-                    question = f"{equation} \t Find the value of x and y to 2 decimal places."
+                    question = f"{equation_str} \t Find the value of x and y to 2 decimal places."
                     answer.append(round(float(final_answer[0][1]), 2))
                     answer.append(round(float(final_answer[1][1]), 2))
                     multiple_answers = "TwoDifferent"
                 case "quadratic_simultaneous":
-                    question = f"{equation} \t Find both values of x and y to 2 decimal places."
+                    question = f"{equation_str} \t Find both values of x and y to 2 decimal places."
                     answer.append(round(float(final_answer[0][0]), 2))
                     answer.append(round(float(final_answer[0][1]), 2))
                     answer.append(round(float(final_answer[1][0]), 2))
@@ -58,9 +67,9 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
                 case _:
                     pass
         case "multiple-choice":
-            question = f"{equation}\n"
+            question = f"{equation_str}\n"
         case "true/false":
-            question = f"{equation}\n"
+            question = f"{equation_str}\n"
             if final_answer[0] == answer:
                 answer = "True"
             else:
@@ -159,7 +168,7 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
 
                 equation_1 = Eq(x_value_1*x + y_value_1*y, number_value_1)
                 equation_2 = Eq(x_value_2*x + y_value_2*y, number_value_2)
-                equation = f"{equation_1} \n {equation_2}"
+                equation = f"{x_value_1}x + {y_value_1}y = {number_value_1} | {x_value_2}x + {y_value_2}y = {number_value_2}"
 
                 answers = solve((equation_1, equation_2), (x, y))
                 if type(answers) == dict:
@@ -183,7 +192,7 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
 
                 equation_1 = Eq(x**2 + y**2, number_value_1)
                 equation_2 = Eq(x_value_2 * x + y_value_2 * y, number_value_2)
-                equation = f"{equation_1} \n {equation_2}"
+                equation = f"x^2 + y^2 = {number_value_1} | {x_value_2}x + {y_value_2}y = {number_value_2}"
 
                 final_answer = solve((equation_1, equation_2), (x, y))
                 if (len(final_answer) == 2 and len(final_answer[0]) == 2 and len(final_answer[1]) == 2 and final_answer[0][0].is_integer and

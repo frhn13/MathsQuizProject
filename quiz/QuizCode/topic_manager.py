@@ -26,7 +26,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
     circle_image_values = None
     is_topic_chosen = False
     paper_needed = False
-    calculator_needed = True
+    calculator_needed = False
     multiple_answers = "No"
 
     difficulty_factors = {

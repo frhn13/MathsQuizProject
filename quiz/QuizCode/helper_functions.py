@@ -220,7 +220,23 @@ def algebraic_fractions(difficulty_factors : dict):
                 quadratic_value_numerator + linear_value_numerator + number_value_numerator)
         denominator = common_factor * random.randint(1, 3) * (
                 quadratic_value_denominator + linear_value_denominator + number_value_denominator)
-        question = f"Simplify {numerator}/{denominator}"
+
+        numerator_str = str(numerator)
+        denominator_str = str(denominator)
+
+        for x in range(len(numerator_str)):
+            if x < len(numerator_str) - 1 and numerator_str[x] == "*" and numerator_str[x + 1] == "*":
+                numerator_str = f"{numerator_str[0:x]}^{numerator_str[x + 2:]}"
+            elif x < len(numerator_str) - 1 and numerator_str[x] == "*":
+                numerator_str = f"{numerator_str[0:x]}{numerator_str[x + 1:]}"
+
+        for x in range(len(denominator_str)):
+            if x < len(denominator_str) - 1 and denominator_str[x] == "*" and denominator_str[x + 1] == "*":
+                denominator_str = f"{denominator_str[0:x]}^{denominator_str[x + 2:]}"
+            elif x < len(denominator_str) - 1 and denominator_str[x] == "*":
+                denominator_str = f"{denominator_str[0:x]}{denominator_str[x + 1:]}"
+
+        question = f"Simplify {numerator_str}/{denominator_str}"
         numerator_terms = numerator.as_ordered_terms()
         denominator_terms = denominator.as_ordered_terms()
         if quadratic_value_numerator == 0:

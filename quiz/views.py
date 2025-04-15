@@ -558,19 +558,53 @@ def quiz_page():
                         flash("You must enter True or False. Try again", category="danger")
                         return redirect(url_for("quiz_page"))
                     else:
-                        if "x" not in answer:
-                            flash("Expression must be entered in correct format. Try again.", category="danger")
+                        if not answer.isnumeric() and "x" not in answer:
+                            flash("Expression must include an x. Try again.", category="danger")
+                            return redirect(url_for("quiz_page"))
+                        elif ("(" in answer or ")" in answer) and "(" not in final_answer:
+                            flash("Expression must be expanded, so no brackets. Try again.", category="danger")
+                            return redirect(url_for("quiz_page"))
+                        elif "(" in final_answer and "(" not in answer and ")" not in answer:
+                            flash("Expression must be factorised. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
                         else:
-                            answer = answer.replace(" ", "")
-                            final_answer = final_answer.replace(" ", "")
-                            # answer = simplify(sympify(answer))
+                            for x in range(len(answer)):
+                                if x < len(answer) - 1 and answer[x].isnumeric() and (answer[x+1] == "x" or answer[x+1] == "("):
+                                    answer = f"{answer[0:x+1]}*{answer[x+1:]}"
+                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "(":
+                                    answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
+                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1].isnumeric():
+                                    answer = f"{answer[0:x+1]}**{answer[x+1:]}"
+                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "^":
+                                    answer = f"{answer[0:x+1]}**{answer[x+2:]}"
+                            print(answer)
+                            print(final_answer)
+                        try:
+                            answer = sympify(answer)
+                            final_answer = sympify(final_answer)
+                        except Exception:
+                            pass
 
                 case "calculus":
                     answer = request.form.get("answer")
                     if not final_answer.isnumeric() and "y" not in final_answer:
-                        final_answer = sympify(final_answer)
-                        answer = sympify(answer)
+                        for x in range(len(answer)):
+                            if x < len(answer) - 1 and answer[x].isnumeric() and (
+                                    answer[x + 1] == "x" or answer[x + 1] == "("):
+                                answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
+                            elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1] == "(":
+                                answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
+                            elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1].isnumeric():
+                                answer = f"{answer[0:x + 1]}**{answer[x + 1:]}"
+                            elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1] == "^":
+                                answer = f"{answer[0:x + 1]}**{answer[x + 2:]}"
+                        print(answer)
+                        print(final_answer)
+                        try:
+                            answer = sympify(answer)
+                            final_answer = sympify(final_answer)
+                        except Exception:
+                            pass
                     else:
                         final_answer = final_answer.replace(" ", "")
                         answer = answer.replace(" ", "")
