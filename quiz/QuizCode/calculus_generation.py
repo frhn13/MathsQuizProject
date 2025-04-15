@@ -7,6 +7,7 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
     while True:
         question_type_chosen = random.choice(question_types)
         question_topic_chosen = random.choice(["differentiation", "integration"])
+        calculator_needed = False
         x = symbols("x")
         match question_topic_chosen:
             case "differentiation":
@@ -27,6 +28,8 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
                     ["basic_integration", "definite_integrals", "finding_area", "finding_complex_area"])
                 question, answer, difficulty_factors, is_valid = integration_questions(question_subtopic_chosen, difficulty_factors)
                 if is_valid:
+                    if question_subtopic_chosen in ("definite_integrals", "finding_area", "finding_complex_area"):
+                        calculator_needed = True
                     difficulty_factors["question_type"][0] = 10
                     difficulty_factors["answers_similarity"][0] = 9
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
@@ -35,7 +38,7 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
                         print(difficulty_weighting)
                         break
     answer = str(answer)
-    return question, answer, difficulty_weighting
+    return question, answer, difficulty_weighting, calculator_needed
 
 
 def differentiation_questions(question_subtopic_chosen : str, difficulty_factors : dict):

@@ -5,6 +5,7 @@ from .helper_functions import answer_generation, answer_generation_decimals, cal
 
 def circles_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     while True:
+        calculator_needed = True
         question_topic_chosen = random.choice(["area", "circumference", "sector", "arc", "area_of_shaded_area"])
         question_type_chosen = random.choice(question_types)
         question = ""
@@ -122,7 +123,7 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
         case _:
             pass
 
-    return question, answer, difficulty_weighting, circle_image_values
+    return question, answer, difficulty_weighting, circle_image_values, calculator_needed
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested

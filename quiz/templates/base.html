@@ -12,7 +12,7 @@
   <body>
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{{url_for('quiz_selection')}}">Home</a>
+        <a class="navbar-brand" href="{{url_for('quiz_selection')}}">Select Quiz</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,7 +30,7 @@
                   <a class="nav-link" href="{{url_for('logout_page')}}">Logout</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Delete Account</a>
+                  <a class="nav-link" href="{{url_for('quiz_selection')}}">Tutorial</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{url_for('view_results')}}">Results</a>
@@ -40,6 +40,13 @@
                 </li>
               {% endif %}
           </ul>
+            {% if not current_user.is_anonymous %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                      <a class="nav-link" href="{{url_for('delete_account_page')}}">Delete Account</a>
+                    </li>
+                </ul>
+            {% endif %}
         </div>
       </div>
     </nav>

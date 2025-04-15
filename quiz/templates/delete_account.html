@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+   <h1>To Delete your Account enter your Username and Password</h1>
+   {% if form %}
+      <div class="container mt-5">
+         <form method="POST" class="form-register mx-auto w-50">
+            {{ form.csrf_token() }}
+            {{ form.username.label() }}
+            {{ form.username(class="form-control") }}
+            {{ form.password.label() }}
+            {{ form.password(class="form-control") }}
+
+            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+         </form>
+      </div>
+   {% endif %}
+</div>
+{% endblock %}

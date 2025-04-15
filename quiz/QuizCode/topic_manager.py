@@ -25,6 +25,8 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
     graph_values = None
     circle_image_values = None
     is_topic_chosen = False
+    paper_needed = False
+    calculator_needed = True
     multiple_answers = "No"
 
     difficulty_factors = {
@@ -54,13 +56,13 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                     is_topic_chosen = True
             case "calculus":
                 if calculus[0] <= entered_difficulty <= calculus[1]:
-                    question, answer, difficulty_weighting = calculus_questions_generation(entered_difficulty,
+                    question, answer, difficulty_weighting, calculator_needed = calculus_questions_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True
             case "equations":
                 if equations[0] <= entered_difficulty <= equations[1]:
-                    question, answer, difficulty_weighting, multiple_answers = equations_question_generation(
+                    question, answer, difficulty_weighting, multiple_answers, calculator_needed = equations_question_generation(
                         entered_difficulty, question_types, difficulty_factors)
                     is_topic_chosen = True
             case "expressions":
@@ -89,7 +91,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                     is_topic_chosen = True
             case "triangles":
                 if triangles[0] <= entered_difficulty <= triangles[1]:
-                    question, answer, difficulty_weighting, image_values = triangles_question_generation(entered_difficulty,
+                    question, answer, difficulty_weighting, image_values, calculator_needed = triangles_question_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True
@@ -101,7 +103,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                     is_topic_chosen = True
             case "circles":
                 if circles[0] <= entered_difficulty <= circles[1]:
-                    question, answer, difficulty_weighting, circle_image_values = circles_question_generation(entered_difficulty,
+                    question, answer, difficulty_weighting, circle_image_values, calculator_needed = circles_question_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True
@@ -112,4 +114,4 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             difficulty_factors)
                     is_topic_chosen = True
 
-    return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values
+    return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values, calculator_needed

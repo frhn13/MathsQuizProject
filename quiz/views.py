@@ -46,6 +46,7 @@ def register_page():
 
         return render_template("register.html", form=form)
     else:
+        flash("This page cannot be accessed if you are logged in.", category="warning")
         return redirect(url_for("quiz_selection"))
 
 @app.route("/logout")
@@ -70,6 +71,7 @@ def login_page():
                 return redirect(url_for("login_page"))
         return render_template("login.html", form=form)
     else:
+        flash("This page cannot be accessed if you are logged in.", category="warning")
         return redirect(url_for("quiz_selection"))
 
 @app.route("/remove")
@@ -107,6 +109,7 @@ def quiz_selection():
     session.pop("final_answer", None)
     session.pop("final_difficulty_weighting", None)
     session.pop("multiple_answers", None)
+    session.pop("calculator_needed", None)
     session.pop("current_topic", None)
     session.pop("current_difficulty", None)
     session.pop("difficulty_range", None)
@@ -443,14 +446,15 @@ def quiz_page():
         form = AnswerForm()
         difficulty_boundary = 30
         if "final_answer" not in session:
-            topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values \
-                = question_topic_selection(session.get("topic_selection"), int(session.get("current_difficulty")),
+            topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values, \
+                calculator_needed = question_topic_selection(session.get("topic_selection"), int(session.get("current_difficulty")),
     ["free_text", "multiple-choice", "true/false"])
             session["current_topic"] = topic
             session["final_answer"] = answer
             session["final_question"] = question
             session["final_difficulty_weighting"] = difficulty_weighting
             session["multiple_answers"] = multiple_answers
+            session["calculator_needed"] = calculator_needed
             if image_values is not None:
                 session["image_values"] = image_values
                 session["image_added"] = True
@@ -717,10 +721,11 @@ def quiz_page():
         image_added = session.get("image_added")
         graph_added = session.get("graph_added")
         circle_image_added = session.get("circle_image_added")
+        calculator_needed = session.get("calculator_needed")
         return render_template("quiz.html", form=form, final_question=final_question,
                                current_difficulty=current_difficulty, score=score, question_number=question_number,
                                multiple_answers=multiple_answers, image_added=image_added, graph_added=graph_added,
-                               circle_image_added=circle_image_added)
+                               circle_image_added=circle_image_added, calculator_needed=calculator_needed)
 
 @app.route("/get-results-graph")
 @login_required
@@ -943,3 +948,23 @@ def view_max_results():
         session["difficulty"] = form.difficulty_chosen.data
 
     return render_template("view_max_results.html", form=form, form_is_submitted=form_is_submitted)
+
+@app.route("/delete-account", methods=["GET", "POST"])
+@login_required
+def delete_account_page():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user_to_delete = User.query.filter_by(username=form.username.data).first()
+        if user_to_delete and user_to_delete.username == current_user.username and bcrypt.checkpw(form.password.data.encode("utf-8"), user_to_delete.password):
+            logout_user()
+            question_difficulties_to_delete = QuestionDifficulties.query.filter_by(user_id=user_to_delete.id).first()
+            question_topics_to_delete = QuestionTopics.query.filter_by(user_id=user_to_delete.id).first()
+            db.session.delete(question_difficulties_to_delete)
+            db.session.delete(question_topics_to_delete)
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            flash("Account deletion successful.", category="success")
+            return redirect(url_for("register_page"))
+        else:
+            flash("The username or password entered does not match the details of the currently logged-in user.", category="danger")
+    return render_template("delete_account.html", form=form)
