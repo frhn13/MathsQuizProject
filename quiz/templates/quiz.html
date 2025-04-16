@@ -14,7 +14,8 @@
       </svg>
    {% endif %}
    </h5>
-
+   <h6 id="countdownTimer">60/60 seconds left</h6>
+   <br>
    {% if image_added %}
       <img src="{{ url_for('get_image') }}" class="mx-auto w-100"/>
    {% elif graph_added %}
@@ -25,12 +26,12 @@
    {% if multiple_answers == "No" %}
       <div class="container mt-3 mx-auto w-50">
          <p>{{ final_question }}</p>
-         <form method="POST" class="form-register">
+         <form method="POST" class="form-register" id="normal_form">
             {{ form.csrf_token() }}
             {{ form.answer.label() }}
-            {{ form.answer(class="form-control", placeholder="Answer") }}
+            {{ form.answer(class="form-control", placeholder="Answer", id="normal_answer") }}
 
-            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+            {{ form.submit(class="btn btn-primary btn-lg mt-5", id="normal_submit") }}
          </form>
       </div>
    {% elif multiple_answers == "TwoSame" %}
@@ -39,11 +40,11 @@
          <form method="POST" class="form-register">
             {{ form.csrf_token() }}
             {{ form.answer_x_1.label() }}
-            {{ form.answer_x_1(class="form-control", placeholder="X1") }}
+            {{ form.answer_x_1(class="form-control", placeholder="X1", id="x1_answer") }}
             {{ form.answer_x_2.label() }}
-            {{ form.answer_x_2(class="form-control", placeholder="X2") }}
+            {{ form.answer_x_2(class="form-control", placeholder="X2", id="x2_answer") }}
 
-            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+            {{ form.submit(class="btn btn-primary btn-lg mt-5", id="two_same_submit") }}
          </form>
       </div>
    {% elif multiple_answers == "TwoDifferent" %}
@@ -52,11 +53,11 @@
          <form method="POST" class="form-register">
             {{ form.csrf_token() }}
             {{ form.answer_x.label() }}
-            {{ form.answer_x(class="form-control", placeholder="X") }}
+            {{ form.answer_x(class="form-control", placeholder="X", id="x_answer") }}
             {{ form.answer_y.label() }}
-            {{ form.answer_y(class="form-control", placeholder="Y") }}
+            {{ form.answer_y(class="form-control", placeholder="Y", id="y_answer") }}
 
-            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+            {{ form.submit(class="btn btn-primary btn-lg mt-5", id="two_different_submit") }}
          </form>
       </div>
    {% elif multiple_answers == "FourDifferent" %}
@@ -65,17 +66,60 @@
          <form method="POST" class="form-register">
             {{ form.csrf_token() }}
             {{ form.answer_x_1.label() }}
-            {{ form.answer_x_1(class="form-control", placeholder="X1") }}
+            {{ form.answer_x_1(class="form-control", placeholder="X1", id="x1_answer") }}
             {{ form.answer_x_2.label() }}
-            {{ form.answer_x_2(class="form-control", placeholder="X2") }}
+            {{ form.answer_x_2(class="form-control", placeholder="X2", id="x2_answer") }}
             {{ form.answer_y_1.label() }}
-            {{ form.answer_y_1(class="form-control", placeholder="Y1") }}
+            {{ form.answer_y_1(class="form-control", placeholder="Y1", id="y1_answer") }}
             {{ form.answer_y_2.label() }}
-            {{ form.answer_y_2(class="form-control", placeholder="Y2") }}
+            {{ form.answer_y_2(class="form-control", placeholder="Y2", id="y2_answer") }}
 
-            {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+            {{ form.submit(class="btn btn-primary btn-lg mt-5", id="four_different_submit") }}
          </form>
       </div>
    {% endif %}
 </div>
+
+<script>
+   const startingQuizTime = 60;
+   const multipleAnswers = '{{ multiple_answers }}';
+   console.log(multipleAnswers);
+   let timeRemaining = startingQuizTime;
+   const countdownTimer = document.getElementById('countdownTimer');
+
+   const timerInterval = setInterval(updateTimer, 1000);
+
+   function updateTimer() {
+      timeRemaining--;
+      countdownTimer.innerHTML = `${timeRemaining}/${startingQuizTime} seconds left`;
+
+      if (timeRemaining <= 0) {
+         clearInterval(timerInterval);
+         switch(multipleAnswers) {
+            case 'No':
+               document.getElementById('normal_answer').value = 'timeout';
+               document.getElementById('normal_submit').click();
+               break;
+            case 'TwoSame':
+               document.getElementById('x1_answer').value = 'timeout';
+               document.getElementById('x2_answer').value = 'timeout';
+               document.getElementById('two_same_submit').click();
+               break;
+            case 'TwoDifferent':
+               document.getElementById('x_answer').value = 'timeout';
+               document.getElementById('y_answer').value = 'timeout';
+               document.getElementById('two_different_submit').click();
+               break;
+            case 'FourDifferent':
+               document.getElementById('x1_answer').value = 'timeout';
+               document.getElementById('x2_answer').value = 'timeout';
+               document.getElementById('y1_answer').value = 'timeout';
+               document.getElementById('y2_answer').value = 'timeout';
+               document.getElementById('four_different_submit').click();
+               break;
+         }
+      }
+   }
+</script>
+
 {% endblock %}

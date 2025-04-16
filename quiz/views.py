@@ -487,210 +487,251 @@ def quiz_page():
         final_question = session.get("final_question")
         print(final_answer)
 
+        answer_timeout = False
         if request.method == "POST":
             answer = 0
-            match session["current_topic"]:
-                case "equations":
-                    match session["multiple_answers"]:
-                        case "No":
-                            answer = request.form.get("answer")
-                            if not answer.replace(".", "").replace("-", "").isnumeric():
-                                flash("You must enter a number. Try again.", category="danger")
-                                return redirect(url_for("quiz_page"))
-                            answer = float(answer)
-
-                        case "TwoSame":
-                            answer_x_1 = request.form.get("answer_x_1")
-                            answer_x_2 = request.form.get("answer_x_2")
-
-                            if (not answer_x_1.replace(".", "").replace("-","").isnumeric() or
-                                    not answer_x_2.replace(".", "").replace("-","").isnumeric()):
-                                flash("You must enter a number. Try again.", category="danger")
-                                return redirect(url_for("quiz_page"))
-                            answer = [float(answer_x_1), float(answer_x_2)]
-
-                        case "TwoDifferent":
-                            answer_x = request.form.get("answer_x")
-                            answer_y = request.form.get("answer_y")
-
-                            if (not answer_x.replace(".", "").replace("-","").isnumeric() or
-                                    not answer_y.replace(".", "").replace("-","").isnumeric()):
-                                flash("You must enter a number. Try again.", category="danger")
-                                return redirect(url_for("quiz_page"))
-                            answer = [float(answer_x), float(answer_y)]
-                        case "FourDifferent":
-                            answer_x_1 = request.form.get("answer_x_1")
-                            answer_x_2 = request.form.get("answer_x_2")
-                            answer_y_1 = request.form.get("answer_y_1")
-                            answer_y_2 = request.form.get("answer_y_2")
-
-                            if (not answer_x_1.replace(".", "").replace("-","").isnumeric() or
-                                    not answer_x_2.replace(".", "").replace("-","").isnumeric()
-                                    or not answer_y_1.replace(".", "").replace("-","").isnumeric()
-                                    or not answer_y_2.replace(".", "").replace("-","").isnumeric()):
-                                flash("You must enter a number. Try again.", category="danger")
-                                return redirect(url_for("quiz_page"))
-                            answer = [float(answer_x_1), float(answer_x_2), float(answer_y_1), float(answer_y_2)]
-                        case _:
-                            pass
-
-                case "fractions":
+            match session["multiple_answers"]:
+                case "No":
                     answer = request.form.get("answer")
-                    if final_answer in ("True", "False") and answer not in ("True", "False"):
-                        flash("You must enter True or False. Try again", category="danger")
-                        return redirect(url_for("quiz_page"))
-                    elif type(final_answer) == str and not "/" in answer and final_answer not in ("True", "False"):
-                        flash("You must write your answer as a fraction. Try again.", category="danger")
-                        return redirect(url_for("quiz_page"))
-                    elif final_answer == str and "x" in final_answer:
-                        if "/" in answer:
-                            final_answer = str(simplify(sympify(final_answer)))
-                            # answer = simplify(sympify(answer))
-                        else:
+                    if answer == "timeout":
+                        answer_timeout = True
+                case "TwoSame":
+                    answer_x_1 = request.form.get("answer_x_1")
+                    if answer_x_1 == "timeout":
+                        answer_timeout = True
+                case "TwoDifferent":
+                    answer_x = request.form.get("answer_x")
+                    if answer_x == "timeout":
+                        answer_timeout = True
+                case "FourDifferent":
+                    answer_x_1 = request.form.get("answer_x_1")
+                    if answer_x_1 == "timeout":
+                        answer_timeout = True
+
+            if not answer_timeout:
+                match session["current_topic"]:
+                    case "equations":
+                        match session["multiple_answers"]:
+                            case "No":
+                                answer = request.form.get("answer")
+                                if not answer.replace(".", "").replace("-", "").isnumeric():
+                                    flash("You must enter a number. Try again.", category="danger")
+                                    return redirect(url_for("quiz_page"))
+                                answer = float(answer)
+
+                            case "TwoSame":
+                                answer_x_1 = request.form.get("answer_x_1")
+                                answer_x_2 = request.form.get("answer_x_2")
+
+                                if (not answer_x_1.replace(".", "").replace("-","").isnumeric() or
+                                        not answer_x_2.replace(".", "").replace("-","").isnumeric()):
+                                    flash("You must enter a number. Try again.", category="danger")
+                                    return redirect(url_for("quiz_page"))
+                                answer = [float(answer_x_1), float(answer_x_2)]
+
+                            case "TwoDifferent":
+                                answer_x = request.form.get("answer_x")
+                                answer_y = request.form.get("answer_y")
+
+                                if (not answer_x.replace(".", "").replace("-","").isnumeric() or
+                                        not answer_y.replace(".", "").replace("-","").isnumeric()):
+                                    flash("You must enter a number. Try again.", category="danger")
+                                    return redirect(url_for("quiz_page"))
+                                answer = [float(answer_x), float(answer_y)]
+                            case "FourDifferent":
+                                answer_x_1 = request.form.get("answer_x_1")
+                                answer_x_2 = request.form.get("answer_x_2")
+                                answer_y_1 = request.form.get("answer_y_1")
+                                answer_y_2 = request.form.get("answer_y_2")
+
+                                if (not answer_x_1.replace(".", "").replace("-","").isnumeric() or
+                                        not answer_x_2.replace(".", "").replace("-","").isnumeric()
+                                        or not answer_y_1.replace(".", "").replace("-","").isnumeric()
+                                        or not answer_y_2.replace(".", "").replace("-","").isnumeric()):
+                                    flash("You must enter a number. Try again.", category="danger")
+                                    return redirect(url_for("quiz_page"))
+                                answer = [float(answer_x_1), float(answer_x_2), float(answer_y_1), float(answer_y_2)]
+                            case _:
+                                pass
+
+                    case "fractions":
+                        answer = request.form.get("answer")
+                        if final_answer in ("True", "False") and answer not in ("True", "False"):
+                            flash("You must enter True or False. Try again", category="danger")
+                            return redirect(url_for("quiz_page"))
+                        elif type(final_answer) == str and not "/" in answer and final_answer not in ("True", "False"):
                             flash("You must write your answer as a fraction. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
-                    else:
-                        final_answer = str(final_answer)
-
-                case "expressions":
-                    answer = request.form.get("answer")
-                    if final_answer in ("True", "False") and answer not in ("True", "False"):
-                        flash("You must enter True or False. Try again", category="danger")
-                        return redirect(url_for("quiz_page"))
-                    else:
-                        if not answer.isnumeric() and "x" not in answer:
-                            flash("Expression must include an x. Try again.", category="danger")
-                            return redirect(url_for("quiz_page"))
-                        elif ("(" in answer or ")" in answer) and "(" not in final_answer:
-                            flash("Expression must be expanded, so no brackets. Try again.", category="danger")
-                            return redirect(url_for("quiz_page"))
-                        elif "(" in final_answer and "(" not in answer and ")" not in answer:
-                            flash("Expression must be factorised. Try again.", category="danger")
-                            return redirect(url_for("quiz_page"))
-                        else:
-                            for x in range(len(answer)):
-                                if x < len(answer) - 1 and answer[x].isnumeric() and (answer[x+1] == "x" or answer[x+1] == "("):
-                                    answer = f"{answer[0:x+1]}*{answer[x+1:]}"
-                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "(":
-                                    answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
-                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1].isnumeric():
-                                    answer = f"{answer[0:x+1]}**{answer[x+1:]}"
-                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "^":
-                                    answer = f"{answer[0:x+1]}**{answer[x+2:]}"
-                            print(answer)
-                            print(final_answer)
-                        try:
-                            answer = sympify(answer)
-                            final_answer = sympify(final_answer)
-                        except Exception:
-                            pass
-
-                case "calculus":
-                    answer = request.form.get("answer")
-                    if not final_answer.isnumeric() and "y" not in final_answer:
-                        for x in range(len(answer)):
-                            if x < len(answer) - 1 and answer[x].isnumeric() and (
-                                    answer[x + 1] == "x" or answer[x + 1] == "("):
-                                answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
-                            elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1] == "(":
-                                answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
-                            elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1].isnumeric():
-                                answer = f"{answer[0:x + 1]}**{answer[x + 1:]}"
-                            elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1] == "^":
-                                answer = f"{answer[0:x + 1]}**{answer[x + 2:]}"
-                        print(answer)
-                        print(final_answer)
-                        try:
-                            answer = sympify(answer)
-                            final_answer = sympify(final_answer)
-                        except Exception:
-                            pass
-                    else:
-                        final_answer = final_answer.replace(" ", "")
-                        answer = answer.replace(" ", "")
-
-                case "graphs":
-                    answer = request.form.get("answer")
-                    try:
-                        answer = request.form.get("answer")
-                        if type(final_answer) == int:
-                            answer = int(answer)
-                        elif type(final_answer) == float:
-                            answer = float(answer)
-                        else:
-                            if "y=" in final_answer or "y =" in final_answer:
-                                final_answer = final_answer.replace(" ", "")
-                                answer = answer.replace(" ", "")
-                    except Exception:
-                        flash("You must enter a number. Try again.", category="danger")
-                        return redirect(url_for("quiz_page"))
-
-                case "hcf_lcm":
-                    answer = request.form.get("answer")
-                    total_number = ""
-                    final_answer_str = ""
-                    try:
-                        if type(final_answer) == int:
-                            answer = int(answer)
-                        elif type(final_answer) == dict:
-                            answer = answer.replace(" ", "")
-                            numbers_dict = {}
-                            for x, character in enumerate(answer):
-                                if not character.isnumeric() and character.lower() not in ("x", "*"):
-                                    flash("You must list the multiplication of prime factors like a x b x c. Try again.", category="danger")
-                                    return redirect(url_for("quiz_page"))
-                                elif character.isnumeric():
-                                    total_number += character
-                                    if x+1 == len(answer) or (x+1 < len(answer) and answer[x+1].lower() in ("x", "*")):
-                                        if total_number not in numbers_dict:
-                                            numbers_dict[total_number] = 1
-                                        else:
-                                            numbers_dict[total_number] += 1
-                                        total_number = ""
-                            for number in numbers_dict:
-                                if number not in final_answer:
-                                    answer = ""
-                                    break
-                                elif numbers_dict[number] != final_answer[number]:
-                                    answer = ""
-                                    break
-
-                            for number in final_answer:
-                                for x in range(final_answer[number]):
-                                    final_answer_str += f"{number}x"
-                            final_answer_str = final_answer_str[0:-1]
-                            final_answer = final_answer_str
-
-                            if answer != "":
-                                answer = final_answer
-                        else:
-                            if final_answer in ("True", "False") and answer not in ("True", "False"):
-                                flash("You must enter True or False. Try again", category="danger")
+                        elif final_answer == str and "x" in final_answer:
+                            if "/" in answer:
+                                final_answer = str(simplify(sympify(final_answer)))
+                                # answer = simplify(sympify(answer))
+                            else:
+                                flash("You must write your answer as a fraction. Try again.", category="danger")
                                 return redirect(url_for("quiz_page"))
-                    except Exception:
-                        flash("You must enter a number. Try again.", category="danger")
-                        return redirect(url_for("quiz_page"))
-
-                case _:
-                    try:
-                        answer = request.form.get("answer")
-                        if type(final_answer) == int:
-                            answer = int(answer)
-                        elif type(final_answer) == float:
-                            answer = float(answer)
                         else:
-                            if final_answer in ("True", "False") and answer not in ("True", "False"):
-                                flash("You must enter True or False. Try again", category="danger")
+                            final_answer = str(final_answer)
+
+                    case "expressions":
+                        answer = request.form.get("answer")
+                        if final_answer in ("True", "False") and answer not in ("True", "False"):
+                            flash("You must enter True or False. Try again", category="danger")
+                            return redirect(url_for("quiz_page"))
+                        else:
+                            if not answer.isnumeric() and "x" not in answer:
+                                flash("Expression must include an x. Try again.", category="danger")
+                                return redirect(url_for("quiz_page"))
+                            elif ("(" in answer or ")" in answer) and "(" not in final_answer:
+                                flash("Expression must be expanded, so no brackets. Try again.", category="danger")
+                                return redirect(url_for("quiz_page"))
+                            elif "(" in final_answer and "(" not in answer and ")" not in answer:
+                                flash("Expression must be factorised. Try again.", category="danger")
                                 return redirect(url_for("quiz_page"))
                             else:
+                                for x in range(len(answer)):
+                                    if x < len(answer) - 1 and answer[x].isnumeric() and (answer[x+1] == "x" or answer[x+1] == "("):
+                                        answer = f"{answer[0:x+1]}*{answer[x+1:]}"
+                                    elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "(":
+                                        answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
+                                    elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1].isnumeric():
+                                        answer = f"{answer[0:x+1]}**{answer[x+1:]}"
+                                    elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "^":
+                                        answer = f"{answer[0:x+1]}**{answer[x+2:]}"
+                                print(answer)
+                                print(final_answer)
+                            try:
+                                answer = sympify(answer)
+                                final_answer = sympify(final_answer)
+                            except Exception:
                                 pass
-                    except Exception:
-                        flash("You must enter a number. Try again.", category="danger")
-                        return redirect(url_for("quiz_page"))
 
-            if (answer == final_answer or (type(final_answer) == list and (len(final_answer) == 1 and answer == final_answer[0])) or
-                    (type(answer) == list and type(final_answer) == list and ((len(answer) == 2 and answer[0] == final_answer[0] and answer[1] == final_answer[1])
-            or (len(answer) == 4 and (answer[0] == final_answer[0] and answer[1] == final_answer[0] or (answer[0] == final_answer[1] and answer[1] == final_answer[0]))
+                    case "calculus":
+                        answer = request.form.get("answer")
+                        if not final_answer.isnumeric() and "y" not in final_answer:
+                            for x in range(len(answer)):
+                                if x < len(answer) - 1 and answer[x].isnumeric() and (
+                                        answer[x + 1] == "x" or answer[x + 1] == "("):
+                                    answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
+                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1] == "(":
+                                    answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
+                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1].isnumeric():
+                                    answer = f"{answer[0:x + 1]}**{answer[x + 1:]}"
+                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1] == "^":
+                                    answer = f"{answer[0:x + 1]}**{answer[x + 2:]}"
+                            print(answer)
+                            print(final_answer)
+                            try:
+                                answer = sympify(answer)
+                                final_answer = sympify(final_answer)
+                            except Exception:
+                                pass
+                        else:
+                            final_answer = final_answer.replace(" ", "")
+                            answer = answer.replace(" ", "")
+
+                    case "graphs":
+                        answer = request.form.get("answer")
+                        try:
+                            answer = request.form.get("answer")
+                            if type(final_answer) == int:
+                                answer = int(answer)
+                            elif type(final_answer) == float:
+                                answer = float(answer)
+                            else:
+                                if "y=" in final_answer or "y =" in final_answer:
+                                    final_answer = final_answer.replace(" ", "")
+                                    answer = answer.replace(" ", "")
+                        except Exception:
+                            flash("You must enter a number. Try again.", category="danger")
+                            return redirect(url_for("quiz_page"))
+
+                    case "hcf_lcm":
+                        answer = request.form.get("answer")
+                        total_number = ""
+                        final_answer_str = ""
+                        try:
+                            if type(final_answer) == int:
+                                answer = int(answer)
+                            elif type(final_answer) == dict:
+                                answer = answer.replace(" ", "")
+                                numbers_dict = {}
+                                for x, character in enumerate(answer):
+                                    if not character.isnumeric() and character.lower() not in ("x", "*"):
+                                        flash("You must list the multiplication of prime factors like a x b x c. Try again.", category="danger")
+                                        return redirect(url_for("quiz_page"))
+                                    elif character.isnumeric():
+                                        total_number += character
+                                        if x+1 == len(answer) or (x+1 < len(answer) and answer[x+1].lower() in ("x", "*")):
+                                            if total_number not in numbers_dict:
+                                                numbers_dict[total_number] = 1
+                                            else:
+                                                numbers_dict[total_number] += 1
+                                            total_number = ""
+                                for number in numbers_dict:
+                                    if number not in final_answer:
+                                        answer = ""
+                                        break
+                                    elif numbers_dict[number] != final_answer[number]:
+                                        answer = ""
+                                        break
+
+                                for number in final_answer:
+                                    for x in range(final_answer[number]):
+                                        final_answer_str += f"{number}x"
+                                final_answer_str = final_answer_str[0:-1]
+                                final_answer = final_answer_str
+
+                                if answer != "":
+                                    answer = final_answer
+                            else:
+                                if final_answer in ("True", "False") and answer not in ("True", "False"):
+                                    flash("You must enter True or False. Try again", category="danger")
+                                    return redirect(url_for("quiz_page"))
+                        except Exception:
+                            flash("You must enter a number. Try again.", category="danger")
+                            return redirect(url_for("quiz_page"))
+
+                    case _:
+                        try:
+                            answer = request.form.get("answer")
+                            if type(final_answer) == int:
+                                answer = int(answer)
+                            elif type(final_answer) == float:
+                                answer = float(answer)
+                            else:
+                                if final_answer in ("True", "False") and answer not in ("True", "False"):
+                                    flash("You must enter True or False. Try again", category="danger")
+                                    return redirect(url_for("quiz_page"))
+                                else:
+                                    pass
+                        except Exception:
+                            flash("You must enter a number. Try again.", category="danger")
+                            return redirect(url_for("quiz_page"))
+
+
+            if answer_timeout:
+                session["topic_counter"][session["current_topic"]][1] += 1
+                difficulty_counter = session["difficulty_counter"]
+                difficulty_counter[f"level_{session['current_difficulty']}"][1] += 1
+                session["difficulty_counter"] = difficulty_counter
+
+                print("Timeout")
+                if session["current_difficulty"] > session["min_difficulty"]:
+                    session["difficulty_range"] -= (
+                            (difficulty_boundary - (
+                                    session["final_difficulty_weighting"] - (session["current_difficulty"]))) * 30)
+                    if session["difficulty_range"] <= 0:
+                        session["current_difficulty"] -= 1
+                        session["difficulty_range"] = 50
+                else:
+                    session["difficulty_range"] = 50
+                flash(f"You took too long to answer the question! The correct answer was {final_answer}.", category="danger")
+
+            elif (answer == final_answer or (type(final_answer) == list and (len(final_answer) == 1 and answer == final_answer[0])) or
+                     (type(answer) == list and type(final_answer) == list and
+                     ((len(answer) == 2 and answer[0] == final_answer[0] and answer[1] == final_answer[1])
+                or (len(answer) == 2 and answer[0] == final_answer[1] and answer[1] == final_answer[0] and session["multiple_answers"] == "TwoSame")
+                or (len(answer) == 4 and (answer[0] == final_answer[0] and answer[1] == final_answer[0] or (answer[0] == final_answer[1] and answer[1] == final_answer[0]))
                 and (answer[2] == final_answer[2] and answer[3] == final_answer[3] or (answer[2] == final_answer[3] and answer[3] == final_answer[2])))))):
                 session["score"] += 1
                 session["topic_counter"][session["current_topic"]][0] += 1

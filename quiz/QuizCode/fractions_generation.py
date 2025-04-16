@@ -33,8 +33,6 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                 decimal_value = num1 / num2
                 percentage_value = (num1 / num2) * 100
                 convert = random.choice(["/ to .", "/ to %", "% to /", ". to /"])
-                print(num1)
-                print(num2)
 
                 if round(decimal_value, 1) != decimal_value:
                     difficulty_factors["difficulty_of_answer"][0] += 1
