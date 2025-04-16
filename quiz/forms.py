@@ -29,17 +29,17 @@ class AnswerQuadraticSimultaneousEquationForm(FlaskForm):
 
 
 class TopicsForm(FlaskForm):
-    operations = BooleanField(label="Operations")
-    fractions = BooleanField(label="Fractions")
-    calculus = BooleanField(label="Calculus")
-    equations = BooleanField(label="Equations")
-    expressions = BooleanField(label="Expressions")
-    sequences = BooleanField(label="Sequences")
-    hcf_lcm = BooleanField(label="HCF, LCM and Prime Factors")
-    percentages = BooleanField(label="Percentages")
-    triangles = BooleanField(label="Triangles")
-    circles = BooleanField(label="Circles")
-    graphs = BooleanField(label="Graphs")
+    operations = BooleanField(label="Operations, Difficulty: 1-5")
+    fractions = BooleanField(label="Fractions, Difficulty: 2-6")
+    calculus = BooleanField(label="Calculus, Difficulty: 7-10")
+    equations = BooleanField(label="Equations, Difficulty: 4-8")
+    expressions = BooleanField(label="Expressions, Difficulty: 3-6")
+    sequences = BooleanField(label="Sequences, Difficulty: 2-8")
+    hcf_lcm = BooleanField(label="HCF, LCM and Prime Factors, Difficulty: 2-5")
+    percentages = BooleanField(label="Percentages, Difficulty: 2-6")
+    triangles = BooleanField(label="Triangles, Difficulty: 2-7")
+    circles = BooleanField(label="Circles, Difficulty: 3-7")
+    graphs = BooleanField(label="Graphs, Difficulty: 2-8")
     questions = IntegerField(label="Enter the number of questions to answers",
                              validators=[DataRequired(), NumberRange(10, 50)])
     difficulty = IntegerField(label="Enter the starting difficulty of the questions",

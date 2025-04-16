@@ -106,6 +106,9 @@ def answer_generation(real_answer : int, question_type : str, difficulty_factors
 
     return answers, difficulty_factors
 
+def answer_generation_calculus(real_answer):
+    pass
+
 def answer_generation_equations(real_answer : list, question_type : str, difficulty_factors : dict):
     if question_type == "free_text":
         difficulty_factors["question_type"][0] = 8

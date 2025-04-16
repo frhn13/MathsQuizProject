@@ -226,7 +226,7 @@ def quiz_selection():
             session["current_difficulty"] = int(request.form.get("difficulty"))
             session["number_of_questions"] = int(request.form.get("questions"))
             session["question_number"] = 1
-            session["difficulty_range"] = 50
+            session["difficulty_range"] = 0
             session["score"] = 0
             print(session.get("topic_selection"))
             return redirect(url_for("quiz_page"))
@@ -717,14 +717,12 @@ def quiz_page():
 
                 print("Timeout")
                 if session["current_difficulty"] > session["min_difficulty"]:
-                    session["difficulty_range"] -= (
-                            (difficulty_boundary - (
-                                    session["final_difficulty_weighting"] - (session["current_difficulty"]))) * 30)
-                    if session["difficulty_range"] <= 0:
+                    session["difficulty_range"] -= 1
+                    if session["difficulty_range"] <= -5:
                         session["current_difficulty"] -= 1
-                        session["difficulty_range"] = 50
+                        session["difficulty_range"] = 0
                 else:
-                    session["difficulty_range"] = 50
+                    session["difficulty_range"] = 0
                 flash(f"You took too long to answer the question! The correct answer was {final_answer}.", category="danger")
 
             elif (answer == final_answer or (type(final_answer) == list and (len(final_answer) == 1 and answer == final_answer[0])) or
@@ -741,12 +739,12 @@ def quiz_page():
 
                 print("Correct")
                 if session["current_difficulty"] < session["max_difficulty"]:
-                    session["difficulty_range"] += ((session["final_difficulty_weighting"] - (session["current_difficulty"])) * 30)
-                    if session["difficulty_range"] >= 100:
+                    session["difficulty_range"] += 1
+                    if session["difficulty_range"] >= 5:
                         session["current_difficulty"] += 1
-                        session["difficulty_range"] = 50
+                        session["difficulty_range"] = 0
                 else:
-                    session["difficulty_range"] = 50
+                    session["difficulty_range"] = 0
                 flash(f"Well done! You got it right!", category="success")
 
             else:
@@ -757,14 +755,12 @@ def quiz_page():
 
                 print("Incorrect")
                 if session["current_difficulty"] > session["min_difficulty"]:
-                    session["difficulty_range"] -= (
-                            (difficulty_boundary - (
-                                        session["final_difficulty_weighting"] - (session["current_difficulty"]))) * 30)
-                    if session["difficulty_range"] <= 0:
+                    session["difficulty_range"] -= 1
+                    if session["difficulty_range"] <= -5:
                         session["current_difficulty"] -= 1
-                        session["difficulty_range"] = 50
+                        session["difficulty_range"] = 0
                 else:
-                    session["difficulty_range"] = 50
+                    session["difficulty_range"] = 0
                 flash(f"You got it wrong! The correct answer is {final_answer}.", category="danger")
 
             print(f"Weighting: {session.get('final_difficulty_weighting')}")
@@ -1023,6 +1019,11 @@ def view_max_results():
         session["difficulty"] = form.difficulty_chosen.data
 
     return render_template("view_max_results.html", form=form, form_is_submitted=form_is_submitted)
+
+@app.route("/tutorial", methods=["GET", "POST"])
+@login_required
+def tutorial_page():
+    return render_template("tutorial.html")
 
 @app.route("/delete-account", methods=["GET", "POST"])
 @login_required
