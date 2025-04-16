@@ -793,10 +793,13 @@ def quiz_page():
         graph_added = session.get("graph_added")
         circle_image_added = session.get("circle_image_added")
         calculator_needed = session.get("calculator_needed")
+        max_difficulty = session.get("max_difficulty")
+        min_difficulty = session.get("min_difficulty")
         return render_template("quiz.html", form=form, final_question=final_question,
                                current_difficulty=current_difficulty, score=score, question_number=question_number,
                                multiple_answers=multiple_answers, image_added=image_added, graph_added=graph_added,
-                               circle_image_added=circle_image_added, calculator_needed=calculator_needed)
+                               circle_image_added=circle_image_added, calculator_needed=calculator_needed,
+                               max_difficulty=max_difficulty, min_difficulty=min_difficulty)
 
 @app.route("/get-results-graph")
 @login_required

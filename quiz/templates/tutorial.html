@@ -2,7 +2,66 @@
 {% block title %}Tutorial{% endblock %}
 
 {% block content %}
-<div class="text-center mt-5">
+<div class="text-left mt-5 container-fluid">
    <h1>Tutorial Page</h1>
+    <br>
+    <br>
+    <h3>Basics of Website</h3>
+    <p>This is a website where users can create maths quizzes to test themselves on maths questions from eleven different topics.
+     The questions are separated into ten difficulty levels and the quiz will become easier or harder depending on whether the user is getting questions right or wrong.</p>
+    <br>
+    <h3>Question Selection</h3>
+    <p>The Question Selection page is accessible when the user clicks 'Select Quiz' on the navbar. On this page, you will select the topics you want to be tested on, and you can select as many as you would like.</p>
+    <p>You then must select the number of questions in the quiz which ust be between 10 and 50 and the initial difficulty level of the quiz, which must be between the range of the difficulties that are available in the topics you have selected.
+    The maximum and minimum difficulties of each topic are listed next to them on this webpage.</p>
+    <br>
+    <h3>Question Types and Topics</h3>
+    <p>The different question topics are:</p>
+    <ul>
+     <li>Operations</li>
+     <li>Fractions</li>
+     <li>Expressions</li>
+     <li>Equations</li>
+     <li>Percentages</li>
+     <li>Sequences</li>
+     <li>Triangles</li>
+     <li>Calculus</li>
+     <li>Highest Common Factor, Lowest Common Multiple, and Prime Factors</li>
+     <li>Circles</li>
+     <li>Graphs</li>
+    </ul>
+    <p>And the different question types are:</p>
+    <ul>
+     <li>Free Text - Where the user enters any answer they think is right.</li>
+     <li>Multiple Choice - Where the user selects the correct answer from four choices</li>
+     <li>True/False - Where the user is told what the answer to a question is, and then they have to determine whether that answer is correct</li>
+    </ul>
+    <p>When you see a question with the symbol:
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-calculator icon" viewBox="0 0 16 16">
+        <path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+        <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+    </svg>
+     . Then it means you are allowed to use a calculator on the question. Do not use a calculator for any questions without this symbol.
+    </p>
+    <br>
+    <h3>Answering Questions</h3>
+    <p>You must answer questions in the format that is specified by the question, in most cases, this format is as a number, but sometimes this is decimals, fractions, expressions or answering with true or false.</p>
+     <p>If you continuously get questions correct, then the difficulty level of the questions will increase unless you are at the maximum difficulty level available based on the topics you chose for the quiz,
+     and the same is true vice versa if you continuously get questions wrong.</p>
+    <p>In addition, every question has a time limit and if you do not answer it within that time limit then you will automatically get it wrong.</p>
+    <br>
+    <h3>Viewing Results</h3>
+    <p>After a quiz, the number of questions you got correct or incorrect for each maths topic and difficulty level in that quiz is saved to a database of results. There are two pages where you can view user results:</p>
+    <ul>
+     <li>The Results Page</li>
+     <li>The Highest Results Page</li>
+    </ul>
+    <p>On the results page, you can view the number of questions any user got correct or incorrect for either all questions, or all questions of a particular maths topic or difficulty as a bar chart.
+    In addition, you can compare these results with another user as well. The results page is accessed by clicking on 'Results' on the navbar.</p>
+    <p>On the highest results page, you can view the users with either the top five highest number or percentage of correct answers. These results are either viewed for all questions, or all questions of a particular maths topic or difficulty as a bar chart.
+    The highest results page is accessed by clicking on 'Maximum Results' on the navbar.</p>
+    <br>
+    <h3>Deleting Account</h3>
+    <p>To delete your account, click on 'Delete Account' on the right-hand side of the navbar, and then enter your username and password.</p>
 </div>
 {% endblock %}

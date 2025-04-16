@@ -4,6 +4,7 @@
 {% block content %}
 <div class="text-center mt-5 mx-auto w-100">
    <h1>Quiz Page</h1>
+   <h3 class="mt-5">Minimum Potential Difficulty: Level {{ min_difficulty }} | Maximum Potential Difficulty: Level {{ max_difficulty }}</h3>
    <h3 class="mt-5">Current Difficulty: Level {{ current_difficulty }}</h3>
    <h4 class="mt-3">Score: {{ score }}</h4>
    <h5 class="mt-5">Question {{ question_number }}
@@ -99,16 +100,19 @@
             case 'No':
                document.getElementById('normal_answer').value = 'timeout';
                document.getElementById('normal_submit').click();
+               document.getElementById('normal_submit').disabled = true;
                break;
             case 'TwoSame':
                document.getElementById('x1_answer').value = 'timeout';
                document.getElementById('x2_answer').value = 'timeout';
                document.getElementById('two_same_submit').click();
+               document.getElementById('two_same_submit').disabled = true;
                break;
             case 'TwoDifferent':
                document.getElementById('x_answer').value = 'timeout';
                document.getElementById('y_answer').value = 'timeout';
                document.getElementById('two_different_submit').click();
+               document.getElementById('two_different_submit').disabled = true;
                break;
             case 'FourDifferent':
                document.getElementById('x1_answer').value = 'timeout';
@@ -116,6 +120,7 @@
                document.getElementById('y1_answer').value = 'timeout';
                document.getElementById('y2_answer').value = 'timeout';
                document.getElementById('four_different_submit').click();
+               document.getElementById('four_different_submit').disabled = true;
                break;
          }
       }
