@@ -25,9 +25,9 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
     graph_values = None
     circle_image_values = None
     is_topic_chosen = False
-    paper_needed = False
     calculator_needed = False
     multiple_answers = "No"
+    time_needed = 60
 
     difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested
@@ -44,7 +44,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
         match chosen_topic:
             case "operations":
                 if operations[0] <= entered_difficulty <= operations[1]:
-                    question, answer, difficulty_weighting = operations_question_generation(entered_difficulty,
+                    question, answer, difficulty_weighting, time_needed = operations_question_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True
@@ -114,4 +114,4 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             difficulty_factors)
                     is_topic_chosen = True
 
-    return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values, calculator_needed
+    return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values, calculator_needed, time_needed

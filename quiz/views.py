@@ -110,6 +110,7 @@ def quiz_selection():
     session.pop("final_difficulty_weighting", None)
     session.pop("multiple_answers", None)
     session.pop("calculator_needed", None)
+    session.pop("time_needed", None)
     session.pop("current_topic", None)
     session.pop("current_difficulty", None)
     session.pop("difficulty_range", None)
@@ -447,7 +448,7 @@ def quiz_page():
         difficulty_boundary = 30
         if "final_answer" not in session:
             topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values, \
-                calculator_needed = question_topic_selection(session.get("topic_selection"), int(session.get("current_difficulty")),
+                calculator_needed, time_needed = question_topic_selection(session.get("topic_selection"), int(session.get("current_difficulty")),
     ["free_text", "multiple-choice", "true/false"])
             session["current_topic"] = topic
             session["final_answer"] = answer
@@ -455,6 +456,7 @@ def quiz_page():
             session["final_difficulty_weighting"] = difficulty_weighting
             session["multiple_answers"] = multiple_answers
             session["calculator_needed"] = calculator_needed
+            session["time_needed"] = time_needed
             if image_values is not None:
                 session["image_values"] = image_values
                 session["image_added"] = True
@@ -795,11 +797,12 @@ def quiz_page():
         calculator_needed = session.get("calculator_needed")
         max_difficulty = session.get("max_difficulty")
         min_difficulty = session.get("min_difficulty")
+        time_needed = session.get("time_needed")
         return render_template("quiz.html", form=form, final_question=final_question,
                                current_difficulty=current_difficulty, score=score, question_number=question_number,
                                multiple_answers=multiple_answers, image_added=image_added, graph_added=graph_added,
                                circle_image_added=circle_image_added, calculator_needed=calculator_needed,
-                               max_difficulty=max_difficulty, min_difficulty=min_difficulty)
+                               max_difficulty=max_difficulty, min_difficulty=min_difficulty, time_needed=time_needed)
 
 @app.route("/get-results-graph")
 @login_required

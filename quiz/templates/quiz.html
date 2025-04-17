@@ -15,7 +15,7 @@
       </svg>
    {% endif %}
    </h5>
-   <h6 id="countdownTimer">60/60 seconds left</h6>
+   <h6 id="countdownTimer">{{ time_needed }}/{{ time_needed }} seconds left</h6>
    <br>
    {% if image_added %}
       <img src="{{ url_for('get_image') }}" class="mx-auto w-100"/>
@@ -82,7 +82,7 @@
 </div>
 
 <script>
-   const startingQuizTime = 60;
+   const startingQuizTime = '{{ time_needed }}';
    const multipleAnswers = '{{ multiple_answers }}';
    console.log(multipleAnswers);
    let timeRemaining = startingQuizTime;
