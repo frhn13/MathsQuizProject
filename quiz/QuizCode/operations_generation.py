@@ -62,8 +62,6 @@ def operations_question_generation(entered_difficulty: int, question_types: list
             if random.random() > 0.5 and question[x].isnumeric() and (x == 0 or (not question[x-1].isnumeric() and not question[x-1] == "*")) \
                     and (x == len(question) - 1 or (not question[x+1].isnumeric() and not question[x+1] == "*")):
                 question = f"{question[0:x+1]}**2{question[x+1:]}"
-        print(question)
-
         try:
             answer = eval(question)
         except ZeroDivisionError:

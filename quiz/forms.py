@@ -92,8 +92,7 @@ class ResultsForm(FlaskForm):
         self.second_user_chosen.choices = user_list
 
 class MaxResultsForm(FlaskForm):
-    number_or_percentage_returned = RadioField("Choose whether you want to see the players with the highest number or the "
-                               "highest percentage of correct questions:",
+    number_or_percentage_returned = RadioField(
                                choices=[("number", "Highest Number"),
                                         ("percentage", "Highest Percentage")], default="number")
     results_returned = RadioField("Choose results to return:",
@@ -111,3 +110,7 @@ class MaxResultsForm(FlaskForm):
     difficulty_chosen = IntegerField(label="Select Difficulty: ", validators=[NumberRange(1, 10)], default=5)
 
     submit = SubmitField(label="Submit")
+
+    def __init__(self, new_label):
+        super().__init__()
+        self.number_or_percentage_returned.label.text = new_label

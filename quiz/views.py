@@ -1015,7 +1015,8 @@ def view_max_results():
     session.pop("graph_type", None)
     session.pop("topic", None)
     session.pop("difficulty", None)
-    form = MaxResultsForm()
+    form = MaxResultsForm("Choose whether you want to see the players with the highest number or the "
+                               "highest percentage of correct questions:")
 
     if form.validate_on_submit():
         form_is_submitted = True
@@ -1025,6 +1026,38 @@ def view_max_results():
         session["difficulty"] = form.difficulty_chosen.data
 
     return render_template("view_max_results.html", form=form, form_is_submitted=form_is_submitted)
+
+@app.route("/leaderboard", methods=["GET", "POST"])
+@login_required
+def leaderboard_page():
+    form_is_submitted = False
+    users = User.query.all()
+    user_results = []
+
+    form = MaxResultsForm("Choose whether you want the leaderboard to display the players by their number of correct answers or by their percentage of correct answers.")
+    if form.validate_on_submit():
+        print(f"Results Returned: {form.results_returned}")
+        form_is_submitted = True
+        match form.results_returned.data:
+            case "difficulty":
+                for user in users:
+                    answer_correct, answer_incorrect, answer_percentage = get_difficulty_results(user, form.difficulty_chosen.data)
+                    user_results.append([user.username, answer_correct, answer_incorrect, answer_percentage])
+            case "topic":
+                for user in users:
+                    answer_correct, answer_incorrect, answer_percentage = get_topic_results(user, form.topic_chosen.data)
+                    user_results.append([user.username, answer_correct, answer_incorrect, answer_percentage])
+            case _:
+                for user in users:
+                    answer_correct, answer_incorrect, answer_percentage = get_user_results(user)
+                    user_results.append([user.username, answer_correct, answer_incorrect, answer_percentage])
+
+        if form.number_or_percentage_returned.data == "number":
+            user_results.sort(key=lambda x: x[1], reverse=True)
+        else:
+            user_results.sort(key=lambda x: x[3], reverse=True)
+
+    return render_template("leaderboard.html", user_results=user_results, form=form, form_is_submitted=form_is_submitted)
 
 @app.route("/tutorial", methods=["GET", "POST"])
 @login_required

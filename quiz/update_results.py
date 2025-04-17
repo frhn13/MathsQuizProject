@@ -108,43 +108,43 @@ def get_difficulty_results(chosen_user, chosen_difficulty):
             case 1:
                 answer_correct = question_difficulties.level_one_right
                 answer_incorrect = question_difficulties.level_one_wrong
-                answer_percentage = round(question_difficulties.level_one_right + (question_difficulties.level_one_right + question_difficulties.level_one_wrong), 2) * 100
+                answer_percentage = round(question_difficulties.level_one_right / (question_difficulties.level_one_right + question_difficulties.level_one_wrong), 2) * 100
             case 2:
                 answer_correct = question_difficulties.level_two_right
                 answer_incorrect = question_difficulties.level_two_wrong
-                answer_percentage = round(question_difficulties.level_two_right + (question_difficulties.level_two_right + question_difficulties.level_two_wrong), 2) * 100
+                answer_percentage = round(question_difficulties.level_two_right / (question_difficulties.level_two_right + question_difficulties.level_two_wrong), 2) * 100
             case 3:
                 answer_correct = question_difficulties.level_three_right
                 answer_incorrect = question_difficulties.level_three_wrong
-                answer_percentage = round(question_difficulties.level_three_right + (question_difficulties.level_three_right + question_difficulties.level_three_wrong), 2) * 100
+                answer_percentage = (round(question_difficulties.level_three_right / (question_difficulties.level_three_right + question_difficulties.level_three_wrong), 2)) * 100
             case 4:
                 answer_correct = question_difficulties.level_four_right
                 answer_incorrect = question_difficulties.level_four_wrong
-                answer_percentage = round(question_difficulties.level_four_right + (question_difficulties.level_four_right + question_difficulties.level_four_wrong), 2) * 100
+                answer_percentage = round(question_difficulties.level_four_right / (question_difficulties.level_four_right + question_difficulties.level_four_wrong), 2) * 100
             case 5:
                 answer_correct = question_difficulties.level_five_right
                 answer_incorrect = question_difficulties.level_five_wrong
-                answer_percentage = round(question_difficulties.level_five_right + (question_difficulties.level_five_right + question_difficulties.level_five_wrong), 2) * 100
+                answer_percentage = round(question_difficulties.level_five_right / (question_difficulties.level_five_right + question_difficulties.level_five_wrong), 2) * 100
             case 6:
                 answer_correct = question_difficulties.level_six_right
                 answer_incorrect = question_difficulties.level_six_wrong
-                answer_percentage = round(question_difficulties.level_six_right + (question_difficulties.level_six_right + question_difficulties.level_six_wrong), 2) * 100
+                answer_percentage = round(question_difficulties.level_six_right / (question_difficulties.level_six_right + question_difficulties.level_six_wrong), 2) * 100
             case 7:
                 answer_correct = question_difficulties.level_seven_right
                 answer_incorrect = question_difficulties.level_seven_wrong
-                answer_percentage = round(question_difficulties.level_seven_right + (question_difficulties.level_seven_right + question_difficulties.level_seven_wrong), 2) * 100
+                answer_percentage = round(question_difficulties.level_seven_right / (question_difficulties.level_seven_right + question_difficulties.level_seven_wrong), 2) * 100
             case 8:
                 answer_correct = question_difficulties.level_eight_right
                 answer_incorrect = question_difficulties.level_eight_wrong
-                answer_percentage = round(question_difficulties.level_eight_right + (question_difficulties.level_eight_right + question_difficulties.level_eight_wrong), 2) * 100
+                answer_percentage = round(question_difficulties.level_eight_right / (question_difficulties.level_eight_right + question_difficulties.level_eight_wrong), 2) * 100
             case 9:
                 answer_correct = question_difficulties.level_nine_right
                 answer_incorrect = question_difficulties.level_nine_wrong
-                answer_percentage = round(question_difficulties.level_nine_right + (question_difficulties.level_nine_right + question_difficulties.level_nine_wrong), 2) * 100
+                answer_percentage = round(question_difficulties.level_nine_right / (question_difficulties.level_nine_right + question_difficulties.level_nine_wrong), 2) * 100
             case 10:
                 answer_correct = question_difficulties.level_ten_right
                 answer_incorrect = question_difficulties.level_ten_wrong
-                answer_percentage = round(question_difficulties.level_ten_right + (question_difficulties.level_ten_right + question_difficulties.level_ten_wrong), 2) * 100
+                answer_percentage = round(question_difficulties.level_ten_right / (question_difficulties.level_ten_right + question_difficulties.level_ten_wrong), 2) * 100
     except ZeroDivisionError:
         answer_percentage = 0
 
@@ -157,51 +157,51 @@ def get_topic_results(chosen_user, chosen_topic):
             case "operations":
                 answer_correct = question_topics.operations_right
                 answer_incorrect = question_topics.operations_wrong
-                answer_percentage = round(question_topics.operations_right + (question_topics.operations_right + question_topics.operations_wrong), 2) * 100
+                answer_percentage = round(question_topics.operations_right / (question_topics.operations_right + question_topics.operations_wrong), 2) * 100
             case "fractions":
                 answer_correct = question_topics.fractions_right
                 answer_incorrect = question_topics.fractions_wrong
-                answer_percentage = round(question_topics.fractions_right + (question_topics.fractions_right + question_topics.fractions_wrong), 2) * 100
+                answer_percentage = round(question_topics.fractions_right / (question_topics.fractions_right + question_topics.fractions_wrong), 2) * 100
             case "expressions":
                 answer_correct = question_topics.expressions_right
                 answer_incorrect = question_topics.expressions_wrong
-                answer_percentage = round(question_topics.expressions_right + (question_topics.expressions_right + question_topics.expressions_wrong), 2) * 100
+                answer_percentage = round(question_topics.expressions_right / (question_topics.expressions_right + question_topics.expressions_wrong), 2) * 100
             case "equations":
                 answer_correct = question_topics.equations_right
                 answer_incorrect = question_topics.equations_wrong
-                answer_percentage = round(question_topics.equations_right + (question_topics.equations_right + question_topics.equations_wrong), 2) * 100
+                answer_percentage = round(question_topics.equations_right / (question_topics.equations_right + question_topics.equations_wrong), 2) * 100
             case "percentages":
                 answer_correct = question_topics.percentages_right
                 answer_incorrect = question_topics.percentages_wrong
-                answer_percentage = round(question_topics.percentages_right + (question_topics.percentages_right + question_topics.percentages_wrong), 2) * 100
+                answer_percentage = round(question_topics.percentages_right / (question_topics.percentages_right + question_topics.percentages_wrong), 2) * 100
             case "sequences":
                 answer_correct = question_topics.sequences_right
                 answer_incorrect = question_topics.sequences_wrong
-                answer_percentage = round(question_topics.sequences_right + (question_topics.sequences_right + question_topics.sequences_wrong), 2) * 100
+                answer_percentage = round(question_topics.sequences_right / (question_topics.sequences_right + question_topics.sequences_wrong), 2) * 100
             case "triangles":
                 answer_correct = question_topics.triangles_right
                 answer_incorrect = question_topics.triangles_wrong
-                answer_percentage = round(question_topics.triangles_right + (question_topics.triangles_right + question_topics.triangles_wrong), 2) * 100
+                answer_percentage = round(question_topics.triangles_right / (question_topics.triangles_right + question_topics.triangles_wrong), 2) * 100
             case "calculus":
                 answer_correct = question_topics.calculus_right
                 answer_incorrect = question_topics.calculus_wrong
-                answer_percentage = round(question_topics.calculus_right + (question_topics.calculus_right + question_topics.calculus_wrong), 2) * 100
+                answer_percentage = round(question_topics.calculus_right / (question_topics.calculus_right + question_topics.calculus_wrong), 2) * 100
             case "hcf_lcm":
                 answer_correct = question_topics.hcf_lcm_right
                 answer_incorrect = question_topics.hcf_lcm_wrong
-                answer_percentage = round(question_topics.hcf_lcm_right + (question_topics.hcf_lcm_right + question_topics.hcf_lcm_wrong), 2) * 100
+                answer_percentage = round(question_topics.hcf_lcm_right / (question_topics.hcf_lcm_right + question_topics.hcf_lcm_wrong), 2) * 100
             case "circles":
                 answer_correct = question_topics.circles_right
                 answer_incorrect = question_topics.circles_wrong
-                answer_percentage = round(question_topics.circles_right + (question_topics.circles_right + question_topics.circles_wrong), 2) * 100
+                answer_percentage = round(question_topics.circles_right / (question_topics.circles_right + question_topics.circles_wrong), 2) * 100
             case "graphs":
                 answer_correct = question_topics.graphs_right
                 answer_incorrect = question_topics.graphs_wrong
-                answer_percentage = round(question_topics.graphs_right + (question_topics.graphs_right + question_topics.graphs_wrong), 2) * 100
+                answer_percentage = round(question_topics.graphs_right / (question_topics.graphs_right + question_topics.graphs_wrong), 2) * 100
             case _:
                 answer_correct = question_topics.operations_right
                 answer_incorrect = question_topics.operations_wrong
-                answer_percentage = round(question_topics.operations_right + (question_topics.operations_right + question_topics.operations_wrong), 2) * 100
+                answer_percentage = round(question_topics.operations_right / (question_topics.operations_right + question_topics.operations_wrong), 2) * 100
     except ZeroDivisionError:
         answer_percentage = 0
 

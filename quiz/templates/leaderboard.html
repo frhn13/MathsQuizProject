@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Results{% endblock %}
+{% block title %}Leaderboard{% endblock %}
 
 {% block content %}
-<div class="text-center mt-5">
-   <h1>Highest Results Page</h1>
-    {% if form %}
+<div class="mt-5">
+   <h1 class="text-center">Leaderboard</h1>
+   <div class="text-center">
+     {% if form %}
     <form method="POST" class="form-register mx-auto w-50 mt-5">
         {{ form.csrf_token() }}
 
@@ -35,11 +36,23 @@
         <br>
         {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
     </form>
-    {% if form_is_submitted %}
-    <div class="container mt-5">
-         <img src="{{ url_for('get_max_results_graph') }}"/>
+  {% endif %}
   </div>
-    {% endif %}
+   </div>
+  {% if form_is_submitted %}
+    <ol>
+      {% for user in user_results %}
+      <li>
+        <ul>
+          <li>Username: {{ user[0] }}</li>
+          <li>Correct Answers: {{ user[1] }}</li>
+          <li>Incorrect Answers: {{ user[2] }}</li>
+          <li>Percentage of Correct Answers: {{ user[3] }}%</li>
+        </ul>
+      </li>
+      <br>
+     {% endfor %}
+    </ol>
   {% endif %}
 </div>
 
