@@ -33,26 +33,32 @@
             {{ form.difficulty_chosen.label() }}
             {{ form.difficulty_chosen(class="form-control") }}
         </div>
-        <br>
-        {{ form.submit(class="btn btn-primary btn-lg mt-5") }}
+        {{ form.submit(class="btn btn-primary btn-lg mt-3") }}
     </form>
   {% endif %}
   </div>
-   </div>
+ </div>
+<br>
+<br>
   {% if form_is_submitted %}
-    <ol>
+    <table border="2" cellpadding="10" align="center">
+      <tr align="center">
+        <th>Ranking</th>
+        <th>Username</th>
+        <th>Correct Answers</th>
+        <th>Incorrect Answers</th>
+        <th>Percentage of Correct Answers</th>
+      </tr>
       {% for user in user_results %}
-      <li>
-        <ul>
-          <li>Username: {{ user[0] }}</li>
-          <li>Correct Answers: {{ user[1] }}</li>
-          <li>Incorrect Answers: {{ user[2] }}</li>
-          <li>Percentage of Correct Answers: {{ user[3] }}%</li>
-        </ul>
-      </li>
-      <br>
-     {% endfor %}
-    </ol>
+        <tr align="center">
+          <td>{{ loop.index }}</td>
+          <td>{{ user[0] }}</td>
+          <td>{{ user[1] }}</td>
+          <td>{{ user[2] }}</td>
+          <td>{{ user[3] }}%</td>
+        </tr>
+      {% endfor %}
+    </table>
   {% endif %}
 </div>
 

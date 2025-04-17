@@ -108,7 +108,7 @@ def percentages_question_generation(entered_difficulty: int, question_types: lis
                 difficulty_factors["difficulty_of_answer"][0] = 3
                 difficulty_factors["number_of_steps"][0] = 3
 
-                percentage = round((random.randint(1, 100) / 100), 2)
+                percentage = round((random.randint(1, 99) / 100), 2)
                 if not percentage == round(percentage, 1):
                     difficulty_factors["difficulty_of_values"][0] += 1
                     difficulty_factors["difficulty_of_answer"][0] += 1

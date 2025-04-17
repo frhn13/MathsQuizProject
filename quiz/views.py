@@ -696,6 +696,8 @@ def quiz_page():
                     case _:
                         try:
                             answer = request.form.get("answer")
+                            if session["current_topic"] == "percentages":
+                                answer = answer.replace("%", "")
                             if type(final_answer) == int:
                                 answer = int(answer)
                             elif type(final_answer) == float:
