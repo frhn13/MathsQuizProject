@@ -1,7 +1,26 @@
-from flask_login import current_user
+from flask_login import current_user, login_user, logout_user
 
 from quiz import db
-from quiz.models import QuestionTopics, QuestionDifficulties
+from quiz.models import QuestionTopics, QuestionDifficulties, User
+
+def create_new_user(created_user: User):
+    db.session.add(created_user)
+    db.session.commit()
+    question_topics = QuestionTopics(user_id=created_user.id)
+    question_difficulties = QuestionDifficulties(user_id=created_user.id)
+    db.session.add(question_topics)
+    db.session.add(question_difficulties)
+    db.session.commit()
+    login_user(created_user)
+
+def delete_user(user_to_delete: User):
+    logout_user()
+    question_difficulties_to_delete = QuestionDifficulties.query.filter_by(user_id=user_to_delete.id).first()
+    question_topics_to_delete = QuestionTopics.query.filter_by(user_id=user_to_delete.id).first()
+    db.session.delete(question_difficulties_to_delete)
+    db.session.delete(question_topics_to_delete)
+    db.session.delete(user_to_delete)
+    db.session.commit()
 
 def update_topic_information(topic_counter : dict):
     question_topics = QuestionTopics.query.filter_by(user_id=current_user.id).first()

@@ -18,7 +18,7 @@ from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, Restart
 from .QuizCode.topic_manager import question_topic_selection
 from quiz.models import User, QuestionTopics, QuestionDifficulties
 from quiz.update_results import update_topic_information, update_difficulty_information, get_user_results, \
-    get_difficulty_results, get_topic_results
+    get_difficulty_results, get_topic_results, create_new_user, delete_user
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -29,16 +29,11 @@ def register_page():
         if form.validate_on_submit():
             preexisting_username = User.query.filter_by(username=form.username.data).first()
             preexisting_email = User.query.filter_by(email=form.email.data).first()
-            if not preexisting_username and not preexisting_email:
+            if form.username.data.lower() == "test":
+                flash("Cannot have that username.", category="danger")
+            elif not preexisting_username and not preexisting_email:
                 created_user = User(username=form.username.data, email=form.email.data, password=form.password.data)
-                db.session.add(created_user)
-                db.session.commit()
-                question_topics = QuestionTopics(user_id=created_user.id)
-                question_difficulties = QuestionDifficulties(user_id=created_user.id)
-                db.session.add(question_topics)
-                db.session.add(question_difficulties)
-                db.session.commit()
-                login_user(created_user)
+                create_new_user(created_user)
                 flash("Account creation successful!", category="success")
                 return redirect(url_for("quiz_selection"))
             else:
@@ -1073,13 +1068,7 @@ def delete_account_page():
     if form.validate_on_submit():
         user_to_delete = User.query.filter_by(username=form.username.data).first()
         if user_to_delete and user_to_delete.username == current_user.username and bcrypt.checkpw(form.password.data.encode("utf-8"), user_to_delete.password):
-            logout_user()
-            question_difficulties_to_delete = QuestionDifficulties.query.filter_by(user_id=user_to_delete.id).first()
-            question_topics_to_delete = QuestionTopics.query.filter_by(user_id=user_to_delete.id).first()
-            db.session.delete(question_difficulties_to_delete)
-            db.session.delete(question_topics_to_delete)
-            db.session.delete(user_to_delete)
-            db.session.commit()
+            delete_user(user_to_delete)
             flash("Account deletion successful.", category="success")
             return redirect(url_for("register_page"))
         else:
