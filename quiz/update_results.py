@@ -117,7 +117,7 @@ def get_user_results(chosen_user):
     return answers_correct, answers_incorrect, answers_percentage
 
 
-def get_difficulty_results(chosen_user, chosen_difficulty):
+def get_difficulty_results(chosen_user : User, chosen_difficulty : int):
     question_difficulties = QuestionDifficulties.query.filter_by(user_id=chosen_user.id).first()
     answer_correct = 0
     answer_incorrect = 0
@@ -169,7 +169,7 @@ def get_difficulty_results(chosen_user, chosen_difficulty):
 
     return answer_correct, answer_incorrect, answer_percentage
 
-def get_topic_results(chosen_user, chosen_topic):
+def get_topic_results(chosen_user : User, chosen_topic : str):
     question_topics = QuestionTopics.query.filter_by(user_id=chosen_user.id).first()
     try:
         match chosen_topic:
