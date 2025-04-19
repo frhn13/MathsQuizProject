@@ -1,8 +1,7 @@
 import bcrypt
 import pytest
-from flask_login import login_user, logout_user, current_user
+from flask_login import current_user
 
-from quiz import db
 from quiz.models import User, QuestionDifficulties, QuestionTopics
 from quiz.update_results import (update_topic_information, update_difficulty_information, create_new_user, delete_user,
 get_user_results, get_topic_results, get_difficulty_results)

@@ -54,7 +54,7 @@ def logout_page():
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
     if current_user.is_anonymous:
-        form = LoginForm()
+        form = LoginForm("Login")
         if form.validate_on_submit():
             user_logging_in = User.query.filter_by(username=form.username.data).first()
             if user_logging_in and bcrypt.checkpw(form.password.data.encode("utf-8"), user_logging_in.password):
@@ -227,7 +227,7 @@ def quiz_selection():
             print(session.get("topic_selection"))
             return redirect(url_for("quiz_page"))
 
-    return render_template("quiz_selection.html", form=form)
+    return render_template("quiz_selection.html", form=form, username=current_user.username)
 
 @app.route("/image")
 def get_image():
@@ -1064,7 +1064,7 @@ def tutorial_page():
 @app.route("/delete-account", methods=["GET", "POST"])
 @login_required
 def delete_account_page():
-    form = LoginForm()
+    form = LoginForm("Confirm Deletion")
     if form.validate_on_submit():
         user_to_delete = User.query.filter_by(username=form.username.data).first()
         if user_to_delete and user_to_delete.username == current_user.username and bcrypt.checkpw(form.password.data.encode("utf-8"), user_to_delete.password):

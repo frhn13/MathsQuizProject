@@ -20,7 +20,9 @@
   <body>
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
+          {% if not current_user.is_anonymous %}
         <a class="navbar-brand" href="{{url_for('quiz_selection')}}">Select Quiz</a>
+          {% endif %}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -47,7 +49,7 @@
                   <a class="nav-link" href="{{url_for('leaderboard_page')}}">Leaderboard</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{url_for('logout_page')}}">Logout</a>
+                  <a class="nav-link" href="{{url_for('logout_page')}}">Log Out</a>
                 </li>
               {% endif %}
           </ul>
@@ -61,6 +63,9 @@
         </div>
       </div>
     </nav>
+    {% if not current_user.is_anonymous %}
+      <h3 class="mb-5 mt-5 text-center">Now logged in as {{ current_user.username }}</h3>
+    {% endif %}
     {% block content %}
     {% endblock %}
 

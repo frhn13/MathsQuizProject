@@ -40,9 +40,9 @@ class TopicsForm(FlaskForm):
     triangles = BooleanField(label="Triangles, Difficulty: 2-7")
     circles = BooleanField(label="Circles, Difficulty: 3-7")
     graphs = BooleanField(label="Graphs, Difficulty: 2-8")
-    questions = IntegerField(label="Enter the number of questions to answers",
+    questions = IntegerField(label="Enter the number of questions to answers: ",
                              validators=[DataRequired(), NumberRange(10, 50)])
-    difficulty = IntegerField(label="Enter the starting difficulty of the questions",
+    difficulty = IntegerField(label="Enter the starting difficulty of the questions: ",
                               validators=[DataRequired(), NumberRange(1, 10)])
     submit = SubmitField(label="Submit Selection")
 
@@ -62,7 +62,11 @@ class RegisterForm(FlaskForm):
 class LoginForm(FlaskForm):
     username = StringField(label="Username:", validators=[DataRequired(), Length(4, 20)])
     password = PasswordField(label="Password:", validators=[DataRequired(), Length(4, 20)])
-    submit = SubmitField(label="Login")
+    submit = SubmitField()
+
+    def __init__(self, new_submit_label):
+        super().__init__()
+        self.submit.label.text = new_submit_label
 
 
 class ResultsForm(FlaskForm):
