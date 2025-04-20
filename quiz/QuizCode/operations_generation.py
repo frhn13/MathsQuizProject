@@ -67,7 +67,7 @@ def operations_question_generation(entered_difficulty: int, question_types: list
         except ZeroDivisionError:
             answer = 20000
         if have_division_chance <= 0.7 or (
-                have_division_chance > 0.7 and question.find("/") != -1 and answer.is_integer()):
+                have_division_chance > 0.7 and question.find("/") != -1 and answer != 20000 and answer.is_integer()):
             answer = int(answer)
             for x in range(number_of_values - 1):
                 difficulty_factors["number_of_steps"][0] += 1

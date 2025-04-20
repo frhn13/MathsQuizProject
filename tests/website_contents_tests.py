@@ -1,9 +1,8 @@
 import pytest
 
-from quiz.models import User, QuestionDifficulties, QuestionTopics
+from quiz.models import User
 from quiz import app as test_app
-from quiz.update_results import (update_topic_information, update_difficulty_information, create_new_user, delete_user,
-get_user_results, get_topic_results, get_difficulty_results)
+from quiz.update_results import create_new_user, delete_user
 from flask_login import current_user
 
 # Adapted from https://flask.palletsprojects.com/en/stable/testing/#logging-in-and-out
