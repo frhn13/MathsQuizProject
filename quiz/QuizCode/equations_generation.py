@@ -33,8 +33,6 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
         difficulty_factors["answers_similarity"][0] = 8
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors=difficulty_factors)
         if final_difficulty == entered_difficulty:
-            print(difficulty_factors)
-            print(difficulty_weighting)
             break
 
     match question_type_chosen:
@@ -45,12 +43,16 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
                     answer = [round(float(final_answer[0]), 2)]
                 case "whole_quadratic":
                     question = f"{equation_str} \t Find both values of x to 2 decimal places."
-                    answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
+                    if len(final_answer) == 2:
+                        answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
+                    else: answer = [round(float(final_answer[0]), 2)]
                     multiple_answers = "TwoSame"
                 case "floating_quadratic":
                     calculator_needed = True
-                    question = f"{equation_str} \t Find both values of x to 2 decimal places."
-                    answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
+                    if len(final_answer) == 2:
+                        answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
+                    else:
+                        answer = [round(float(final_answer[0]), 2)]
                     multiple_answers = "TwoSame"
                 case "linear_simultaneous":
                     question = f"{equation_str} \t Find the value of x and y to 2 decimal places."
@@ -76,6 +78,9 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
                 answer = "False"
         case _:
             pass
+
+    print(question)
+    print(final_answer)
 
     return question, answer, difficulty_weighting, multiple_answers, calculator_needed
 

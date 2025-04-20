@@ -32,7 +32,10 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                     answers, difficulty_factors = answer_generation(answer, question_type_chosen,
                                                                     difficulty_factors)
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
+
                     if final_difficulty == entered_difficulty:
+                        print(difficulty_factors)
+                        print(difficulty_weighting)
                         break
             case "factorisation":
                 difficulty_factors, expression = factorisation_and_simplification(difficulty_factors)
@@ -57,6 +60,8 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
                     if final_difficulty == entered_difficulty:
+                        print(difficulty_factors)
+                        print(difficulty_weighting)
                         break
 
             case "algebraic_fractions":
