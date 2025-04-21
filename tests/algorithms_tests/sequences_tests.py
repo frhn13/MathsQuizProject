@@ -1,9 +1,10 @@
+import random
+
 from quiz.QuizCode.sequences_generation import sequences_question_generation
 
 def test_generate_sequence_questions(difficulty_factors, question_types):
-    question = ""
-    answer = 0
-    question, answer, difficulty_weighting = sequences_question_generation(entered_difficulty=3,
+    entered_difficulty = random.randint(2, 8)
+    question, answer, difficulty_weighting = sequences_question_generation(entered_difficulty=entered_difficulty,
                                                                        question_types=question_types,
                                                                        difficulty_factors=difficulty_factors)
 

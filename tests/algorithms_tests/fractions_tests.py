@@ -1,7 +1,10 @@
+import random
+
 from quiz.QuizCode.fractions_generation import fractions_question_generation
 
 def test_generate_fractions_questions(difficulty_factors, question_types):
-    question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty=4,
+    entered_difficulty = random.randint(2, 6)
+    question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty=entered_difficulty,
                                                                            question_types=question_types,
                                                                            difficulty_factors=difficulty_factors)
 

@@ -1,8 +1,11 @@
+import random
+
 from quiz.QuizCode.equations_generation import equations_question_generation
 
 def test_generate_equations_questions(difficulty_factors, question_types):
+    entered_difficulty = random.randint(4, 8)
     question, answer, difficulty_weighting, multiple_answers, calculator_needed = equations_question_generation(
-                                                                             entered_difficulty=5,
+                                                                             entered_difficulty=entered_difficulty,
                                                                              question_types=question_types,
                                                                              difficulty_factors=difficulty_factors)
     assert type(answer) == list and (type(answer[0]) == int or type(answer[0]) == float)

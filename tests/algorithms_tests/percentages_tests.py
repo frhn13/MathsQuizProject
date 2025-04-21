@@ -1,7 +1,10 @@
+import random
+
 from quiz.QuizCode.percentages_generation import percentages_question_generation
 
 def test_generate_percentages_questions(difficulty_factors, question_types):
-    question, answer, difficulty_weighting = percentages_question_generation(entered_difficulty=3,
+    entered_difficulty = random.randint(2, 6)
+    question, answer, difficulty_weighting = percentages_question_generation(entered_difficulty=entered_difficulty,
                                                                              difficulty_factors=difficulty_factors,
                                                                              question_types=question_types)
     assert type(answer) == int or answer in ("True", "False")

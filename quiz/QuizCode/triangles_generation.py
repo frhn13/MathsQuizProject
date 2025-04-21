@@ -179,9 +179,6 @@ def draw_triangle(point_a, point_b, point_c):
     length_b = sqrt((point_a[0] - point_c[0]) ** 2 + (point_a[1] - point_c[1]) ** 2)
     length_a = sqrt((point_b[0] - point_c[0]) ** 2 + (point_b[1] - point_c[1]) ** 2)
 
-    print(f"Length A: {length_a}")
-    print(f"Length B: {length_b}")
-    print(f"Length C: {length_c}")
     try:
         angle_a = acos((length_b ** 2 + length_c ** 2 - length_a ** 2) / (2 * length_b * length_c))
         angle_b = acos((length_a ** 2 + length_c ** 2 - length_b ** 2) / (2 * length_a * length_c))

@@ -1,7 +1,10 @@
+import random
+
 from quiz.QuizCode.expressions_generation import expressions_question_generation
 
 def test_generate_expressions_question(difficulty_factors, question_types):
-    question, answer, difficulty_weighting = expressions_question_generation(entered_difficulty=4,
+    entered_difficulty = random.randint(3, 6)
+    question, answer, difficulty_weighting = expressions_question_generation(entered_difficulty=entered_difficulty,
                                                                              question_types=question_types,
                                                                              difficulty_factors=difficulty_factors)
     assert "x" in answer
