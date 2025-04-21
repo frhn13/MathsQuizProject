@@ -15,7 +15,9 @@ def test_generate_operations_question(difficulty_factors, question_types):
         assert time_needed == 60
 
 def test_generate_operations_question_with_addition(difficulty_factors, question_types):
-    while True:
+    answer = 0
+    time_needed = 0
+    for x in range(100):
         question, answer, difficulty_weighting, time_needed = operations_question_generation(entered_difficulty=3,
                                                                                              question_types=question_types,
                                                                                              difficulty_factors=difficulty_factors)
@@ -29,7 +31,9 @@ def test_generate_operations_question_with_addition(difficulty_factors, question
         assert time_needed == 60
 
 def test_generate_operations_question_with_subtraction(difficulty_factors, question_types):
-    while True:
+    answer = 0
+    time_needed = 0
+    for x in range(100):
         question, answer, difficulty_weighting, time_needed = operations_question_generation(entered_difficulty=3,
                                                                                              question_types=question_types,
                                                                                              difficulty_factors=difficulty_factors)
@@ -43,7 +47,9 @@ def test_generate_operations_question_with_subtraction(difficulty_factors, quest
         assert time_needed == 60
 
 def test_generate_operations_question_with_multiplication(difficulty_factors, question_types):
-    while True:
+    answer = 0
+    time_needed = 0
+    for x in range(100):
         question, answer, difficulty_weighting, time_needed = operations_question_generation(entered_difficulty=3,
                                                                                              question_types=question_types,
                                                                                              difficulty_factors=difficulty_factors)
@@ -57,7 +63,9 @@ def test_generate_operations_question_with_multiplication(difficulty_factors, qu
         assert time_needed == 60
 
 def test_generate_operations_question_with_division(difficulty_factors, question_types):
-    while True:
+    answer = 0
+    time_needed = 0
+    for x in range(100):
         question, answer, difficulty_weighting, time_needed = operations_question_generation(entered_difficulty=3,
                                                                                              question_types=question_types,
                                                                                              difficulty_factors=difficulty_factors)
@@ -71,7 +79,9 @@ def test_generate_operations_question_with_division(difficulty_factors, question
         assert time_needed == 60
 
 def test_generate_operations_question_with_brackets(difficulty_factors, question_types):
-    while True:
+    answer = 0
+    time_needed = 0
+    for x in range(100):
         question, answer, difficulty_weighting, time_needed = operations_question_generation(entered_difficulty=3,
                                                                                              question_types=question_types,
                                                                                              difficulty_factors=difficulty_factors)
@@ -85,7 +95,9 @@ def test_generate_operations_question_with_brackets(difficulty_factors, question
         assert time_needed == 60
 
 def test_generate_operations_question_with_indices(difficulty_factors, question_types):
-    while True:
+    answer = 0
+    time_needed = 0
+    for x in range(100):
         question, answer, difficulty_weighting, time_needed = operations_question_generation(entered_difficulty=3,
                                                                                              question_types=question_types,
                                                                                              difficulty_factors=difficulty_factors)

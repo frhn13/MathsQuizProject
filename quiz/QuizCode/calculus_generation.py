@@ -117,9 +117,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
 
         case "finding_x":
             if cubic_value != 0:
-                difficulty_factors["difficulty_of_values"][0] += 2
-                difficulty_factors["difficulty_of_answer"][0] += 2
-                difficulty_factors["number_of_steps"][0] += 2
+                return "", "", difficulty_factors, False
             else:
                 difficulty_factors["difficulty_of_values"][0] += 1.5
                 difficulty_factors["difficulty_of_answer"][0] += 1.5

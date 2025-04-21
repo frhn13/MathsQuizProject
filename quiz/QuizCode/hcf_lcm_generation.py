@@ -20,6 +20,7 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
                 difficulty_factors["number_of_steps"][0] = 3
                 num1, num2 = random.randint(10, 200), random.randint(10, 200)
                 answer = gcd(num1, num2)
+                answer = int(answer)
                 question = f"What is the highest common factor of {num1} and {num2}?"
                 if answer == num1 or answer == num2:
                     difficulty_factors["difficulty_of_answer"][0] -= 1
@@ -34,6 +35,7 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
                 while True:
                     num1, num2 = random.randint(10, 100), random.randint(10, 100)
                     answer = lcm(num1, num2)
+                    answer = int(answer)
                     question = f"What is the lowest common multiple of {num1} and {num2}?"
                     if answer <= 1000:
                         break
@@ -49,11 +51,13 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
                 difficulty_factors["number_of_steps"][0] = 4
                 num1 = random.randint(50, 200)
                 answer = factorint(num1)
+                print(type(answer))
                 question = f"What are the prime factors of {num1}?"
 
                 if len(answer) == 1:
                     difficulty_factors["difficulty_of_answer"][0] -= 1
                     difficulty_factors["difficulty_of_values"][0] -= 1
+
 
         if type(answer) == int:
             answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)

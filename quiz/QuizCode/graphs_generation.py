@@ -24,7 +24,6 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
             "pie_chart_labels": []
         }
         question_topic_chosen = random.choice(["DT_graphs", "VT_graphs", "pie_charts", "perpendicular_lines", "graph_transformation"])
-        question_subtopic_chosen = ""
 
         match question_topic_chosen:
             case "DT_graphs":
