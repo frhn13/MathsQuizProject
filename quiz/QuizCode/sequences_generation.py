@@ -20,7 +20,7 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
                 starting_term = random.randint(1, 20)
                 sequence = [x * nth_term + starting_term for x in range(5)]
                 answer = 5 * nth_term + starting_term
-                question = f"Find the next term in this sequence: {sequence}"
+                question = f"Find the next term in this linear sequence: {sequence}"
                 if nth_term == 10 or nth_term < 5:
                     pass
                 else:
@@ -37,7 +37,7 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
                 starting_term = random.randint(1, 10)
                 sequence = [starting_term * (multiplier**x) for x in range(0, 5)]
                 answer = starting_term * (multiplier**5)
-                question = f"Find the next term in this sequence: {sequence}"
+                question = f"Find the next term in this geometric sequence: {sequence}"
                 if multiplier > 3:
                     difficulty_factors["difficulty_of_values"][0] += 1
                     difficulty_factors["difficulty_of_answer"][0] += 1
@@ -45,7 +45,6 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
                     difficulty_factors["difficulty_of_values"][0] += 1
                     difficulty_factors["difficulty_of_answer"][0] += 1
             case "quadratic":
-                print("hey")
                 difficulty_factors["maths_topic"][0] = 8
                 difficulty_factors["difficulty_of_values"][0] = 7
                 difficulty_factors["depth_of_knowledge"][0] = 8
@@ -66,7 +65,7 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
                     difficulty_factors["difficulty_of_answer"][0] += 1
                 sequence = [(quadratic_coefficient * x**2) + (linear_coefficient * x) + number_value for x in range(0, 5)]
                 answer = (quadratic_coefficient * 6**2) + (linear_coefficient * 6) + number_value
-                question = f"Find the next term in this sequence: {sequence}"
+                question = f"Find the next term in this quadratic sequence: {sequence}"
             case _:
                 pass
 
