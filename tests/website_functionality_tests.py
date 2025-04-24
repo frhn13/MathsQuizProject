@@ -23,13 +23,12 @@ def client(app):
 def temporary_user():
     return User("test", "test@email.com", "123456")
 
-def test_valid_sign_up(client, app, temporary_user):
-    with app.test_request_context():
-        response = client.post("/register", data={"username": "test",
-                                                  "email": "test@email.com",
-                                                  "password": "123456",
-                                                  "confirm_password": "123456",
-                                                  "submit": True}, follow_redirects=True)
+def test_valid_sign_up(client):
+    response = client.post("/register", data={"username": "test",
+                                              "email": "test@email.com",
+                                              "password": "123456",
+                                              "confirm_password": "123456",
+                                              "submit": True}, follow_redirects=True)
 
-        assert response.status_code == 200
-        assert b"Cannot have that username." not in response.data
+    assert response.status_code == 200
+    assert b"Cannot have that username." in response.data

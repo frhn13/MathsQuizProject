@@ -64,7 +64,7 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
                     difficulty_factors["difficulty_of_values"][0] += 1
                     difficulty_factors["difficulty_of_answer"][0] += 1
                 sequence = [(quadratic_coefficient * x**2) + (linear_coefficient * x) + number_value for x in range(0, 5)]
-                answer = (quadratic_coefficient * 6**2) + (linear_coefficient * 6) + number_value
+                answer = (quadratic_coefficient * 5**2) + (linear_coefficient * 5) + number_value
                 question = f"Find the next term in this quadratic sequence: {sequence}"
             case _:
                 pass
