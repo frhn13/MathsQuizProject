@@ -128,6 +128,12 @@ def operations_question_generation(entered_difficulty: int, question_types: list
         else:
             pass
 
+    question = str(question)
+
+    for x in range(len(question)):
+        if x < len(question) - 1 and question[x] == "*" and question[x + 1] == "*":
+            question = f"{question[0:x]}^{question[x + 2:]}"
+
     match question_type_chosen:
         case "free_text":
             question = f"What is {question}?"

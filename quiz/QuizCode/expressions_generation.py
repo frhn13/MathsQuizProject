@@ -31,6 +31,8 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                 else:
                     answers, difficulty_factors = answer_generation(answer, question_type_chosen,
                                                                     difficulty_factors)
+                    difficulty_factors["question_type"][0] = 5
+                    difficulty_factors["answers_similarity"][0] = 5
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
                     if final_difficulty == entered_difficulty:
@@ -55,8 +57,8 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                 else:
                     answers, difficulty_factors = answer_generation(answer, question_type_chosen,
                                                                               difficulty_factors)
-                    difficulty_factors["question_type"][0] = 8
-                    difficulty_factors["answers_similarity"][0] = 8
+                    difficulty_factors["question_type"][0] = 5
+                    difficulty_factors["answers_similarity"][0] = 5
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
                     if final_difficulty == entered_difficulty:
@@ -68,6 +70,8 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                 question, answer, question_type_chosen = algebraic_fractions(difficulty_factors)
                 answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
                                                                           difficulty_factors)
+                difficulty_factors["question_type"][0] = 6
+                difficulty_factors["answers_similarity"][0] = 6
                 difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
                 answer = str(answer)
 

@@ -144,7 +144,7 @@ def answer_generation_fractions(real_answer : str, question_type : str, difficul
 
     elif question_type == "true/false":
         difficulty_factors["question_type"][0] = 2
-        difficulty_factors["answers_similarity"][0] = 5
+        difficulty_factors["answers_similarity"][0] = 4
         numerator = Fraction(real_answer).numerator
         denominator = Fraction(real_answer).denominator
         if random.random() > 0.5:
@@ -197,10 +197,10 @@ def answer_generation_decimals(real_answer : float, question_type : str, difficu
     return answers, difficulty_factors
 
 def algebraic_fractions(difficulty_factors : dict):
-    difficulty_factors["maths_topic"][0] = 6
-    difficulty_factors["difficulty_of_values"][0] = 6
+    difficulty_factors["maths_topic"][0] = 5
+    difficulty_factors["difficulty_of_values"][0] = 7
     difficulty_factors["depth_of_knowledge"][0] = 6
-    difficulty_factors["multiple_topics"][0] = 6
+    difficulty_factors["multiple_topics"][0] = 5
     difficulty_factors["difficulty_of_answer"][0] = 5
     difficulty_factors["number_of_steps"][0] = 7
 
@@ -250,8 +250,16 @@ def algebraic_fractions(difficulty_factors : dict):
             difficulty_factors["number_of_steps"][0] -= 1
         if linear_value_numerator == 0:
             difficulty_factors["difficulty_of_values"][0] -= 0.5
+            difficulty_factors["number_of_steps"][0] -= 1
         if linear_value_denominator == 0:
             difficulty_factors["difficulty_of_values"][0] -= 0.5
+            difficulty_factors["number_of_steps"][0] -= 1
+        if number_value_numerator == 0:
+            difficulty_factors["difficulty_of_values"][0] -= 0.5
+            difficulty_factors["number_of_steps"][0] -= 0.5
+        if number_value_denominator == 0:
+            difficulty_factors["difficulty_of_values"][0] -= 0.5
+            difficulty_factors["number_of_steps"][0] -= 0.5
         if quadratic_value_numerator != 0 and numerator_terms[0].coeff(x, numerator.as_ordered_terms()[
             0].as_poly().degree()) > 1:
             difficulty_factors["difficulty_of_values"][0] += 0.5
