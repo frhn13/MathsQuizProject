@@ -52,7 +52,7 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
                 num1 = random.randint(50, 200)
                 answer = factorint(num1)
                 print(type(answer))
-                question = f"What are the prime factors of {num1}?"
+                question = f"How could {num1} be written as a product of its prime factors? Don't use any exponents in your answer."
 
                 if len(answer) == 1:
                     difficulty_factors["difficulty_of_answer"][0] -= 1

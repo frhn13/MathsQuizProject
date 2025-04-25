@@ -628,19 +628,34 @@ def quiz_page():
 
                     case "graphs":
                         answer = request.form.get("answer")
-                        try:
-                            answer = request.form.get("answer")
-                            if type(final_answer) == int:
-                                answer = int(answer)
-                            elif type(final_answer) == float:
-                                answer = float(answer)
-                            else:
-                                if "y=" in final_answer or "y =" in final_answer:
-                                    final_answer = final_answer.replace(" ", "")
-                                    answer = answer.replace(" ", "")
-                        except Exception:
-                            flash("You must enter a number. Try again.", category="danger")
-                            return redirect(url_for("quiz_page"))
+                        match session["multiple_answers"]:
+                            case "No":
+                                try:
+                                    answer = request.form.get("answer")
+                                    if type(final_answer) == int:
+                                        answer = int(answer)
+                                    elif type(final_answer) == float:
+                                        answer = float(answer)
+                                    else:
+                                        if "y=" in final_answer or "y =" in final_answer or "(" in final_answer or ")" in final_answer:
+                                            final_answer = final_answer.replace(" ", "")
+                                            answer = answer.replace(" ", "")
+                                        if "(" in final_answer or ")" in final_answer:
+
+                                            pass
+                                except Exception:
+                                    flash("You must enter a number. Try again.", category="danger")
+                                    return redirect(url_for("quiz_page"))
+
+                            case "TwoDifferent":
+                                answer_x = request.form.get("answer_x")
+                                answer_y = request.form.get("answer_y")
+
+                                if (not answer_x.replace(".", "").replace("-", "").isnumeric() or
+                                        not answer_y.replace(".", "").replace("-", "").isnumeric()):
+                                    flash("You must enter a number. Try again.", category="danger")
+                                    return redirect(url_for("quiz_page"))
+                                answer = [float(answer_x), float(answer_y)]
 
                     case "hcf_lcm":
                         answer = request.form.get("answer")

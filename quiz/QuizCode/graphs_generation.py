@@ -13,9 +13,11 @@ def increase_graph_difficulty(difficulty_factors: dict):
 
 def graphs_questions_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     while True:
+        calculator_needed = False
         is_valid = True
         question = ""
         answer = 0
+        multiple_answers = "No"
         graph_values = {
             "time_values": [],
             "distance_values": [],
@@ -27,6 +29,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
 
         match question_topic_chosen:
             case "DT_graphs":
+                calculator_needed = True
                 num_datapoints = random.randint(3, 5)
                 time_values = [x*5 for x in range(0, num_datapoints)]
                 distance_values = [0, random.randint(5, 20)]
@@ -91,6 +94,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                 graph_values["distance_values"] = distance_values
 
             case "VT_graphs":
+                calculator_needed = True
                 difficulty_factors["maths_topic"][0] = 8
                 difficulty_factors["difficulty_of_values"][0] = 8
                 difficulty_factors["depth_of_knowledge"][0] = 7
@@ -122,6 +126,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                 graph_values["speed_values"] = speed_values
 
             case "pie_charts":
+                calculator_needed = True
                 values = [random.randint(13, 18), random.randint(6, 12), random.randint(13, 18), random.randint(6, 12)]
                 values.append(60-sum(values))
                 multiplier = random.randint(1, 4)
@@ -212,10 +217,12 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                 equation = f"y = {y_enlargement_str}f({x_enlargement_str}x{x_translation_str}){y_translation_str}"
                 question = (f"If ({x_coordinate},{y_coordinate}) is the maximum point of the curve y=f(x) then find the "
                             f"coordinates of the maximum point of the curve with the equation: {equation}")
-                answer = f"({new_x},{new_y})"
+                answer = [new_x, new_y]
+                multiple_answers = "TwoDifferent"
                 graph_values = None
 
             case "perpendicular_lines":
+                calculator_needed = True
                 difficulty_factors["maths_topic"][0] = 8
                 difficulty_factors["difficulty_of_values"][0] = 8
                 difficulty_factors["depth_of_knowledge"][0] = 8
@@ -284,7 +291,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
             elif type(answers[0]) == float:
                 question = f"{question}\nIs it {answers[0]:.2f}, {answers[1]:.2f}, {answers[2]:.2f} or {answers[3]:.2f}?"
         case "true/false":
-            question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
+            question = f"{question}\nIs the answer {answers[0]:.2f}, answer with True or False."
             if answers[0] == answer:
                 answer = "True"
             else:
@@ -292,9 +299,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
         case _:
             pass
 
-    return question, answer, difficulty_weighting, graph_values
-
-
+    return question, answer, difficulty_weighting, graph_values, multiple_answers, calculator_needed
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested

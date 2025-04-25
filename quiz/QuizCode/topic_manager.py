@@ -97,7 +97,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                     is_topic_chosen = True
             case "graphs":
                 if graphs[0] <= entered_difficulty <= graphs[1]:
-                    question, answer, difficulty_weighting, graph_values = graphs_questions_generation(entered_difficulty,
+                    question, answer, difficulty_weighting, graph_values, multiple_answers, calculator_needed = graphs_questions_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True

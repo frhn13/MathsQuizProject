@@ -14,8 +14,10 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
                 question_subtopic_chosen = random.choice(["basic_differentiation", "second_order_differentiation", "answer_from_derivative", "finding_x", "tangents", "normals"])
                 question, answer, difficulty_factors, is_valid = differentiation_questions(question_subtopic_chosen, difficulty_factors)
                 if is_valid:
-                    # difficulty_factors["question_type"][0] = 10
-                    # difficulty_factors["answers_similarity"][0] = 9
+                    if question_subtopic_chosen in ("answer_from_derivative", "finding_x", "tangents", "normals"):
+                        calculator_needed = True
+                    difficulty_factors["question_type"][0] = 10
+                    difficulty_factors["answers_similarity"][0] = 9
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
                     if entered_difficulty == final_difficulty:
                         print(difficulty_factors)
@@ -101,6 +103,8 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
                 return "", "", difficulty_factors, False
 
         case "answer_from_derivative":
+            if cubic_value != 0 or quadratic_value == 0 or linear_value == 0:
+                return "", "", difficulty_factors, False
             difficulty_factors["difficulty_of_values"][0] += 1.5
             difficulty_factors["difficulty_of_answer"][0] += 1.5
             difficulty_factors["number_of_steps"][0] += 1.5
@@ -116,12 +120,11 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             answer = df.subs(x, x_value)
 
         case "finding_x":
-            if cubic_value != 0:
+            if cubic_value != 0 or quadratic_value == 0 or linear_value == 0:
                 return "", "", difficulty_factors, False
-            else:
-                difficulty_factors["difficulty_of_values"][0] += 1.5
-                difficulty_factors["difficulty_of_answer"][0] += 1.5
-                difficulty_factors["number_of_steps"][0] += 1.5
+            difficulty_factors["difficulty_of_values"][0] += 1.5
+            difficulty_factors["difficulty_of_answer"][0] += 1.5
+            difficulty_factors["number_of_steps"][0] += 1.5
             difficulty_factors["maths_topic"][0] = 8
             difficulty_factors["depth_of_knowledge"][0] = 8
             difficulty_factors["multiple_topics"][0] = 8
