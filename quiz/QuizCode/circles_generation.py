@@ -115,7 +115,7 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
             elif type(answers[0]) == float:
                 question = f"{question}\nIs it {answers[0]:.2f}, {answers[1]:.2f}, {answers[2]:.2f} or {answers[3]:.2f}?"
         case "true/false":
-            question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
+            question = f"{question}\nIs the answer {answers[0]:.2f}, answer with True or False."
             if answers[0] == answer:
                 answer = "True"
             else:

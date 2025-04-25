@@ -73,9 +73,24 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
         if final_difficulty == entered_difficulty:
+            print(question_type_chosen)
             print(difficulty_factors)
             print(difficulty_weighting)
             break
+
+    match question_type_chosen:
+        case "free_text":
+            question = question
+        case "multiple-choice":
+            question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
+        case "true/false":
+            question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
+            if answers[0] == answer:
+                answer = "True"
+            else:
+                answer = "False"
+        case _:
+            pass
 
     return question, answer, difficulty_weighting
 

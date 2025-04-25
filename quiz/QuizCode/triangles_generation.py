@@ -43,6 +43,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 question = "What is x? Answer to the nearest whole number."
                 answer = angle_c
             case "pythagoras":
+                calculator_needed = True
                 difficulty_factors["maths_topic"][0] = 4
                 difficulty_factors["difficulty_of_values"][0] = 3
                 difficulty_factors["depth_of_knowledge"][0] = 4
@@ -150,8 +151,13 @@ def generate_triangle():
         point_a = (random.randint(10, 40), random.randint(10, 40))
         point_b = (random.randint(10, 40), random.randint(10, 40))
         point_c = (random.randint(10, 40), random.randint(10, 40))
-        if point_a != point_b and point_a != point_c and point_b != point_c and not \
-            (point_a[0] == point_b[0] and point_a[0] == point_c[0]) and not (point_a[1] == point_b[1] and point_a[1] == point_c[1]):
+        list_a = [x for x in range(point_a[0] - 5, point_a[0] + 6)], [y for y in range(point_a[1] - 5, point_a[1] + 6)]
+        list_b = [x for x in range(point_b[0] - 5, point_b[0] + 6)], [y for y in range(point_b[1] - 5, point_b[1] + 6)]
+        list_c = [x for x in range(point_c[0] - 5, point_c[0] + 6)], [y for y in range(point_c[1] - 5, point_c[1] + 6)]
+        if (point_a[0] not in list_b[0] and point_a[0] not in list_c[0] and
+                point_a[1] not in list_b[1] and point_a[1] not in list_c[1]
+                and point_b[0] not in list_c[0] and point_b[1] not in list_c[1] and not
+            (point_a[0] == point_b[0] and point_a[0] == point_c[0]) and not (point_a[1] == point_b[1] and point_a[1] == point_c[1])):
             break
 
     return point_a, point_b, point_c
@@ -163,7 +169,11 @@ def generate_right_angled_triangle():
         point_a = (x1, random.randint(10, 40))
         point_b = (x1, y2)
         point_c = (random.randint(1, 40), y2)
-        if point_a != point_b and point_a != point_c and point_b != point_c and not \
+        list_a = [x for x in range(point_a[0] - 5, point_a[0] + 6)], [y for y in range(point_a[1] - 5, point_a[1] + 6)]
+        list_b = [x for x in range(point_b[0] - 5, point_b[0] + 6)], [y for y in range(point_b[1] - 5, point_b[1] + 6)]
+        list_c = [x for x in range(point_c[0] - 5, point_c[0] + 6)], [y for y in range(point_c[1] - 5, point_c[1] + 6)]
+        if point_a[0] not in list_c[0] and \
+                point_a[1] not in list_b[1] and not \
                 (point_a[0] == point_b[0] and point_a[0] == point_c[0]) and not (
                 point_a[1] == point_b[1] and point_a[1] == point_c[1]):
             break

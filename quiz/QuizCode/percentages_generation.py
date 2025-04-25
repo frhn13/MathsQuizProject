@@ -80,11 +80,11 @@ def percentages_question_generation(entered_difficulty: int, question_types: lis
                         f" Then what is the value of n?")
 
             case "amount_from_percentage":
-                difficulty_factors["maths_topic"][0] = 4
-                difficulty_factors["difficulty_of_values"][0] = 3
+                difficulty_factors["maths_topic"][0] = 3
+                difficulty_factors["difficulty_of_values"][0] = 2
                 difficulty_factors["depth_of_knowledge"][0] = 3
                 difficulty_factors["multiple_topics"][0] = 2
-                difficulty_factors["difficulty_of_answer"][0] = 3
+                difficulty_factors["difficulty_of_answer"][0] = 2
                 difficulty_factors["number_of_steps"][0] = 3
 
                 percentage = round((random.randint(1, 100) / 100), 2)
@@ -101,11 +101,11 @@ def percentages_question_generation(entered_difficulty: int, question_types: lis
                 percentage_in_answer = False
 
             case "percentage_from_amount":
-                difficulty_factors["maths_topic"][0] = 4
-                difficulty_factors["difficulty_of_values"][0] = 3
+                difficulty_factors["maths_topic"][0] = 3
+                difficulty_factors["difficulty_of_values"][0] = 2
                 difficulty_factors["depth_of_knowledge"][0] = 3
                 difficulty_factors["multiple_topics"][0] = 2
-                difficulty_factors["difficulty_of_answer"][0] = 3
+                difficulty_factors["difficulty_of_answer"][0] = 2
                 difficulty_factors["number_of_steps"][0] = 3
 
                 percentage = round((random.randint(1, 99) / 100), 2)
@@ -125,8 +125,9 @@ def percentages_question_generation(entered_difficulty: int, question_types: lis
                 pass
 
         if ((percentage_topic_chosen == "compound_interest" and type(answer) == int) or
-                percentage_topic_chosen == "reverse_percentages" or (percentage_topic_chosen == "amount_from_percentage" and type(answer) == int) or
-                (percentage_topic_chosen == "percentage_from_amount" and type(num2) == int)):
+                percentage_topic_chosen == "reverse_percentages" or
+                (percentage_topic_chosen == "amount_from_percentage" and type(answer) == int and percentage != 1) or
+                (percentage_topic_chosen == "percentage_from_amount" and type(num2) == int and num1 != 100)):
             answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
             difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 

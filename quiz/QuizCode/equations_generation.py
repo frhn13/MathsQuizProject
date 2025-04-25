@@ -48,6 +48,7 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
                     else: answer = [round(float(final_answer[0]), 2)]
                     multiple_answers = "TwoSame"
                 case "floating_quadratic":
+                    question = f"{equation_str} \t Find both values of x to 2 decimal places."
                     calculator_needed = True
                     if len(final_answer) == 2:
                         answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
@@ -78,9 +79,6 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
                 answer = "False"
         case _:
             pass
-
-    print(question)
-    print(final_answer)
 
     return question, answer, difficulty_weighting, multiple_answers, calculator_needed
 
@@ -122,7 +120,7 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
         case "floating_quadratic":
             while True:
                 difficulty_factors["maths_topic"][0] = 6
-                difficulty_factors["difficulty_of_values"][0] = 4
+                difficulty_factors["difficulty_of_values"][0] = 5
                 difficulty_factors["depth_of_knowledge"][0] = 7
                 difficulty_factors["multiple_topics"][0] = 6
                 difficulty_factors["difficulty_of_answer"][0] = 6
