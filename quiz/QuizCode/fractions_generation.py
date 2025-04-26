@@ -244,11 +244,12 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         break
 
             case "algebra":
+                question_type_chosen = "free_text"
                 question, answer, question_type_chosen = algebraic_fractions(difficulty_factors)
                 answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
                                                                           difficulty_factors)
-                difficulty_factors["question_type"][0] = 5
-                difficulty_factors["answers_similarity"][0] = 5
+                difficulty_factors["question_type"][0] = 6
+                difficulty_factors["answers_similarity"][0] = 6
                 difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
                 answer = str(answer)
 

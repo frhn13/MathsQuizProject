@@ -15,7 +15,7 @@ def test_generate_differentiation_questions(difficulty_factors, question_types):
 def test_generate_integration_questions(difficulty_factors, question_types):
     question = ""
     for x in range(100):
-        entered_difficulty = random.randint(7, 10)
+        entered_difficulty = random.randint(8, 10)
         question, answer, difficulty_weighting, calculator_needed = calculus_questions_generation(
             entered_difficulty=entered_difficulty, difficulty_factors=difficulty_factors, question_types=question_types)
         if "∫ f(x)" in question or "What is the area of under the curve y=f(x)" in question: break
@@ -58,7 +58,7 @@ def test_generate_x_from_derivative_differentiation_questions(difficulty_factors
     answer = 0
     for x in range(100):
         question, answer, difficulty_weighting, calculator_needed = calculus_questions_generation(
-            entered_difficulty=9, difficulty_factors=difficulty_factors, question_types=question_types)
+            entered_difficulty=8, difficulty_factors=difficulty_factors, question_types=question_types)
         if "What is the value of x when f\'(x) = 0 and f(x) =" in question and not "∫" in question: break
 
     assert "What is the value of x when f\'(x) = 0 and f(x) =" in question and not "∫" in question

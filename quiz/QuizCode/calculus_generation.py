@@ -60,17 +60,17 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
     difficulty_factors["number_of_steps"][0] = 7
 
     if cubic_value == 0:
-        difficulty_factors["difficulty_of_values"][0] += 0.5
-        difficulty_factors["number_of_steps"][0] += 0.5
-        difficulty_factors["difficulty_of_answer"][0] += 0.5
+        difficulty_factors["difficulty_of_values"][0] -= 0.5
+        difficulty_factors["number_of_steps"][0] -= 0.5
+        difficulty_factors["difficulty_of_answer"][0] -= 0.5
     if quadratic_value == 0:
-        difficulty_factors["difficulty_of_values"][0] += 0.5
-        difficulty_factors["number_of_steps"][0] += 0.5
-        difficulty_factors["difficulty_of_answer"][0] += 0.5
+        difficulty_factors["difficulty_of_values"][0] -= 0.5
+        difficulty_factors["number_of_steps"][0] -= 0.5
+        difficulty_factors["difficulty_of_answer"][0] -= 0.5
     if linear_value == 0:
-        difficulty_factors["difficulty_of_values"][0] += 0.5
-        difficulty_factors["number_of_steps"][0] += 0.5
-        difficulty_factors["difficulty_of_answer"][0] += 0.5
+        difficulty_factors["difficulty_of_values"][0] -= 0.5
+        difficulty_factors["number_of_steps"][0] -= 0.5
+        difficulty_factors["difficulty_of_answer"][0] -= 0.5
 
     match question_subtopic_chosen:
         case "basic_differentiation":

@@ -37,6 +37,6 @@ def test_generate_prime_factors_questions(difficulty_factors, question_types):
                                                                              question_types=question_types)
         print(question)
         print(answer)
-        if "What are the prime factors" in question and (type(answer) == dict): break
+        if "be written as a product of its prime factors?" in question and (type(answer) == dict): break
 
-    assert "What are the prime factors" in question and (type(answer) == dict)
+    assert "be written as a product of its prime factors?" in question and (type(answer) == dict)

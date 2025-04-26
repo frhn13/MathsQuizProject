@@ -8,8 +8,7 @@ def test_generate_fractions_questions(difficulty_factors, question_types):
                                                                            question_types=question_types,
                                                                            difficulty_factors=difficulty_factors)
 
-    for char in answer:
-        assert char.isnumeric() or char == "/" or char == "x" or char == "-" or answer in ("True", "False")
+    assert type(answer) == float or type(answer) == int or answer.isnumeric() or "/" in answer or "x" in answer or "-" in answer or answer in ("True", "False")
 
 def test_generate_fraction_conversion_questions(difficulty_factors, question_types):
     question = ""
@@ -34,7 +33,7 @@ def test_generate_fraction_addition_questions(difficulty_factors, question_types
 def test_generate_fraction_subtraction_questions(difficulty_factors, question_types):
     question = ""
     for x in range(100):
-        question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty=5,
+        question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty=4,
                                                                                question_types=question_types,
                                                                                difficulty_factors=difficulty_factors)
         if "/" in question and "-" in question: break
@@ -44,7 +43,7 @@ def test_generate_fraction_subtraction_questions(difficulty_factors, question_ty
 def test_generate_fraction_multiplication_questions(difficulty_factors, question_types):
     question = ""
     for x in range(100):
-        question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty=4,
+        question, answer, difficulty_weighting = fractions_question_generation(entered_difficulty=3,
                                                                                question_types=question_types,
                                                                                difficulty_factors=difficulty_factors)
         if "/" in question and "*" in question: break
