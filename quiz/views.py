@@ -1,7 +1,7 @@
 import matplotlib
 import numpy as np
 from matplotlib import patches
-matplotlib.use("Agg")  # Use a backend that doesn't require the main thread
+matplotlib.use("agg")  # Use a backend that does not require interactivity
 import matplotlib.pyplot as plt
 from flask import render_template, redirect, url_for, request, flash, session, send_file
 from sympy import sympify, factor, expand, simplify
@@ -31,13 +31,18 @@ def register_page():
             preexisting_email = User.query.filter_by(email=form.email.data).first()
             if form.username.data.lower() == "test":
                 flash("Cannot have that username.", category="danger")
-            elif not preexisting_username and not preexisting_email:
+            if form.password.data != form.confirm_password.data:
+                flash("The passwords entered are not the same.", category="danger")
+            if preexisting_email or preexisting_username:
+                flash("Account already exists with that username or email.", category="danger")
+            if "@" not in form.email.data or "." not in form.email.data:
+                flash("Email entered is not in a valid format.", category="danger")
+            if (not preexisting_username and not preexisting_email and form.password.data == form.confirm_password.data
+                    and "@" in form.email.data and "." in form.email.data):
                 created_user = User(username=form.username.data, email=form.email.data, password=form.password.data)
                 create_new_user(created_user)
                 flash("Account creation successful!", category="success")
                 return redirect(url_for("quiz_selection"))
-            else:
-                flash("Account already exists with that username or email.", category="danger")
 
         return render_template("register.html", form=form)
     else:
@@ -109,6 +114,7 @@ def quiz_selection():
     session.pop("current_topic", None)
     session.pop("current_difficulty", None)
     session.pop("difficulty_range", None)
+    session.pop("questions_to_progress", None)
     session.pop("max_difficulty", None)
     session.pop("min_difficulty", None)
     session.pop("score", None)
@@ -221,10 +227,13 @@ def quiz_selection():
             session["topic_selection"] = topics_chosen
             session["current_difficulty"] = int(request.form.get("difficulty"))
             session["number_of_questions"] = int(request.form.get("questions"))
+            session["questions_to_progress"] = session["number_of_questions"] // 10
+            if session["number_of_questions"] == 50: session["questions_to_progress"] = 4
             session["question_number"] = 1
             session["difficulty_range"] = 0
             session["score"] = 0
             print(session.get("topic_selection"))
+            print(session["questions_to_progress"])
             return redirect(url_for("quiz_page"))
 
     return render_template("quiz_selection.html", form=form, username=current_user.username)
@@ -732,7 +741,7 @@ def quiz_page():
                 print("Timeout")
                 if session["current_difficulty"] > session["min_difficulty"]:
                     session["difficulty_range"] -= 1
-                    if session["difficulty_range"] <= -5:
+                    if session["difficulty_range"] <= -session["questions_to_progress"]:
                         session["current_difficulty"] -= 1
                         session["difficulty_range"] = 0
                 else:
@@ -754,7 +763,7 @@ def quiz_page():
                 print("Correct")
                 if session["current_difficulty"] < session["max_difficulty"]:
                     session["difficulty_range"] += 1
-                    if session["difficulty_range"] >= 5:
+                    if session["difficulty_range"] >= session["questions_to_progress"]:
                         session["current_difficulty"] += 1
                         session["difficulty_range"] = 0
                 else:
@@ -770,7 +779,7 @@ def quiz_page():
                 print("Incorrect")
                 if session["current_difficulty"] > session["min_difficulty"]:
                     session["difficulty_range"] -= 1
-                    if session["difficulty_range"] <= -5:
+                    if session["difficulty_range"] <= -session["questions_to_progress"]:
                         session["current_difficulty"] -= 1
                         session["difficulty_range"] = 0
                 else:

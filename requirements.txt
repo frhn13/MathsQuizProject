@@ -1,0 +1,9 @@
+WTForms
+sympy
+matplotlib
+numpy
+bcrypt
+flask
+flask_login
+pytest
+flask_sqlalchemy

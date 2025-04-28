@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, IntegerField, BooleanField, PasswordField, RadioField, SelectField
-from wtforms.validators import DataRequired, NumberRange, Email, Length, EqualTo
+from wtforms.validators import DataRequired, NumberRange, Email, Length, EqualTo, ValidationError
 import re
 
 class AnswerForm(FlaskForm):
@@ -53,9 +53,9 @@ class RestartForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     username = StringField(label="Username:", validators=[DataRequired(), Length(4, 20)])
-    email = StringField(label="Email Address:", validators=[DataRequired(), Length(4, 40), Email()])
+    email = StringField(label="Email Address:", validators=[DataRequired(), Length(4, 40)])
     password = PasswordField(label="Password:", validators=[DataRequired(), Length(4, 20)])
-    confirm_password = PasswordField(label="Confirm Password:", validators=[DataRequired(), EqualTo("password")])
+    confirm_password = PasswordField(label="Confirm Password:", validators=[DataRequired()])
     submit = SubmitField(label="Sign Up")
 
 
