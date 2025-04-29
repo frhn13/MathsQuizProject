@@ -1,6 +1,6 @@
 from flask_login import current_user, login_user, logout_user
 
-from quiz import db
+from quiz import db, app
 from quiz.models import QuestionTopics, QuestionDifficulties, User
 
 def create_new_user(created_user: User):
@@ -63,35 +63,35 @@ def update_topic_information(topic_counter : dict):
 def update_difficulty_information(difficulty_counter : dict):
     question_difficulties = QuestionDifficulties.query.filter_by(user_id=current_user.id).first()
     if question_difficulties:
-        question_difficulties.level_one_right = difficulty_counter["level_1"][0]
-        question_difficulties.level_one_wrong = difficulty_counter["level_1"][1]
+        question_difficulties.level_one_right += difficulty_counter["level_1"][0]
+        question_difficulties.level_one_wrong += difficulty_counter["level_1"][1]
 
-        question_difficulties.level_two_right = difficulty_counter["level_2"][0]
-        question_difficulties.level_two_wrong = difficulty_counter["level_2"][1]
+        question_difficulties.level_two_right += difficulty_counter["level_2"][0]
+        question_difficulties.level_two_wrong += difficulty_counter["level_2"][1]
 
-        question_difficulties.level_three_right = difficulty_counter["level_3"][0]
-        question_difficulties.level_three_wrong = difficulty_counter["level_3"][1]
+        question_difficulties.level_three_right += difficulty_counter["level_3"][0]
+        question_difficulties.level_three_wrong += difficulty_counter["level_3"][1]
 
-        question_difficulties.level_four_right = difficulty_counter["level_4"][0]
-        question_difficulties.level_four_wrong = difficulty_counter["level_4"][1]
+        question_difficulties.level_four_right += difficulty_counter["level_4"][0]
+        question_difficulties.level_four_wrong += difficulty_counter["level_4"][1]
 
-        question_difficulties.level_five_right = difficulty_counter["level_5"][0]
-        question_difficulties.level_five_wrong = difficulty_counter["level_5"][1]
+        question_difficulties.level_five_right += difficulty_counter["level_5"][0]
+        question_difficulties.level_five_wrong += difficulty_counter["level_5"][1]
 
-        question_difficulties.level_six_right = difficulty_counter["level_6"][0]
-        question_difficulties.level_six_wrong = difficulty_counter["level_6"][1]
+        question_difficulties.level_six_right += difficulty_counter["level_6"][0]
+        question_difficulties.level_six_wrong += difficulty_counter["level_6"][1]
 
-        question_difficulties.level_seven_right = difficulty_counter["level_7"][0]
-        question_difficulties.level_seven_wrong = difficulty_counter["level_7"][1]
+        question_difficulties.level_seven_right += difficulty_counter["level_7"][0]
+        question_difficulties.level_seven_wrong += difficulty_counter["level_7"][1]
 
-        question_difficulties.level_eight_right = difficulty_counter["level_8"][0]
-        question_difficulties.level_eight_wrong = difficulty_counter["level_8"][1]
+        question_difficulties.level_eight_right += difficulty_counter["level_8"][0]
+        question_difficulties.level_eight_wrong += difficulty_counter["level_8"][1]
 
-        question_difficulties.level_nine_right = difficulty_counter["level_9"][0]
-        question_difficulties.level_nine_wrong = difficulty_counter["level_9"][1]
+        question_difficulties.level_nine_right += difficulty_counter["level_9"][0]
+        question_difficulties.level_nine_wrong += difficulty_counter["level_9"][1]
 
-        question_difficulties.level_ten_right = difficulty_counter["level_10"][0]
-        question_difficulties.level_ten_wrong = difficulty_counter["level_10"][1]
+        question_difficulties.level_ten_right += difficulty_counter["level_10"][0]
+        question_difficulties.level_ten_wrong += difficulty_counter["level_10"][1]
 
         db.session.commit()
 
@@ -225,3 +225,19 @@ def get_topic_results(chosen_user : User, chosen_topic : str):
         answer_percentage = 0
 
     return answer_correct, answer_incorrect, answer_percentage
+
+difficulty_counter = {
+    "level_1": [0, 0],
+    "level_2": [0, 0],
+    "level_3": [0, 0],
+    "level_4": [5, 5],
+    "level_5": [5, 5],
+    "level_6": [0, 0],
+    "level_7": [0, 0],
+    "level_8": [0, 0],
+    "level_9": [0, 0],
+    "level_10": [0, 0]
+}
+
+#with app.app_context():
+#    update_difficulty_information(difficulty_counter)

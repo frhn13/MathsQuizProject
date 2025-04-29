@@ -167,9 +167,9 @@ def test_quiz_selection_page(client, app):
         assert b"Calculus, Difficulty: 7-10" in response.data
         assert b"Equations, Difficulty: 4-8" in response.data
         assert b"Expressions, Difficulty: 3-6" in response.data
-        assert b"Sequences, Difficulty: 2-8" in response.data
+        assert b"Sequences, Difficulty: 3-8" in response.data
         assert b"HCF, LCM and Prime Factors, Difficulty: 2-5" in response.data
-        assert b"Percentages, Difficulty: 2-6" in response.data
+        assert b"Percentages, Difficulty: 3-6" in response.data
         assert b"Triangles, Difficulty: 2-7" in response.data
         assert b"Circles, Difficulty: 3-7" in response.data
         assert b"Graphs, Difficulty: 2-8" in response.data

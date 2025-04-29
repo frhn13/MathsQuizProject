@@ -80,7 +80,13 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
         case _:
             pass
 
-    return question, answer, difficulty_weighting, multiple_answers, calculator_needed
+    new_question = ""
+    for x in range(len(question)):
+        if question[x] == "1" and x+1 < len(question) and (question[x+1] == "x" or question[x+1] == "y"):
+            pass
+        else: new_question += question[x]
+
+    return new_question, answer, difficulty_weighting, multiple_answers, calculator_needed
 
 def generate_equation(equation_type : str, difficulty_factors : dict):
     x = symbols("x")

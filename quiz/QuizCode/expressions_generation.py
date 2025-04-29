@@ -98,4 +98,11 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
             pass
     answer = str(answer)
 
-    return question, answer, difficulty_weighting
+    new_question = ""
+    for x in range(len(question)):
+        if question[x] == "1" and x + 1 < len(question) and (question[x + 1] == "x" or question[x + 1] == "y"):
+            pass
+        else:
+            new_question += question[x]
+
+    return new_question, answer, difficulty_weighting

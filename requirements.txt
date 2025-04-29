@@ -7,3 +7,5 @@ flask
 flask_login
 pytest
 flask_sqlalchemy
+flask_wtf
+Flask-Login

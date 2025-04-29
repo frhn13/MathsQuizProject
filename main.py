@@ -5,7 +5,7 @@ def init_db():
     with app.app_context():
         db.drop_all()
         db.create_all()
-        created_user = User(username="John", email="john@email.com", password="123456")
+        created_user = User(username="user1", email="user1@email.com", password="123456")
         db.session.add(created_user)
         db.session.commit()
         question_topics = QuestionTopics(user_id=created_user.id)
