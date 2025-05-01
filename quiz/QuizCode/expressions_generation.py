@@ -8,6 +8,7 @@ from .helper_functions import (generate_expression, generate_complex_expression,
 def expressions_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     question_type_chosen = random.choice(["free-text"])
     while True:
+        time_needed = 60
         x = symbols("x")
         expressions_topic = random.choice(["simplification", "factorisation", "algebraic_fractions"])
         # expressions_topic = "algebraic_fractions"
@@ -67,6 +68,7 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                         break
 
             case "algebraic_fractions":
+                time_needed = 120
                 question, answer, question_type_chosen = algebraic_fractions(difficulty_factors)
                 answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
                                                                           difficulty_factors)
@@ -105,4 +107,4 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
         else:
             new_question += question[x]
 
-    return new_question, answer, difficulty_weighting
+    return new_question, answer, difficulty_weighting, time_needed

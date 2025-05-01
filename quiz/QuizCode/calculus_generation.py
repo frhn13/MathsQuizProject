@@ -1,7 +1,7 @@
 import random
-from sympy import diff, integrate, symbols, limit, solveset, solve, zoo
+from sympy import diff, integrate, symbols, solve, zoo
 
-from .helper_functions import calculate_difficulty, answer_generation
+from .helper_functions import calculate_difficulty
 
 def calculus_questions_generation(entered_difficulty : int, question_types : list, difficulty_factors: dict):
     while True:
@@ -9,10 +9,11 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
         question_topic_chosen = random.choice(["differentiation", "integration"])
         calculator_needed = False
         x = symbols("x")
+        time_needed = 60
         match question_topic_chosen:
             case "differentiation":
                 question_subtopic_chosen = random.choice(["basic_differentiation", "second_order_differentiation", "answer_from_derivative", "finding_x", "tangents", "normals"])
-                question, answer, difficulty_factors, is_valid = differentiation_questions(question_subtopic_chosen, difficulty_factors)
+                question, answer, difficulty_factors, is_valid, time_needed = differentiation_questions(question_subtopic_chosen, difficulty_factors)
                 if is_valid:
                     if question_subtopic_chosen in ("answer_from_derivative", "finding_x", "tangents", "normals"):
                         calculator_needed = True
@@ -28,7 +29,7 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
             case "integration":
                 question_subtopic_chosen = random.choice(
                     ["basic_integration", "definite_integrals", "finding_area", "finding_complex_area"])
-                question, answer, difficulty_factors, is_valid = integration_questions(question_subtopic_chosen, difficulty_factors)
+                question, answer, difficulty_factors, is_valid, time_needed = integration_questions(question_subtopic_chosen, difficulty_factors)
                 if is_valid:
                     if question_subtopic_chosen in ("definite_integrals", "finding_area", "finding_complex_area"):
                         calculator_needed = True
@@ -48,10 +49,11 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
         else:
             new_question += question[x]
 
-    return new_question, answer, difficulty_weighting, calculator_needed
+    return new_question, answer, difficulty_weighting, calculator_needed, time_needed
 
 
 def differentiation_questions(question_subtopic_chosen : str, difficulty_factors : dict):
+    time_needed = 60
     question, answer = "", ""
     x = symbols("x")
     cubic_value = random.randint(1, 10) * random.choice([0, 1, -1])
@@ -60,7 +62,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
     number_value = random.randint(1, 10) * random.choice([0, 1, -1])
 
     if cubic_value == 0 and quadratic_value == 0 and linear_value == 0:
-        return question, answer, difficulty_factors, False
+        return question, answer, difficulty_factors, False, time_needed
     f = cubic_value * x ** 3 + quadratic_value * x ** 2 + linear_value * x + number_value
 
     difficulty_factors["difficulty_of_values"][0] = 7
@@ -92,7 +94,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             answer = df
             question = f"What is the first order derivative of {f_str}?"
             if "x" not in str(answer):
-                return "", "", difficulty_factors, False
+                return "", "", difficulty_factors, False, time_needed
 
         case "second_order_differentiation":
             difficulty_factors["difficulty_of_values"][0] += 1
@@ -108,9 +110,10 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             answer = d2f
             question = f"What is the second order derivative of {f_str}?"
             if "x" not in str(answer):
-                return "", "", difficulty_factors, False
+                return "", "", difficulty_factors, False, time_needed
 
         case "answer_from_derivative":
+            time_needed = 120
             if cubic_value != 0 or quadratic_value == 0 or linear_value == 0:
                 return "", "", difficulty_factors, False
             difficulty_factors["difficulty_of_values"][0] += 1.5
@@ -128,6 +131,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             answer = df.subs(x, x_value)
 
         case "finding_x":
+            time_needed = 120
             if cubic_value != 0 or quadratic_value == 0 or linear_value == 0:
                 return "", "", difficulty_factors, False
             difficulty_factors["difficulty_of_values"][0] += 1.5
@@ -144,6 +148,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             answer = solve(df, x)
 
         case "tangents":
+            time_needed = 240
             difficulty_factors["difficulty_of_values"][0] += 2
             difficulty_factors["difficulty_of_answer"][0] += 2
             difficulty_factors["number_of_steps"][0] += 2
@@ -167,6 +172,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
                 answer = f"y={gradient}x{y_intercept}"
 
         case "normals":
+            time_needed = 240
             difficulty_factors["difficulty_of_values"][0] += 2.5
             difficulty_factors["difficulty_of_answer"][0] += 2.5
             difficulty_factors["number_of_steps"][0] += 2.5
@@ -188,9 +194,10 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
                 answer = f"y={gradient}x{y_intercept}"
             # answer = f"y={gradient}x+{y_intercept}" if y_intercept > 0 else f"y={gradient}x{y_intercept}"
 
-    return question, answer, difficulty_factors, True
+    return question, answer, difficulty_factors, True, time_needed
 
 def integration_questions(question_subtopic_chosen : str, difficulty_factors : dict):
+    time_needed = 60
     question, answer = "", ""
     x = symbols("x")
     cubic_value = random.randint(1, 10) * random.choice([0, 1, -1])
@@ -215,6 +222,7 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             question = f"What is ∫ f(x) dx when f(x) = {f_str}?"
 
         case "definite_integrals":
+            time_needed = 180
             difficulty_factors["difficulty_of_values"][0] = 9
             difficulty_factors["difficulty_of_answer"][0] = 9
             difficulty_factors["number_of_steps"][0] = 8
@@ -228,6 +236,7 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             question = f"What is ∫ f(x) from {lower_point} to {upper_point} when f(x) = {f_str}? Give answers in the form of fractions where needed."
 
         case "finding_area":
+            time_needed = 180
             difficulty_factors["difficulty_of_values"][0] = 9
             difficulty_factors["difficulty_of_answer"][0] = 9
             difficulty_factors["number_of_steps"][0] = 9
@@ -241,6 +250,7 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             question = f"What is the area of under the curve y=f(x) over the interval {lower_point} < x < {upper_point} where f(x) = {f_str}? Give answers in the form of fractions where needed."
 
         case "finding_complex_area":
+            time_needed = 240
             difficulty_factors["difficulty_of_values"][0] = 10
             difficulty_factors["difficulty_of_answer"][0] = 10
             difficulty_factors["number_of_steps"][0] = 11
@@ -255,7 +265,7 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             f_str = simplify_f(f)
             question = f"What is the area of under the curve y=f(x) over the interval {lower_point} < x < {upper_point} where f(x) = {f_str}? Give answers in the form of fractions where needed."
 
-    return question, answer, difficulty_factors, True
+    return question, answer, difficulty_factors, True, time_needed
 
 def simplify_f(f):
     f_str = str(f)

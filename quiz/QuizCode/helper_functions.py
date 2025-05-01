@@ -239,7 +239,7 @@ def algebraic_fractions(difficulty_factors : dict):
             elif x < len(denominator_str) - 1 and denominator_str[x] == "*":
                 denominator_str = f"{denominator_str[0:x]}{denominator_str[x + 1:]}"
 
-        question = f"Simplify {numerator_str}/{denominator_str}"
+        question = f"Simplify the fraction ({numerator_str})/({denominator_str})"
         numerator_terms = numerator.as_ordered_terms()
         denominator_terms = denominator.as_ordered_terms()
         if quadratic_value_numerator == 0:

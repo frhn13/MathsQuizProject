@@ -9,6 +9,8 @@ def percentages_question_generation(entered_difficulty: int, question_types: lis
     percentage_in_answer = True
     final_difficulty = 0
     while True:
+        calculator_needed = False
+        time_needed = 60
         percentage_topic_chosen = random.choice(["amount_from_percentage", "percentage_from_amount", "compound_interest", "reverse_percentages"])
         question_type_chosen = random.choice(question_types)
         difficulty_factors["maths_topic"][0] = 0
@@ -20,6 +22,8 @@ def percentages_question_generation(entered_difficulty: int, question_types: lis
 
         match percentage_topic_chosen:
             case "reverse_percentages":
+                calculator_needed = True
+                time_needed = 120
                 difficulty_factors["maths_topic"][0] = 5
                 difficulty_factors["difficulty_of_values"][0] = 5
                 difficulty_factors["depth_of_knowledge"][0] = 4
@@ -38,6 +42,8 @@ def percentages_question_generation(entered_difficulty: int, question_types: lis
                 percentage_in_answer = False
 
             case "compound_interest":
+                calculator_needed = True
+                time_needed = 120
                 difficulty_factors["maths_topic"][0] = 5
                 difficulty_factors["difficulty_of_values"][0] = 5
                 difficulty_factors["depth_of_knowledge"][0] = 4
@@ -156,4 +162,4 @@ def percentages_question_generation(entered_difficulty: int, question_types: lis
         case _:
             pass
 
-    return question, answer, difficulty_weighting
+    return question, answer, difficulty_weighting, calculator_needed, time_needed

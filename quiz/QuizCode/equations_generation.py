@@ -12,6 +12,7 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
     answers = []
     multiple_answers = "No"
     while True:
+        time_needed = 60
         calculator_needed = False
         equation_type = random.choice(["linear", "whole_quadratic", "floating_quadratic", "linear_simultaneous"])
         question_type_chosen = random.choice(question_types)
@@ -42,12 +43,14 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
                     question = f"{equation_str} \t Find x to 2 decimal places."
                     answer = [round(float(final_answer[0]), 2)]
                 case "whole_quadratic":
-                    question = f"{equation_str} \t Find both values of x to 2 decimal places."
+                    time_needed = 120
+                    question = f"{equation_str} \t Find both values of x."
                     if len(final_answer) == 2:
                         answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
                     else: answer = [round(float(final_answer[0]), 2)]
                     multiple_answers = "TwoSame"
                 case "floating_quadratic":
+                    time_needed = 180
                     question = f"{equation_str} \t Find both values of x to 2 decimal places."
                     calculator_needed = True
                     if len(final_answer) == 2:
@@ -56,11 +59,13 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
                         answer = [round(float(final_answer[0]), 2)]
                     multiple_answers = "TwoSame"
                 case "linear_simultaneous":
+                    time_needed = 120
                     question = f"{equation_str} \t Find the value of x and y to 2 decimal places."
                     answer.append(round(float(final_answer[0][1]), 2))
                     answer.append(round(float(final_answer[1][1]), 2))
                     multiple_answers = "TwoDifferent"
                 case "quadratic_simultaneous":
+                    time_needed = 300
                     question = f"{equation_str} \t Find both values of x and y to 2 decimal places."
                     answer.append(round(float(final_answer[0][0]), 2))
                     answer.append(round(float(final_answer[0][1]), 2))
@@ -86,7 +91,7 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
             pass
         else: new_question += question[x]
 
-    return new_question, answer, difficulty_weighting, multiple_answers, calculator_needed
+    return new_question, answer, difficulty_weighting, multiple_answers, calculator_needed, time_needed
 
 def generate_equation(equation_type : str, difficulty_factors : dict):
     x = symbols("x")

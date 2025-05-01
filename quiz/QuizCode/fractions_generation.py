@@ -3,9 +3,8 @@ from math import gcd, lcm
 
 from .helper_functions import answer_generation_decimals, answer_generation, answer_generation_fractions, calculate_difficulty, algebraic_fractions
 
-# Fraction conversion, fraction operations, algebraic fractions, surds
+# Fraction conversion, fraction operations, algebraic fractions
 def fractions_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
-    # fractions_topic = random.choice(["conversion", "operations", "algebra", "surds"])
     is_division = random.random()
     fractions_topic = "algebra"
     num1 = random.randint(1, 20)
@@ -16,6 +15,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
     difficulty_weighting = 0
 
     while True:
+        time_needed = 60
         fractions_topic = random.choice(["conversion", "operations", "algebra"])
         question_type_chosen = random.choice(question_types)
         match fractions_topic:
@@ -64,7 +64,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         final_numerator = int(num1 / hcf)
                         final_denominator = int(num2 / hcf)
                         answer = f"{final_numerator}/{final_denominator}"
-                        question = f"Convert {decimal_value} to a fraction."
+                        question = f"Convert {decimal_value} to a fraction. Make sure you simplify your answer."
 
                         answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
                                                                                  difficulty_factors)
@@ -77,7 +77,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         final_numerator = int(num1 / hcf)
                         final_denominator = int(num2 / hcf)
                         answer = f"{final_numerator}/{final_denominator}"
-                        question = f"Convert {percentage_value}% to a fraction."
+                        question = f"Convert {percentage_value}% to a fraction. Make sure you simplify your answer."
                         answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
                                                                                  difficulty_factors)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
@@ -86,6 +86,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                     case _:
                         pass
             case "operations":
+                time_needed = 120
                 is_valid = True
 
                 difficulty_factors["maths_topic"][0] = 3
@@ -105,7 +106,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                 new_numerators = []
                 new_denominators = []
 
-                question = f"What is {numerators[0]}/{denominators[0]} {operation} {numerators[1]}/{denominators[1]}?"
+                question = f"What is ({numerators[0]}/{denominators[0]}) {operation} ({numerators[1]}/{denominators[1]})? Make sure you simplify your answer."
 
                 match operation:
                     case "+":
@@ -244,6 +245,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         break
 
             case "algebra":
+                time_needed = 120
                 question_type_chosen = "free_text"
                 question, answer, question_type_chosen = algebraic_fractions(difficulty_factors)
                 answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
@@ -283,4 +285,4 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
         else:
             new_question += question[x]
 
-    return new_question, answer, difficulty_weighting
+    return new_question, answer, difficulty_weighting, time_needed

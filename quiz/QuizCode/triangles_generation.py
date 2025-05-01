@@ -13,6 +13,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
         question_type_chosen = random.choice(question_types)
         question_topic_chosen = random.choice(["simple_area_perimeter", "simple_angles", "pythagoras", "trigonometry", "sine_cosine_area"])
         question_subtopic = ""
+        time_needed = 60
 
         match question_topic_chosen:
             case "simple_area_perimeter":
@@ -60,6 +61,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                     difficulty_factors["difficulty_of_values"][0] += 1
                     difficulty_factors["difficulty_of_answer"][0] += 1
             case "trigonometry":
+                time_needed = 120
                 calculator_needed = True
                 difficulty_factors["maths_topic"][0] = 5
                 difficulty_factors["difficulty_of_values"][0] = 4
@@ -74,6 +76,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
                 question = "What is x? Answer to the nearest whole number."
                 answer = angle_a if question_subtopic == "missing_angle" else length_c
             case "sine_cosine_area":
+                time_needed = 180
                 calculator_needed = True
                 difficulty_factors["maths_topic"][0] = 6
                 difficulty_factors["difficulty_of_values"][0] = 6
@@ -144,7 +147,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
         case _:
             pass
 
-    return question, answer, difficulty_weighting, image_values, calculator_needed
+    return question, answer, difficulty_weighting, image_values, calculator_needed, time_needed
 
 def generate_triangle():
     while True:

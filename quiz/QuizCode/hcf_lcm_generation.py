@@ -8,6 +8,7 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
     question = ""
     answer = 0
     while True:
+        time_needed = 120
         question_topic_chosen = random.choice(["hcf", "lcm", "prime_factors"])
         question_type_chosen = random.choice(question_types)
         match question_topic_chosen:
@@ -87,7 +88,7 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
         case _:
             pass
 
-    return question, answer, difficulty_weighting
+    return question, answer, difficulty_weighting, time_needed
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested

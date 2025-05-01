@@ -5,6 +5,7 @@ from .helper_functions import answer_generation, calculate_difficulty
 # Linear, quadratic, geometric sequences
 def sequences_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     while True:
+        time_needed = 60
         question_type_chosen = random.choice(question_types)
         question_topic_chosen = random.choice(["linear", "geometric", "quadratic"])
 
@@ -27,6 +28,7 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
                     difficulty_factors["difficulty_of_values"][0] += 1
                     difficulty_factors["difficulty_of_answer"][0] += 1
             case "geometric":
+                time_needed = 120
                 difficulty_factors["maths_topic"][0] = 6
                 difficulty_factors["difficulty_of_values"][0] = 5
                 difficulty_factors["depth_of_knowledge"][0] = 5
@@ -45,6 +47,7 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
                     difficulty_factors["difficulty_of_values"][0] += 1
                     difficulty_factors["difficulty_of_answer"][0] += 1
             case "quadratic":
+                time_needed = 180
                 difficulty_factors["maths_topic"][0] = 8
                 difficulty_factors["difficulty_of_values"][0] = 7
                 difficulty_factors["depth_of_knowledge"][0] = 8
@@ -92,7 +95,7 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
         case _:
             pass
 
-    return question, answer, difficulty_weighting
+    return question, answer, difficulty_weighting, time_needed
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested

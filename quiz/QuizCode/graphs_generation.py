@@ -13,6 +13,7 @@ def increase_graph_difficulty(difficulty_factors: dict):
 
 def graphs_questions_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     while True:
+        time_needed = 60
         calculator_needed = False
         is_valid = True
         question = ""
@@ -167,6 +168,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                 graph_values["pie_chart_labels"] = labels
 
             case "graph_transformation":
+                time_needed = 120
                 difficulty_factors["maths_topic"][0] = 8
                 difficulty_factors["difficulty_of_values"][0] = 8
                 difficulty_factors["depth_of_knowledge"][0] = 7
@@ -222,6 +224,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                 graph_values = None
 
             case "perpendicular_lines":
+                time_needed = 180
                 calculator_needed = True
                 difficulty_factors["maths_topic"][0] = 8
                 difficulty_factors["difficulty_of_values"][0] = 8
@@ -299,7 +302,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
         case _:
             pass
 
-    return question, answer, difficulty_weighting, graph_values, multiple_answers, calculator_needed
+    return question, answer, difficulty_weighting, graph_values, multiple_answers, calculator_needed, time_needed
 
 difficulty_factors = {
         "maths_topic": [0, 0.2],  # Topic being tested
