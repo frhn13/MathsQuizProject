@@ -2,7 +2,7 @@ import random
 from sympy import expand, symbols, Eq, solveset, discriminant, solve
 import math
 
-from .helper_functions import answer_generation_equations, calculate_difficulty
+from .helper_functions import calculate_difficulty
 
 # Linear equations, quadratic equations, quadratic formula, completing the square, simultaneous equations, quadratic simultaneous equations, inequalities, quadratic inequalities
 def equations_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
@@ -206,12 +206,13 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
 
                 equation_1 = Eq(x**2 + y**2, number_value_1)
                 equation_2 = Eq(x_value_2 * x + y_value_2 * y, number_value_2)
-                equation = f"x^2 + y^2 = {number_value_1} | {x_value_2}x + {y_value_2}y = {number_value_2}"
 
-                final_answer = solve((equation_1, equation_2), (x, y))
-                if (len(final_answer) == 2 and len(final_answer[0]) == 2 and len(final_answer[1]) == 2 and final_answer[0][0].is_integer and
-                        final_answer[0][1].is_integer and final_answer[1][0].is_integer and final_answer[1][1].is_integer):
-                    break
+                equation = f"x^2 + y^2 = {number_value_1} | {x_value_2}x + {y_value_2}y = {number_value_2}"
+                if discriminant(equation_2) >= 0:
+                    final_answer = solve((equation_1, equation_2), (x, y))
+                    if (len(final_answer) == 2 and len(final_answer[0]) == 2 and len(final_answer[1]) == 2 and final_answer[0][0].is_integer and
+                            final_answer[0][1].is_integer and final_answer[1][0].is_integer and final_answer[1][1].is_integer):
+                        break
         case _:
             pass
     final_answer = list(final_answer)

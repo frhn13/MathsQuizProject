@@ -85,7 +85,7 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                     is_topic_chosen = True
             case "percentages":
                 if percentages[0] <= entered_difficulty <= percentages[1]:
-                    question, answer, difficulty_weighting, time_needed = percentages_question_generation(entered_difficulty,
+                    question, answer, difficulty_weighting, calculator_needed, time_needed = percentages_question_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
                     is_topic_chosen = True

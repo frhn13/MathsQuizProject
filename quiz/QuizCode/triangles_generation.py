@@ -111,7 +111,7 @@ def triangles_question_generation(entered_difficulty: int, question_types: list,
             case _:
                 pass
         answer = int(round(answer, 0))
-        answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+        answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors, True)
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
         if final_difficulty == entered_difficulty and not drawing_failed:

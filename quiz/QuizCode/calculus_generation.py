@@ -115,7 +115,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
         case "answer_from_derivative":
             time_needed = 120
             if cubic_value != 0 or quadratic_value == 0 or linear_value == 0:
-                return "", "", difficulty_factors, False
+                return "", "", difficulty_factors, False, time_needed
             difficulty_factors["difficulty_of_values"][0] += 1.5
             difficulty_factors["difficulty_of_answer"][0] += 1.5
             difficulty_factors["number_of_steps"][0] += 1.5
@@ -133,7 +133,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
         case "finding_x":
             time_needed = 120
             if cubic_value != 0 or quadratic_value == 0 or linear_value == 0:
-                return "", "", difficulty_factors, False
+                return "", "", difficulty_factors, False, time_needed
             difficulty_factors["difficulty_of_values"][0] += 1.5
             difficulty_factors["difficulty_of_answer"][0] += 1.5
             difficulty_factors["number_of_steps"][0] += 1.5
@@ -206,7 +206,7 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
     number_value = random.randint(1, 10)
 
     if cubic_value == 0 and quadratic_value == 0 and linear_value == 0:
-        return question, answer, difficulty_factors, False
+        return question, answer, difficulty_factors, False, time_needed
     f = cubic_value * x ** 3 + quadratic_value * x ** 2 + linear_value * x + number_value
 
     match question_subtopic_chosen:

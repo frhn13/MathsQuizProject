@@ -53,7 +53,7 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
                         difficulty_factors["multiple_topics"][0] = 3
                         difficulty_factors["difficulty_of_answer"][0] = 2
                         difficulty_factors["number_of_steps"][0] = 3
-                        time_travelled = random.randint(1, 4)
+                        time_travelled = 5
                         question = f"What is the distance travelled after {time_travelled} minutes?"
                         answer = time_travelled/time_values[1] * distance_values[1]
                     case "time_waited":
@@ -271,9 +271,9 @@ def graphs_questions_generation(entered_difficulty: int, question_types: list, d
 
         question_type_chosen = random.choice(question_types)
         if type(answer) == int:
-            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors, True)
         elif type(answer) == float:
-            answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen, difficulty_factors)
+            answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen, difficulty_factors, True)
         else:
             question_type_chosen = "free-text"
             difficulty_factors["question_type"][0] = 8

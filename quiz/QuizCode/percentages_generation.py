@@ -134,11 +134,11 @@ def percentages_question_generation(entered_difficulty: int, question_types: lis
                 percentage_topic_chosen == "reverse_percentages" or
                 (percentage_topic_chosen == "amount_from_percentage" and type(answer) == int and percentage != 1) or
                 (percentage_topic_chosen == "percentage_from_amount" and type(num2) == int and num1 != 100)):
-            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors, True)
             difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
         elif percentage_topic_chosen == "compound_interest" and type(answer) == float:
-            answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen, difficulty_factors)
+            answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen, difficulty_factors, True)
             difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
         if final_difficulty == entered_difficulty:

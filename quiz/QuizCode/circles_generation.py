@@ -98,9 +98,9 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
             difficulty_factors["difficulty_of_values"][0] += 1
 
         if type(answer) == int:
-            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors, True)
         elif type(answer) == float:
-            answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen, difficulty_factors)
+            answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen, difficulty_factors, True)
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
         if final_difficulty == entered_difficulty:

@@ -17,7 +17,7 @@ from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, Restart
                         MaxResultsForm)
 from .QuizCode.topic_manager import question_topic_selection
 from quiz.models import User, QuestionTopics, QuestionDifficulties
-from quiz.update_results import update_topic_information, update_difficulty_information, get_user_results, \
+from quiz.database_functions import update_topic_information, update_difficulty_information, get_user_results, \
     get_difficulty_results, get_topic_results, create_new_user, delete_user
 
 
@@ -403,22 +403,24 @@ def get_graph():
     # plt.figure(figsize=(20, 20))
 
     if distance_values != []:
+        plt.minorticks_on()
         plt.gca().set_aspect("equal", adjustable="box")
         plt.plot(time_values, distance_values, linestyle="-", marker=".", color="blue")
         plt.xlabel("Time in Minutes")
         plt.ylabel("Distance")
-        plt.grid()
+        plt.grid(which="both")
         # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
         graph_image = BytesIO()
         plt.savefig(graph_image, format="png")
         graph_image.seek(0)
         plt.close()
     elif speed_values != []:
+        plt.minorticks_on()
         plt.gca().set_aspect("equal", adjustable="box")
         plt.plot(time_values, speed_values, linestyle="-", marker=".", color="blue")
         plt.xlabel("Time in Seconds")
         plt.ylabel("Speed")
-        plt.grid()
+        plt.grid(which="both")
         # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
         graph_image = BytesIO()
         plt.savefig(graph_image, format="png")
@@ -449,7 +451,6 @@ def quiz_page():
         return redirect(url_for("quiz_selection"))
     else:
         form = AnswerForm()
-        difficulty_boundary = 30
         if "final_answer" not in session:
             topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values, \
                 calculator_needed, time_needed = question_topic_selection(session.get("topic_selection"), int(session.get("current_difficulty")),
@@ -568,15 +569,27 @@ def quiz_page():
                         elif type(final_answer) == str and not "/" in answer and final_answer not in ("True", "False"):
                             flash("You must write your answer as a fraction. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
-                        elif final_answer == str and "x" in final_answer:
-                            if "/" in answer:
-                                final_answer = str(simplify(sympify(final_answer)))
-                                # answer = simplify(sympify(answer))
-                            else:
-                                flash("You must write your answer as a fraction. Try again.", category="danger")
-                                return redirect(url_for("quiz_page"))
                         else:
-                            final_answer = str(final_answer)
+                            if "x" in final_answer:
+                                for x in range(len(answer)):
+                                    if x < len(answer) - 1 and answer[x].isnumeric() and (answer[x+1] == "x" or answer[x+1] == "("):
+                                        answer = f"{answer[0:x+1]}*{answer[x+1:]}"
+                                    elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "(":
+                                        answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
+                                    elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1].isnumeric():
+                                        answer = f"{answer[0:x+1]}**{answer[x+1:]}"
+                                    elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "^":
+                                        answer = f"{answer[0:x+1]}**{answer[x+2:]}"
+                                try:
+                                    final_answer = sympify(final_answer)
+                                    answer = sympify(answer)
+                                    print(f"{answer} {type(answer)}")
+                                    print(f"{final_answer} {type(answer)}")
+                                except Exception:
+                                    pass
+                            else:
+                                final_answer = str(final_answer)
+                                answer = str(answer)
 
                     case "expressions":
                         answer = request.form.get("answer")

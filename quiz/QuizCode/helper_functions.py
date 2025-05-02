@@ -73,7 +73,7 @@ def factorisation_and_simplification(difficulty_factors : dict):
 
     return difficulty_factors, expression
 
-def answer_generation(real_answer : int, question_type : str, difficulty_factors : dict):
+def answer_generation(real_answer : int, question_type : str, difficulty_factors : dict, should_be_positive : bool):
     answers = []
     if question_type == "free_text":
         difficulty_factors["question_type"][0] = 8
@@ -90,7 +90,10 @@ def answer_generation(real_answer : int, question_type : str, difficulty_factors
                 if abs(answers[i] - real_answer) >= 10:
                     difficulty_factors["answers_similarity"][0] -= 1
             answers.append(real_answer)
-            if len(answers) == len(set(answers)):
+            is_positive = True
+            for answer in answers:
+                if answer <= 0: is_positive = False
+            if len(answers) == len(set(answers)) and (not should_be_positive or (should_be_positive and is_positive)):
                 random.shuffle(answers)
                 break
 
@@ -98,22 +101,16 @@ def answer_generation(real_answer : int, question_type : str, difficulty_factors
         difficulty_factors["question_type"][0] = 2
         difficulty_factors["answers_similarity"][0] = 4
         if random.random() > 0.5:
-            answers = [random.randint(real_answer - 20, real_answer + 20)]
-            if abs(answers[0] - real_answer) >= 10:
-                difficulty_factors["answers_similarity"][0] -= 2
+            while True:
+                answers = [random.randint(real_answer - 20, real_answer + 20)]
+                if abs(answers[0] - real_answer) >= 10:
+                    difficulty_factors["answers_similarity"][0] -= 2
+                if not should_be_positive or (should_be_positive and answers[0] > 0):
+                    break
         else:
             answers.append(real_answer)
 
     return answers, difficulty_factors
-
-def answer_generation_calculus(real_answer):
-    pass
-
-def answer_generation_equations(real_answer : list, question_type : str, difficulty_factors : dict):
-    if question_type == "free_text":
-        difficulty_factors["question_type"][0] = 8
-        difficulty_factors["answers_similarity"][0] = 8
-        return real_answer, difficulty_factors
 
 def answer_generation_fractions(real_answer : str, question_type : str, difficulty_factors : dict):
     answers = []
@@ -159,7 +156,7 @@ def answer_generation_fractions(real_answer : str, question_type : str, difficul
             answers.append(real_answer)
     return answers, difficulty_factors
 
-def answer_generation_decimals(real_answer : float, question_type : str, difficulty_factors : dict):
+def answer_generation_decimals(real_answer : float, question_type : str, difficulty_factors : dict, should_be_positive : bool):
     answers = []
     if question_type == "free_text":
         difficulty_factors["question_type"][0] = 8
@@ -178,7 +175,10 @@ def answer_generation_decimals(real_answer : float, question_type : str, difficu
                 if abs(answers[i] - real_answer) >= 10:
                     difficulty_factors["answers_similarity"][0] -= 1
             answers.append(real_answer)
-            if len(answers) == len(set(answers)):
+            is_positive = True
+            for answer in answers:
+                if answer <= 0: is_positive = False
+            if len(answers) == len(set(answers)) and (not should_be_positive or (should_be_positive and is_positive)):
                 random.shuffle(answers)
                 break
 
@@ -186,11 +186,14 @@ def answer_generation_decimals(real_answer : float, question_type : str, difficu
         difficulty_factors["question_type"][0] = 2
         difficulty_factors["answers_similarity"][0] = 4
         if random.random() > 0.5:
-            answers = [random.choice([real_answer - 0.5, real_answer - 0.4, real_answer - 0.3,
-                                              real_answer - 0.2, real_answer - 0.1, real_answer + 0.1,
-                                              real_answer + 0.2, real_answer + 0.3, real_answer + 0.4, real_answer + 0.5])]
-            if abs(answers[0] - real_answer) >= 0.2:
-                difficulty_factors["answers_similarity"][0] -= 2
+            while True:
+                answers = [random.choice([real_answer - 0.5, real_answer - 0.4, real_answer - 0.3,
+                                                  real_answer - 0.2, real_answer - 0.1, real_answer + 0.1,
+                                                  real_answer + 0.2, real_answer + 0.3, real_answer + 0.4, real_answer + 0.5])]
+                if abs(answers[0] - real_answer) >= 0.2:
+                    difficulty_factors["answers_similarity"][0] -= 2
+                if not should_be_positive or (should_be_positive and answers[0] > 0):
+                    break
         else:
             answers.append(real_answer)
 
@@ -279,7 +282,3 @@ difficulty_factors = {
         "difficulty_of_answer": [0, 0.15],  # Value of the answer
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
-
-#generate_equation("linear_simultaneous", difficulty_factors)
-#generate_equation("floating_quadratic", difficulty_factors)
-#generate_equation("quadratic_simultaneous", difficulty_factors)

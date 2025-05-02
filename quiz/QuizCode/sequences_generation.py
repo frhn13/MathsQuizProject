@@ -72,7 +72,7 @@ def sequences_question_generation(entered_difficulty: int, question_types: list,
             case _:
                 pass
 
-        answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+        answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors, False)
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
         if final_difficulty == entered_difficulty:

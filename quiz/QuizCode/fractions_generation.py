@@ -44,7 +44,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         answer = decimal_value
                         question = f"Convert {fraction_value} to a decimal."
                         answers, difficulty_factors = answer_generation_decimals(answer, question_type_chosen,
-                                                                                  difficulty_factors)
+                                                                                  difficulty_factors, False)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
                         decimal_str = str(decimal_value)
                         if percentage_value.is_integer()  and final_difficulty == entered_difficulty and num1 != num2:
@@ -54,7 +54,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         question = f"Convert {fraction_value} to a percentage."
                         answer = percentage_value
                         answers, difficulty_factors = answer_generation(int(answer), question_type_chosen,
-                                                                                 difficulty_factors)
+                                                                                 difficulty_factors, False)
                         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
                         if percentage_value.is_integer() and final_difficulty == entered_difficulty and num1 != num2:
                             answer = int(percentage_value)

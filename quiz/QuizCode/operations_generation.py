@@ -118,7 +118,7 @@ def operations_question_generation(entered_difficulty: int, question_types: list
             elif answer > 5000:
                 difficulty_factors["difficulty_of_answer"][0] += 2.5
 
-            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors, False)
             difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
             if final_difficulty == entered_difficulty and -10000 <= answers[0] <= 10000 and "*1" not in question and "1*" not in question and "/1" not in question:

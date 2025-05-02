@@ -61,7 +61,7 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
 
 
         if type(answer) == int:
-            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors)
+            answers, difficulty_factors = answer_generation(answer, question_type_chosen, difficulty_factors, True)
         else:
             question_type_chosen = "free_text"
             difficulty_factors["question_type"][0] = 7

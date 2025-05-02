@@ -6,12 +6,11 @@ from .helper_functions import (generate_expression, generate_complex_expression,
 
 # Expression simplification, factorisation, algebraic fractions
 def expressions_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
-    question_type_chosen = random.choice(["free-text"])
+    question_type_chosen = "free-text"
     while True:
         time_needed = 60
         x = symbols("x")
         expressions_topic = random.choice(["simplification", "factorisation", "algebraic_fractions"])
-        # expressions_topic = "algebraic_fractions"
         match expressions_topic:
             case "simplification":
                 difficulty_factors, expression = factorisation_and_simplification(difficulty_factors)
@@ -30,8 +29,6 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                 if expression is None or expression == factorised:
                     pass
                 else:
-                    answers, difficulty_factors = answer_generation(answer, question_type_chosen,
-                                                                    difficulty_factors)
                     difficulty_factors["question_type"][0] = 5
                     difficulty_factors["answers_similarity"][0] = 5
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
@@ -56,8 +53,6 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
                 if expression is None or expression == answer:
                     pass
                 else:
-                    answers, difficulty_factors = answer_generation(answer, question_type_chosen,
-                                                                              difficulty_factors)
                     difficulty_factors["question_type"][0] = 5
                     difficulty_factors["answers_similarity"][0] = 5
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
@@ -70,8 +65,6 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
             case "algebraic_fractions":
                 time_needed = 120
                 question, answer, question_type_chosen = algebraic_fractions(difficulty_factors)
-                answers, difficulty_factors = answer_generation_fractions(answer, question_type_chosen,
-                                                                          difficulty_factors)
                 difficulty_factors["question_type"][0] = 6
                 difficulty_factors["answers_similarity"][0] = 6
                 difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
@@ -85,19 +78,6 @@ def expressions_question_generation(entered_difficulty: int, question_types: lis
             case _:
                 pass
 
-    match question_type_chosen:
-        case "free_text":
-            question = question
-        case "multiple-choice":
-            question = f"{question}\nIs it {answers[0]}, {answers[1]}, {answers[2]} or {answers[3]}?"
-        case "true/false":
-            question = f"{question}\nIs the answer {answers[0]}, answer with True or False."
-            if answers[0] == answer:
-                answer = "True"
-            else:
-                answer = "False"
-        case _:
-            pass
     answer = str(answer)
 
     new_question = ""
