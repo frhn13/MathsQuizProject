@@ -13,13 +13,6 @@ from .circles_generation import circles_question_generation
 from .hcf_lcm_generation import hcf_lcm_question_generation
 from .min_and_max_difficulties import *
 
-# Difficulty weighting includes maths topic, type of question, difficulty of values used, similarity of potential answers,
-# ambiguity of how to answer question, conceptual depth (needs fourmulae?), number of steps required, abstract vs concrete, time pressure, images
-# Type of question: Free text -> multiple-choice -> true/false
-# Topic: Calculus -> Trigonometry -> Quadratic questions -> Sequences -> Linear equations -> 3d shapes -> 2d shapes -> fractions and decimals -> operations
-# Similarity of answers: How close answers are in MCQs, how close incorrect is to correct in true/false
-# Difficulty of values used: How big values used are, whether final answer is whole number
-
 def question_topic_selection(selected_topics : list, entered_difficulty : int, question_types : list):
     image_values = None
     graph_values = None

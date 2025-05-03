@@ -4,26 +4,27 @@ import math
 
 from .helper_functions import calculate_difficulty
 
-# Linear equations, quadratic equations, quadratic formula, completing the square, simultaneous equations, quadratic simultaneous equations, inequalities, quadratic inequalities
 def equations_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
-    question_type_chosen = "free_text"
     question = ""
     answer = []
     answers = []
     multiple_answers = "No"
-    while True:
+    while True: # Remains True until a valid question is generated with the entered difficulty
         time_needed = 60
         calculator_needed = False
+        # Equations question subtopic is randomly chosen from this list
         equation_type = random.choice(["linear", "whole_quadratic", "floating_quadratic", "linear_simultaneous"])
-        question_type_chosen = random.choice(question_types)
-        question_type_chosen = "free_text"
+        question_type_chosen = "free_text" # Equation questions are always free-text
         if entered_difficulty >= 8:
             equation_type = "quadratic_simultaneous"
 
+        # Function generates equation based on the question subtopic
         equation, final_answer = generate_equation(equation_type, difficulty_factors)
 
         equation_str = str(equation)
 
+        # Loops through every character in the equation for a question and replaces "2*x"
+        # with "2x" and "x**2" with "x^2" to make the question more readable for the user
         for x in range(len(equation_str)):
             if x < len(equation_str) - 1 and equation_str[x] == "*" and equation_str[x + 1] == "*":
                 equation_str = f"{equation_str[0:x]}^{equation_str[x + 2:]}"
@@ -32,61 +33,49 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
 
         difficulty_factors["question_type"][0] = 8
         difficulty_factors["answers_similarity"][0] = 8
-        difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors=difficulty_factors)
-        if final_difficulty == entered_difficulty:
+        difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors=difficulty_factors) # Generates difficulty level of question
+        if final_difficulty == entered_difficulty: # Breaks out of while loop if difficulty level matches entered difficulty
             break
 
-    match question_type_chosen:
-        case "free_text":
-            match equation_type:
-                case "linear":
-                    question = f"{equation_str} \t Find x to 2 decimal places."
-                    answer = [round(float(final_answer[0]), 2)]
-                case "whole_quadratic":
-                    time_needed = 120
-                    question = f"{equation_str} \t Find both values of x."
-                    if len(final_answer) == 2:
-                        answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
-                    else: answer = [round(float(final_answer[0]), 2)]
-                    multiple_answers = "TwoSame"
-                case "floating_quadratic":
-                    time_needed = 180
-                    question = f"{equation_str} \t Find both values of x to 2 decimal places."
-                    calculator_needed = True
-                    if len(final_answer) == 2:
-                        answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
-                    else:
-                        answer = [round(float(final_answer[0]), 2)]
-                    multiple_answers = "TwoSame"
-                case "linear_simultaneous":
-                    time_needed = 120
-                    question = f"{equation_str} \t Find the value of x and y to 2 decimal places."
-                    answer.append(round(float(final_answer[0][1]), 2))
-                    answer.append(round(float(final_answer[1][1]), 2))
-                    multiple_answers = "TwoDifferent"
-                case "quadratic_simultaneous":
-                    time_needed = 300
-                    question = f"{equation_str} \t Find both values of x and y to 2 decimal places."
-                    answer.append(round(float(final_answer[0][0]), 2))
-                    answer.append(round(float(final_answer[0][1]), 2))
-                    answer.append(round(float(final_answer[1][0]), 2))
-                    answer.append(round(float(final_answer[1][0]), 2))
-                    multiple_answers = "FourDifferent"
-                case _:
-                    pass
-        case "multiple-choice":
-            question = f"{equation_str}\n"
-        case "true/false":
-            question = f"{equation_str}\n"
-            if final_answer[0] == answer:
-                answer = "True"
+    match equation_type:
+        case "linear":
+            question = f"{equation_str} \t Find x to 2 decimal places."
+            answer = [round(float(final_answer[0]), 2)]
+        case "whole_quadratic":
+            time_needed = 120
+            question = f"{equation_str} \t Find both values of x."
+            if len(final_answer) == 2:
+                answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
+            else: answer = [round(float(final_answer[0]), 2)]
+            multiple_answers = "TwoSame"
+        case "floating_quadratic":
+            time_needed = 180
+            question = f"{equation_str} \t Find both values of x to 2 decimal places."
+            calculator_needed = True
+            if len(final_answer) == 2:
+                answer = [round(float(final_answer[0]), 2), round(float(final_answer[1]), 2)]
             else:
-                answer = "False"
+                answer = [round(float(final_answer[0]), 2)]
+            multiple_answers = "TwoSame"
+        case "linear_simultaneous":
+            time_needed = 120
+            question = f"{equation_str} \t Find the value of x and y to 2 decimal places."
+            answer.append(round(float(final_answer[0][1]), 2))
+            answer.append(round(float(final_answer[1][1]), 2))
+            multiple_answers = "TwoDifferent"
+        case "quadratic_simultaneous":
+            time_needed = 300
+            question = f"{equation_str} \t Find both values of x and y to 2 decimal places."
+            answer.append(round(float(final_answer[0][0]), 2))
+            answer.append(round(float(final_answer[0][1]), 2))
+            answer.append(round(float(final_answer[1][0]), 2))
+            answer.append(round(float(final_answer[1][0]), 2))
+            multiple_answers = "FourDifferent"
         case _:
             pass
 
     new_question = ""
-    for x in range(len(question)):
+    for x in range(len(question)): # Replaces 1x or 1y in question with x or y
         if question[x] == "1" and x+1 < len(question) and (question[x+1] == "x" or question[x+1] == "y"):
             pass
         else: new_question += question[x]
@@ -94,6 +83,7 @@ def equations_question_generation(entered_difficulty: int, question_types: list,
     return new_question, answer, difficulty_weighting, multiple_answers, calculator_needed, time_needed
 
 def generate_equation(equation_type : str, difficulty_factors : dict):
+    # Function generates different types of equations depending on what is passed in
     x = symbols("x")
     y = symbols("y")
     final_answer = 0
@@ -101,23 +91,27 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
 
     match equation_type:
         case "linear":
+            # Generates a linear equation
             difficulty_factors["maths_topic"][0] = 4
             difficulty_factors["difficulty_of_values"][0] = 3
             difficulty_factors["depth_of_knowledge"][0] = 4
             difficulty_factors["multiple_topics"][0] = 4
             difficulty_factors["difficulty_of_answer"][0] = 3
             difficulty_factors["number_of_steps"][0] = 3
+            # Randomly creates linear and number values for linear equation
             linear_value = random.choice([1, -1]) * random.randint(1, 10)
             number_value = random.choice([1, -1]) * random.randint(1, 20)
-            final_answer = solveset(linear_value * x + number_value, x)
+            final_answer = solveset(linear_value * x + number_value, x) # Finds value of x when linear equation = 0
             equation = f"{linear_value}x + {number_value} = 0"
         case "whole_quadratic":
+            # Generates a quadratic equation
             difficulty_factors["maths_topic"][0] = 5
             difficulty_factors["difficulty_of_values"][0] = 3
             difficulty_factors["depth_of_knowledge"][0] = 5
             difficulty_factors["multiple_topics"][0] = 5
             difficulty_factors["difficulty_of_answer"][0] = 4
             difficulty_factors["number_of_steps"][0] = 5
+            # Randomly creates roots for quadratic equation, ensuring values of x are whole numbers
             root_1 = random.choice([1, -1]) * random.randint(1, 10)
             root_2 = random.choice([1, -1]) * random.randint(1, 10)
             common_factor = random.randint(1, 3)
@@ -125,7 +119,9 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
                 difficulty_factors["difficulty_of_values"][0] += 1
                 difficulty_factors["difficulty_of_answer"][0] += 1
                 difficulty_factors["number_of_steps"][0] += 1
+            # Finds values of x when equation = 0
             final_answer = solveset(common_factor * (x+root_1) * (x+root_2), x)
+            # Expanded equation is given to user in question
             equation_start = expand(common_factor * (x+root_1) * (x+root_2))
             equation = f"{equation_start.coeff(x, 2)}x**2 + {equation_start.coeff(x, 1)}x + {equation_start.coeff(x, 0)} = 0"
         case "floating_quadratic":
@@ -149,8 +145,6 @@ def generate_equation(equation_type : str, difficulty_factors : dict):
                     equation = f"{quadratic_value}x**2 + {linear_value}x + {number_value} = 0"
                     final_answer = solveset(quadratic_value * x**2 + linear_value * x + number_value, x)
                     break
-        case "completing_the_square":
-            pass
         # Adapted from https://reliability.readthedocs.io/en/latest/Solving%20simultaneous%20equations%20with%20sympy.html
         case "linear_simultaneous":
             while True:

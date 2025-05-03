@@ -57,11 +57,12 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
     time_needed = 60
     question, answer = "", ""
     x = symbols("x")
+    # Randomly generates positive, negative or no value for the coefficients in the function
     cubic_value = random.randint(1, 10) * random.choice([0, 1, -1])
     quadratic_value = random.randint(1, 10) * random.choice([0, 1, -1])
     linear_value = random.randint(1, 10) * random.choice([0, 1, -1])
     number_value = random.randint(1, 10) * random.choice([0, 1, -1])
-
+    # Cubic, quadratic or linear coefficient must have a value for question to be generated
     if cubic_value == 0 and quadratic_value == 0 and linear_value == 0:
         return question, answer, difficulty_factors, False, time_needed
     f = cubic_value * x ** 3 + quadratic_value * x ** 2 + linear_value * x + number_value
@@ -70,6 +71,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
     difficulty_factors["difficulty_of_answer"][0] = 7
     difficulty_factors["number_of_steps"][0] = 7
 
+    # Question becomes easier if certain values aren't included in the function
     if cubic_value == 0:
         difficulty_factors["difficulty_of_values"][0] -= 0.5
         difficulty_factors["number_of_steps"][0] -= 0.5
@@ -84,6 +86,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
         difficulty_factors["difficulty_of_answer"][0] -= 0.5
 
     match question_subtopic_chosen:
+        # Makes question to ask for first-order derivative
         case "basic_differentiation":
             difficulty_factors["maths_topic"][0] = 8
             difficulty_factors["depth_of_knowledge"][0] = 7
@@ -94,10 +97,12 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             f_str = simplify_f(f)
             answer = df
             question = f"What is the first order derivative of {f_str}?"
+            # If first-order derivative is just a number, then the question is too easy and therefore invalid
             if "x" not in str(answer):
                 return "", "", difficulty_factors, False, time_needed
 
         case "second_order_differentiation":
+            # Makes question to ask for second-order derivative
             difficulty_factors["difficulty_of_values"][0] += 1
             difficulty_factors["difficulty_of_answer"][0] += 1
             difficulty_factors["number_of_steps"][0] += 1
@@ -110,11 +115,14 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             f_str = simplify_f(f)
             answer = d2f
             question = f"What is the second order derivative of {f_str}?"
+            # If second-order derivative is just a number, then the question is too easy and therefore invalid
             if "x" not in str(answer):
                 return "", "", difficulty_factors, False, time_needed
 
         case "answer_from_derivative":
+            # Makes question to find value of derivative when x has certain value
             time_needed = 120
+            # If cubic value in function, or quadratic or linear value missing from function, then question is invalid
             if cubic_value != 0 or quadratic_value == 0 or linear_value == 0:
                 return "", "", difficulty_factors, False, time_needed
             difficulty_factors["difficulty_of_values"][0] += 1.5
@@ -132,7 +140,9 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             answer = df.subs(x, x_value)
 
         case "finding_x":
+            # Makes question to find value of x when first-order derivative has certain value
             time_needed = 120
+            # If cubic value in function, or quadratic or linear value missing from function, then question is invalid
             if cubic_value != 0 or quadratic_value == 0 or linear_value == 0:
                 return "", "", difficulty_factors, False, time_needed
             difficulty_factors["difficulty_of_values"][0] += 1.5
@@ -149,6 +159,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
             answer = solve(df, x)
 
         case "tangents":
+            # Makes question to find equation of tangent at a curve using differentiation
             time_needed = 240
             difficulty_factors["difficulty_of_values"][0] += 2
             difficulty_factors["difficulty_of_answer"][0] += 2
@@ -173,6 +184,7 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
                 answer = f"y={gradient}x{y_intercept}"
 
         case "normals":
+            # Makes question to find equation of normal at a curve using differentiation
             time_needed = 240
             difficulty_factors["difficulty_of_values"][0] += 2.5
             difficulty_factors["difficulty_of_answer"][0] += 2.5
@@ -203,17 +215,20 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
     time_needed = 60
     question, answer = "", ""
     x = symbols("x")
+    # Randomly generates positive, negative or no value for the coefficients in the function
     cubic_value = random.randint(1, 10) * random.choice([0, 1, -1])
     quadratic_value = random.randint(1, 10) * random.choice([0, 1, -1])
     linear_value = random.randint(1, 10) * random.choice([0, 1, -1])
     number_value = random.randint(1, 10)
 
+    # Must be at least one of cubic, quadratic or linear coefficients with a value in the function
     if cubic_value == 0 and quadratic_value == 0 and linear_value == 0:
         return question, answer, difficulty_factors, False, time_needed
     f = cubic_value * x ** 3 + quadratic_value * x ** 2 + linear_value * x + number_value
 
     match question_subtopic_chosen:
         case "basic_integration":
+            # Makes question to find integral equation of a function
             difficulty_factors["difficulty_of_values"][0] = 7
             difficulty_factors["difficulty_of_answer"][0] = 7
             difficulty_factors["number_of_steps"][0] = 6
@@ -225,6 +240,7 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             question = f"What is ∫ f(x) dx when f(x) = {f_str}?"
 
         case "definite_integrals":
+            # Makes question to find definite integral of the function
             time_needed = 180
             difficulty_factors["difficulty_of_values"][0] = 9
             difficulty_factors["difficulty_of_answer"][0] = 9
@@ -239,6 +255,7 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             question = f"What is ∫ f(x) from {lower_point} to {upper_point} when f(x) = {f_str}? Give answers in the form of fractions where needed."
 
         case "finding_area":
+            # Makes question to find area under a curve using integration
             time_needed = 180
             difficulty_factors["difficulty_of_values"][0] = 9
             difficulty_factors["difficulty_of_answer"][0] = 9
@@ -253,6 +270,7 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
             question = f"What is the area of under the curve y=f(x) over the interval {lower_point} < x < {upper_point} where f(x) = {f_str}? Give answers in the form of fractions where needed."
 
         case "finding_complex_area":
+            # Makes question to find area under a curve where the x value goes more and less than 0 using integration
             time_needed = 240
             difficulty_factors["difficulty_of_values"][0] = 10
             difficulty_factors["difficulty_of_answer"][0] = 10
@@ -272,6 +290,8 @@ def integration_questions(question_subtopic_chosen : str, difficulty_factors : d
 
 def simplify_f(f):
     f_str = str(f)
+    # Loops through every character in a function for a question and replaces "2*x"
+    # with "2x" and "x**2" with "x^2" to make the question more readable for the user
     for x in range(len(f_str)):
         if x < len(f_str) - 1 and f_str[x] == "*" and f_str[x + 1] == "*":
             f_str = f"{f_str[0:x]}^{f_str[x + 2:]}"
