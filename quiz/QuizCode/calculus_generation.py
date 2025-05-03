@@ -4,46 +4,46 @@ from sympy import diff, integrate, symbols, solve, zoo
 from .helper_functions import calculate_difficulty
 
 def calculus_questions_generation(entered_difficulty : int, question_types : list, difficulty_factors: dict):
-    while True:
-        question_type_chosen = random.choice(question_types)
-        question_topic_chosen = random.choice(["differentiation", "integration"])
+    while True: # Remains True until a valid question is generated with the entered difficulty
+        question_topic_chosen = random.choice(["differentiation", "integration"]) # Randomly chooses between differentiation and integration question
         calculator_needed = False
-        x = symbols("x")
         time_needed = 60
         match question_topic_chosen:
             case "differentiation":
+                # Randomly chooses differentiation topic to make question for
                 question_subtopic_chosen = random.choice(["basic_differentiation", "second_order_differentiation", "answer_from_derivative", "finding_x", "tangents", "normals"])
                 question, answer, difficulty_factors, is_valid, time_needed = differentiation_questions(question_subtopic_chosen, difficulty_factors)
-                if is_valid:
+                if is_valid: # Checks if question generated is valid, otherwise will start again
                     if question_subtopic_chosen in ("answer_from_derivative", "finding_x", "tangents", "normals"):
                         calculator_needed = True
-                    difficulty_factors["question_type"][0] = 10
+                    difficulty_factors["question_type"][0] = 10 # Assigns values to some difficulty factors
                     difficulty_factors["answers_similarity"][0] = 9
-                    difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                    if entered_difficulty == final_difficulty:
+                    difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors) # Gets final difficulty level of question
+                    if entered_difficulty == final_difficulty: # Breaks out of while loop if difficulty level matches entered difficulty
                         print(difficulty_factors)
                         print(difficulty_weighting)
                         break
                 else:
                     pass
             case "integration":
+                # Randomly chooses integration topic to make question for
                 question_subtopic_chosen = random.choice(
                     ["basic_integration", "definite_integrals", "finding_area", "finding_complex_area"])
                 question, answer, difficulty_factors, is_valid, time_needed = integration_questions(question_subtopic_chosen, difficulty_factors)
-                if is_valid:
+                if is_valid: # Checks if question generated is valid, otherwise will start again
                     if question_subtopic_chosen in ("definite_integrals", "finding_area", "finding_complex_area"):
                         calculator_needed = True
                     difficulty_factors["question_type"][0] = 10
                     difficulty_factors["answers_similarity"][0] = 9
-                    difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
-                    if entered_difficulty == final_difficulty:
+                    difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors) # Gets final difficulty level of question
+                    if entered_difficulty == final_difficulty: # Breaks out of while loop if difficulty level matches entered difficulty
                         print(difficulty_factors)
                         print(difficulty_weighting)
                         break
     answer = str(answer)
 
     new_question = ""
-    for x in range(len(question)):
+    for x in range(len(question)): # Replaces 1x or 1y in question with x or y
         if question[x] == "1" and x + 1 < len(question) and (question[x + 1] == "x" or question[x + 1] == "y"):
             pass
         else:
@@ -52,6 +52,7 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
     return new_question, answer, difficulty_weighting, calculator_needed, time_needed
 
 
+# Function for making differentiation questions of different subtopics
 def differentiation_questions(question_subtopic_chosen : str, difficulty_factors : dict):
     time_needed = 60
     question, answer = "", ""
@@ -196,6 +197,8 @@ def differentiation_questions(question_subtopic_chosen : str, difficulty_factors
 
     return question, answer, difficulty_factors, True, time_needed
 
+
+# Function for making integration questions of different subtopics
 def integration_questions(question_subtopic_chosen : str, difficulty_factors : dict):
     time_needed = 60
     question, answer = "", ""

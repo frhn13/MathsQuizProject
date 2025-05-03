@@ -1,10 +1,10 @@
 import matplotlib
 import numpy as np
 from matplotlib import patches
-matplotlib.use("agg")  # Use a backend that does not require interactivity
+matplotlib.use("agg")  # Use a backend that does not require interactivity to improve performance
 import matplotlib.pyplot as plt
 from flask import render_template, redirect, url_for, request, flash, session, send_file
-from sympy import sympify, factor, expand, simplify
+from sympy import sympify
 from flask_login import login_user, logout_user, login_required, current_user
 import bcrypt
 from io import BytesIO
@@ -16,21 +16,22 @@ from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, Restart
                         AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm, ResultsForm,
                         MaxResultsForm)
 from .QuizCode.topic_manager import question_topic_selection
-from quiz.models import User, QuestionTopics, QuestionDifficulties
-from quiz.database_functions import update_topic_information, update_difficulty_information, get_user_results, \
-    get_difficulty_results, get_topic_results, create_new_user, delete_user
+from quiz.models import User
+from quiz.database_functions import (update_topic_information, update_difficulty_information, get_user_results,
+    get_difficulty_results, get_topic_results, create_new_user, delete_user)
 
 
 @app.route("/", methods=["GET", "POST"])
 @app.route("/register", methods=["GET", "POST"])
-def register_page():
-    if current_user.is_anonymous:
+def register_page(): # Webpage where user creates new account
+    if current_user.is_anonymous: # Only loads if no-one logged in already
         form = RegisterForm()
         if form.validate_on_submit():
             preexisting_username = User.query.filter_by(username=form.username.data).first()
             preexisting_email = User.query.filter_by(email=form.email.data).first()
-            if form.username.data.lower() == "test":
+            if form.username.data.lower() == "test": # Registered username can't be test
                 flash("Cannot have that username.", category="danger")
+            # If statements check validity criteria for registration details, registration will fail if details are invalid
             if form.password.data != form.confirm_password.data:
                 flash("The passwords entered are not the same.", category="danger")
             if preexisting_email or preexisting_username:
@@ -39,6 +40,7 @@ def register_page():
                 flash("Email entered is not in a valid format.", category="danger")
             if (not preexisting_username and not preexisting_email and form.password.data == form.confirm_password.data
                     and "@" in form.email.data and "." in form.email.data):
+                # If all details are valid, then new user added to database, and goes to quiz selection page
                 created_user = User(username=form.username.data, email=form.email.data, password=form.password.data)
                 create_new_user(created_user)
                 flash("Account creation successful!", category="success")
@@ -46,50 +48,42 @@ def register_page():
 
         return render_template("register.html", form=form)
     else:
+        # Gives this message if user is already logged in
         flash("This page cannot be accessed if you are logged in.", category="warning")
         return redirect(url_for("quiz_selection"))
 
 @app.route("/logout")
 @login_required
-def logout_page():
+def logout_page(): # Logs out the current user
     logout_user()
     flash("You are now logged out.", category="info")
     return redirect(url_for("register_page"))
 
 @app.route("/login", methods=["GET", "POST"])
-def login_page():
-    if current_user.is_anonymous:
+def login_page(): # Webpage where user logs into their account
+    if current_user.is_anonymous: # Only loads if no-one logged in already
         form = LoginForm("Login")
         if form.validate_on_submit():
             user_logging_in = User.query.filter_by(username=form.username.data).first()
+            # User is logged in if entered username and password match ones in the User table
             if user_logging_in and bcrypt.checkpw(form.password.data.encode("utf-8"), user_logging_in.password):
                 login_user(user_logging_in)
                 flash("Login successful!", category="success")
                 return redirect(url_for("quiz_selection"))
+            # Otherwise login fails
             else:
                 flash("Your login details are invalid.", category="danger")
                 return redirect(url_for("login_page"))
         return render_template("login.html", form=form)
     else:
+        # Gives this message if user is already logged in
         flash("This page cannot be accessed if you are logged in.", category="warning")
         return redirect(url_for("quiz_selection"))
 
-@app.route("/remove")
-def remove_page():
-    session.pop("final_question", None)
-    session.pop("final_answer", None)
-    session.pop("final_difficulty_weighting", None)
-    session.pop("multiple_answers", None)
-    session.pop("current_topic", None)
-    session.pop("current_difficulty", None)
-    session.pop("difficulty_range", None)
-    session.pop("score", None)
-    return redirect(url_for("quiz_selection"))
-
 @app.route("/end-quiz", methods=["GET", "POST"])
 @login_required
-def end_quiz():
-    form = RestartForm()
+def end_quiz(): # Webpage is displayed when the user finishes a quiz
+    form = RestartForm() # User can return to quiz selection page from this form
     if request.method == "POST":
         return redirect(url_for("quiz_selection"))
     number_of_questions = session.get("number_of_questions")
@@ -99,10 +93,10 @@ def end_quiz():
 
 @app.route("/quiz-selection", methods=["GET", "POST"])
 @login_required
-def quiz_selection():
-    form = TopicsForm()
+def quiz_selection(): # Webpage where user can select details for quiz to do through a form
+    form = TopicsForm() # Form for quiz details selection
 
-    session.pop("topic_selection", None)
+    session.pop("topic_selection", None) # All session data stored during a quiz is deleted
     session.pop("number_of_questions", None)
     session.pop("question_number", None)
     session.pop("final_question", None)
@@ -131,9 +125,10 @@ def quiz_selection():
     session["min_difficulty"] = 10
 
     if request.method == "POST":
-        topics_chosen = []
+        topics_chosen = [] # Checks all maths topics in form and adds ones that have been ticked to a list
         if request.form.get("operations") is not None:
             topics_chosen.append("operations")
+            # Maximum difficulty of quiz increases if maths topic ticked has max difficulty higher than it, and same vice versa for min difficulty
             if session["max_difficulty"] < operations[1]:
                 session["max_difficulty"] = operations[1]
             if session["min_difficulty"] > operations[0]:
@@ -199,17 +194,20 @@ def quiz_selection():
             if session["min_difficulty"] > graphs[0]:
                 session["min_difficulty"] = graphs[0]
 
-        if len(topics_chosen) == 0:
+        if len(topics_chosen) == 0: # At least one topic must be selected
             flash("Please select a topic.", category="danger")
             # return redirect(url_for("quiz_selection"))
+        # Initial difficulty selected must be between min and max possible difficulty of the quiz given the topics selected
         elif int(request.form.get("difficulty")) > session["max_difficulty"]:
             flash("The difficulty selected is too high for the chosen topics.", category="danger")
         elif int(request.form.get("difficulty")) < session["min_difficulty"]:
             flash("The difficulty selected is too low for the chosen topics.", category="danger")
         else:
+            # Dictionary will store the number of questions a user gets right and wrong for each difficulty level in this quiz
             session["difficulty_counter"] = {
                 f"level_{x}": [0, 0] for x in range(1, 11)
             }
+            # Dictionary will store the number of questions a user gets right and wrong for each maths topic in this quiz
             session["topic_counter"] = {
                 "operations": [0, 0],
                 "expressions": [0, 0],
@@ -223,24 +221,25 @@ def quiz_selection():
                 "circles": [0, 0],
                 "graphs": [0, 0]
             }
-
+            # All the quiz details are stored as session values so they can be used across webpages
             session["topic_selection"] = topics_chosen
             session["current_difficulty"] = int(request.form.get("difficulty"))
             session["number_of_questions"] = int(request.form.get("questions"))
             session["questions_to_progress"] = session["number_of_questions"] // 10
             if session["number_of_questions"] == 50: session["questions_to_progress"] = 4
+            # Other starting values are initialised here
             session["question_number"] = 1
             session["difficulty_range"] = 0
             session["score"] = 0
             print(session.get("topic_selection"))
             print(session["questions_to_progress"])
-            return redirect(url_for("quiz_page"))
+            return redirect(url_for("quiz_page")) # If quiz details are valid, then webpage goes to quiz webpage
 
     return render_template("quiz_selection.html", form=form, username=current_user.username)
 
 @app.route("/image")
-def get_image():
-    point_a = session["image_values"].get("point_a")
+def get_image(): # Function for displaying a triangle image in a triangles question in the quiz
+    point_a = session["image_values"].get("point_a") # Stores all the session values for the triangle info in normal variables
     point_b = session["image_values"].get("point_b")
     point_c = session["image_values"].get("point_c")
     length_a = session["image_values"].get("length_a")
@@ -254,43 +253,44 @@ def get_image():
 
     print(f"{question_topic} {question_subtopic}")
 
+    # X and Y coordinates for all points of the triangle
     x_coordinates = [point_a[0], point_b[0], point_c[0], point_a[0]]
     y_coordinates = [point_a[1], point_b[1], point_c[1], point_a[1]]
 
     plt.figure(figsize=(30, 20))
 
     if question_topic == "pythagoras":
-        if question_subtopic == "missing_side":
+        if question_subtopic == "missing_side": # Draws triangle with missing length for hypotenuse
             plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x", fontsize="20")
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
-        else:
+        else: # Draws triangle with missing length for another side
             plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm", fontsize="20")
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, "x", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
     elif question_topic == "trigonometry":
-        if question_subtopic == "missing_side":
+        if question_subtopic == "missing_side": # Draws triangle with missing side for trig question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x", fontsize="20")
-        else:
+        else: # Draws triangle with missing angle for trig question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
     elif question_topic == "sine_cosine_area":
-        if question_subtopic == "sine_side":
+        if question_subtopic == "sine_side": # Draws triangle with missing side for sine rule question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x", fontsize="20")
-        elif question_subtopic == "sine_angle":
+        elif question_subtopic == "sine_angle": # Draws triangle with missing angle for sine rule question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
-        elif question_subtopic == "cosine_side":
+        elif question_subtopic == "cosine_side": # Draws triangle with missing side for cosine rule question
             plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x", fontsize="20")
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
-        elif question_subtopic == "cosine_angle":
+        elif question_subtopic == "cosine_angle": # Draws triangle with missing angle for cosine rule question
             plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm", fontsize="20")
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
-        elif question_subtopic == "area":
+        elif question_subtopic == "area": # Draws triangle with missing angle for sine area rule question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
 
