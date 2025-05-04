@@ -9,7 +9,7 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
         calculator_needed = True # Calculator always needed for circle questions
         # Circles question subtopic randomly chosen from this list
         question_topic_chosen = random.choice(["area", "circumference", "sector", "arc", "area_of_shaded_area"])
-        question_type_chosen = random.choice(question_types)
+        question_type_chosen = random.choice(question_types) # Question type randomly chosen
         question = ""
         answer, radius, angle = 0, 0, 0
         match question_topic_chosen:
