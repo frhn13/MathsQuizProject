@@ -1,3 +1,4 @@
+# Stores the maximum and minimum difficulty for all maths topics in the quiz
 operations = (1, 5)
 fractions = (2, 6)
 expressions = (3, 6)

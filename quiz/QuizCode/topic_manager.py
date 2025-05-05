@@ -14,6 +14,8 @@ from .hcf_lcm_generation import hcf_lcm_question_generation
 from .min_and_max_difficulties import *
 
 def question_topic_selection(selected_topics : list, entered_difficulty : int, question_types : list):
+    # Function selects the topic the next question will be generated for in the quiz
+    # By default, questions won't have an image, graph, multiple answers, or require a calculator and will have 60 seconds to complete
     image_values = None
     graph_values = None
     circle_image_values = None
@@ -33,14 +35,17 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
         "multiple_topics": [0, 0.1]  # Whether question combines multiple topic ideas
     }
     while not is_topic_chosen:
+        # Topic is randomly selected from list of topics passed in for current quiz
         chosen_topic = random.choice(selected_topics)
         match chosen_topic:
+            # Will generate question for chosen topic, unless the difficulty needed for the question is outside that
+            # topic's difficulty range, then it will randomly select another topic
             case "operations":
                 if operations[0] <= entered_difficulty <= operations[1]:
                     question, answer, difficulty_weighting, time_needed = operations_question_generation(entered_difficulty,
                                                                                             question_types,
                                                                                             difficulty_factors)
-                    is_topic_chosen = True
+                    is_topic_chosen = True # If question is generated successfully, then code breaks out of while loop
             case "fractions":
                 if fractions[0] <= entered_difficulty <= fractions[1]:
                     question, answer, difficulty_weighting, time_needed = fractions_question_generation(entered_difficulty,
@@ -107,4 +112,5 @@ def question_topic_selection(selected_topics : list, entered_difficulty : int, q
                                                                                             difficulty_factors)
                     is_topic_chosen = True
 
+    # All information for question and answer needed to display it on a webpage is returned
     return chosen_topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values, calculator_needed, time_needed

@@ -271,6 +271,7 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                         break
 
             case "algebra":
+                # Generates an algebraic fractions question
                 time_needed = 120 # Needs more time to answer this question than other subtopics
                 question_type_chosen = "free_text"
                 question, answer, question_type_chosen = algebraic_fractions(difficulty_factors) # Calls function to make algebraic fraction expression
