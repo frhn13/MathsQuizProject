@@ -4,17 +4,20 @@ from quiz import db, app
 from quiz.models import QuestionTopics, QuestionDifficulties, User
 
 def create_new_user(created_user: User):
+    # Function adds records for new user to User table
     db.session.add(created_user)
     db.session.commit()
+    # Also adds records for that user in the table that record their number of correct and incorrect answers for each topic and difficulty
     question_topics = QuestionTopics(user_id=created_user.id)
     question_difficulties = QuestionDifficulties(user_id=created_user.id)
     db.session.add(question_topics)
     db.session.add(question_difficulties)
     db.session.commit()
-    login_user(created_user)
+    login_user(created_user) # Then logs in the user
 
 def delete_user(user_to_delete: User):
-    logout_user()
+    # Function deletes the record for the specified user and their corresponding Question Topic and Question Difficulty records
+    logout_user() # Logs out the current user before deleting their details
     question_difficulties_to_delete = QuestionDifficulties.query.filter_by(user_id=user_to_delete.id).first()
     question_topics_to_delete = QuestionTopics.query.filter_by(user_id=user_to_delete.id).first()
     db.session.delete(question_difficulties_to_delete)
@@ -23,6 +26,7 @@ def delete_user(user_to_delete: User):
     db.session.commit()
 
 def update_topic_information(topic_counter : dict):
+    # Function updates the number of questions the current user got right or wrong for each topic with the results from the quiz they just did
     question_topics = QuestionTopics.query.filter_by(user_id=current_user.id).first()
     if question_topics:
         question_topics.operations_right += topic_counter["operations"][0]
@@ -61,6 +65,7 @@ def update_topic_information(topic_counter : dict):
         db.session.commit()
 
 def update_difficulty_information(difficulty_counter : dict):
+    # Function updates the number of questions the current user got right or wrong for each difficulty level with the results from the quiz they just did
     question_difficulties = QuestionDifficulties.query.filter_by(user_id=current_user.id).first()
     if question_difficulties:
         question_difficulties.level_one_right += difficulty_counter["level_1"][0]
@@ -96,6 +101,7 @@ def update_difficulty_information(difficulty_counter : dict):
         db.session.commit()
 
 def get_user_results(chosen_user):
+    # Finds all total number of questions the passed in user got correct and incorrect and returns that
     question_difficulties = QuestionDifficulties.query.filter_by(user_id=chosen_user.id).first()
     answers_correct = (question_difficulties.level_one_right + question_difficulties.level_two_right +
                        question_difficulties.level_three_right + question_difficulties.level_four_right +
@@ -109,7 +115,7 @@ def get_user_results(chosen_user):
                        question_difficulties.level_seven_wrong + question_difficulties.level_eight_wrong +
                        question_difficulties.level_nine_wrong + question_difficulties.level_ten_wrong)
 
-    try:
+    try: # Also calculates the percentage of the questions the user got correct and returns that
         answers_percentage = round(answers_correct / (answers_correct + answers_incorrect), 2) * 100
     except ZeroDivisionError:
         answers_percentage = 0
@@ -122,6 +128,8 @@ def get_difficulty_results(chosen_user : User, chosen_difficulty : int):
     answer_correct = 0
     answer_incorrect = 0
     answer_percentage = 0
+    # Finds all total number of questions the passed in user got correct and incorrect for a particular difficulty level
+    # and returns that along with the percentage of question they got right for that difficulty
     try:
         match chosen_difficulty:
             case 1:
@@ -171,6 +179,11 @@ def get_difficulty_results(chosen_user : User, chosen_difficulty : int):
 
 def get_topic_results(chosen_user : User, chosen_topic : str):
     question_topics = QuestionTopics.query.filter_by(user_id=chosen_user.id).first()
+    answer_correct = 0
+    answer_incorrect = 0
+    answer_percentage = 0
+    # Finds all total number of questions the passed in user got correct and incorrect for a particular maths topic
+    # and returns that along with the percentage of question they got right for that topic
     try:
         match chosen_topic:
             case "operations":

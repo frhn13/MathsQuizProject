@@ -1,8 +1,7 @@
 import random
-from sympy import simplify, factor, expand, symbols
+from sympy import factor, symbols
 
-from .helper_functions import (generate_expression, generate_complex_expression, answer_generation_fractions,
-                               answer_generation, calculate_difficulty, algebraic_fractions, factorisation_and_simplification)
+from .helper_functions import calculate_difficulty, algebraic_fractions, factorisation_and_simplification
 
 def expressions_question_generation(entered_difficulty: int, question_types: list, difficulty_factors: dict):
     while True: # Remains True until a valid question is generated with the entered difficulty

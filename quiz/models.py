@@ -7,19 +7,24 @@ from quiz import db, login_manager
 def load_user(user_id): # Needed for logging in users
     return User.query.get(int(user_id))
 
+# Model for the User table, contains all the attributes needed for a user account
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
     username = db.Column(db.String(length=20), nullable=False, unique=True)
     email = db.Column(db.String(length=40), nullable=False, unique=True)
     password = db.Column(db.String(length=30), nullable=False)
+    # Has one-to-one relations with the tables storing the number of question the user got right or wrong for each
+    # difficulty level and maths topic
     question_topics = db.relationship("QuestionTopics")
     question_difficulties = db.relationship("QuestionDifficulties")
 
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
+        # Password is hashed and salted before it is stored in the DB
         self.password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
+# Model for the table that stores the number of questions a user got right or wrong for each maths topic
 class QuestionTopics(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
 
@@ -58,6 +63,7 @@ class QuestionTopics(db.Model):
 
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id"), nullable=False)
 
+# Model for the table that stores the number of questions a user got right or wrong for each difficulty level
 class QuestionDifficulties(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 

@@ -260,37 +260,37 @@ def get_image(): # Function for displaying a triangle image in a triangles quest
     plt.figure(figsize=(30, 20))
 
     if question_topic == "pythagoras":
-        if question_subtopic == "missing_side": # Draws triangle with missing length for hypotenuse
+        if question_subtopic == "missing_side": # Labels sides for triangle with missing length for hypotenuse
             plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x", fontsize="20")
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
-        else: # Draws triangle with missing length for another side
+        else: # Labels sides for triangle with missing length for another side
             plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm", fontsize="20")
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, "x", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
     elif question_topic == "trigonometry":
-        if question_subtopic == "missing_side": # Draws triangle with missing side for trig question
+        if question_subtopic == "missing_side": # Labels sides for triangle with missing side for trig question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x", fontsize="20")
-        else: # Draws triangle with missing angle for trig question
+        else: # Labels sides for triangle with missing angle for trig question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
     elif question_topic == "sine_cosine_area":
-        if question_subtopic == "sine_side": # Draws triangle with missing side for sine rule question
+        if question_subtopic == "sine_side": # Labels sides for triangle with missing side for sine rule question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, "x", fontsize="20")
-        elif question_subtopic == "sine_angle": # Draws triangle with missing angle for sine rule question
+        elif question_subtopic == "sine_angle": # Labels sides for triangle with missing angle for sine rule question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
-        elif question_subtopic == "cosine_side": # Draws triangle with missing side for cosine rule question
+        elif question_subtopic == "cosine_side": # Labels sides for triangle with missing side for cosine rule question
             plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, "x", fontsize="20")
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
-        elif question_subtopic == "cosine_angle": # Draws triangle with missing angle for cosine rule question
+        elif question_subtopic == "cosine_angle": # Labels sides for triangle with missing angle for cosine rule question
             plt.text((point_b[0] + point_c[0]) / 2, (point_b[1] + point_c[1]) / 2, f"Side a = {length_a:.2f}cm", fontsize="20")
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
-        elif question_subtopic == "area": # Draws triangle with missing angle for sine area rule question
+        elif question_subtopic == "area": # Labels sides for triangle for sine area rule question
             plt.text((point_a[0] + point_c[0]) / 2, (point_a[1] + point_c[1]) / 2, f"Side b = {length_b:.2f}cm", fontsize="20")
             plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
 
@@ -300,36 +300,46 @@ def get_image(): # Function for displaying a triangle image in a triangles quest
         plt.text((point_b[0] + point_a[0]) / 2, (point_b[1] + point_a[1]) / 2, f"Side c = {length_c:.2f}cm", fontsize="20")
 
     if question_topic == "simple_angles":
+        # Labels angles for triangle with missing angle
         plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
         plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
         plt.text(point_c[0], point_c[1], "x", fontsize="20")
     elif question_topic == "trigonometry":
         if question_subtopic == "missing_side":
+            # Labels angles for triangle with missing side in trigonometry question
             plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
             plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
         else:
+            # Labels angles for triangle with missing angle in trigonometry question
             plt.text(point_a[0], point_a[1], "x", fontsize="20")
             plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
     elif question_topic == "sine_cosine_area":
         if question_subtopic == "sine_side":
+            # Labels angles for triangle with missing side for sine rule question
             plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
             plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°", fontsize="20")
         elif question_subtopic == "sine_angle":
+            # Labels angles for triangle with missing angle for sine rule question
             plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
             plt.text(point_c[0], point_c[1], "x", fontsize="20")
         elif question_subtopic == "cosine_side":
+            # Labels angles for triangle with missing side for cosine rule question
             plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
         elif question_subtopic == "cosine_angle":
+            # Labels angles for triangle with missing angle for cosine rule question
             plt.text(point_a[0], point_a[1], "x", fontsize="20")
         elif question_subtopic == "area":
+            # Labels angle for triangle for sine area rule question
             plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
     else:
+        # Labels all angles for any other type of question
         plt.text(point_a[0], point_a[1], f"Angle A = {angle_a:.2f}°", fontsize="20")
         plt.text(point_b[0], point_b[1], f"Angle B = {angle_b:.2f}°", fontsize="20")
         plt.text(point_c[0], point_c[1], f"Angle C = {angle_c:.2f}°", fontsize="20")
 
     plt.gca().set_aspect("equal", adjustable="box")
     plt.axis("off")
+    # Draws the triangle
     plt.plot(x_coordinates, y_coordinates, color="blue", linestyle="-", marker=".")
     # Adapted from https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
     triangle_img = BytesIO()
@@ -339,8 +349,8 @@ def get_image(): # Function for displaying a triangle image in a triangles quest
     return send_file(triangle_img, mimetype="image/png")
 
 @app.route("/circle-image")
-def get_circle_image():
-    radius = session["circle_image_values"].get("radius")
+def get_circle_image(): # Function for displaying a circle image in a circles question in the quiz
+    radius = session["circle_image_values"].get("radius") # Stores all the session values for the circle info in normal variables
     angle = session["circle_image_values"].get("angle")
     question_topic = session["circle_image_values"].get("question_topic")
     use_diameter = session["circle_image_values"].get("use_diameter")
@@ -351,14 +361,17 @@ def get_circle_image():
     ax.set_xlim(-radius - 1, radius + 1)
     ax.set_ylim(-radius - 1, radius + 1)
 
+    # Creates sector for sector and arc questions
     sector = patches.Wedge((0, 0), radius, 0, angle, color="lightblue", edgecolor="black")
 
-    angle1_rad = np.radians(0)
+    angle1_rad = np.radians(0) # Converts angles to radians for some question
     angle2_rad = np.radians(angle)
     sector_1 = (radius * cos(angle1_rad), radius * sin(angle1_rad))
     sector_2 = (radius * cos(angle2_rad), radius * sin(angle2_rad))
 
+    # Draws the circle
     circle = plt.Circle((0, 0), radius=radius, color="blue", fill=False)
+    # Either adds radius or diameter depending on question
     if not use_diameter:
         ax.plot([0, radius], [0, 0], linestyle="--", color="blue")
         ax.text(radius / 1.5, 0.5, f"r = {radius}",
@@ -368,6 +381,7 @@ def get_circle_image():
         ax.text(radius / 1.5, 0.5, f"d = {radius * 2}",
                 fontsize=10)
 
+    # Adds sector for related questions
     if question_topic in ("sector", "arc", "area_of_shaded_area"):
         ax.text(0, 0.5, f"{angle}°", fontsize=10)
         ax.add_patch(sector)
@@ -386,24 +400,17 @@ def get_circle_image():
     return send_file(circle_image, mimetype="image/png")
 
 @app.route("/graph")
-def get_graph():
+def get_graph(): # Function for displaying the relevant graph for a graphs question
+    # Stores all the session values for the graph info in normal variables
     time_values = session["graph_values"].get("time_values")
     distance_values = session["graph_values"].get("distance_values")
     speed_values = session["graph_values"].get("speed_values")
     pie_chart_values = session["graph_values"].get("pie_chart_values")
     pie_chart_labels = session["graph_values"].get("pie_chart_labels")
-    graph_values = {
-        "time_values": session["graph_values"].get("time_values"),
-        "distance_values": session["graph_values"].get("distance_values"),
-        "speed_values": session["graph_values"].get("speed_values"),
-        "pie_chart_values": session["graph_values"].get("pie_chart_values"),
-        "pie_chart_labels": session["graph_values"].get("pie_chart_labels")
-    }
-
-    # plt.figure(figsize=(20, 20))
 
     if distance_values != []:
-        plt.minorticks_on()
+        # Draws a graph for a distance time graph
+        plt.minorticks_on() # Minor ticks and minor grid added to graph
         plt.gca().set_aspect("equal", adjustable="box")
         plt.plot(time_values, distance_values, linestyle="-", marker=".", color="blue")
         plt.xlabel("Time in Minutes")
@@ -415,7 +422,8 @@ def get_graph():
         graph_image.seek(0)
         plt.close()
     elif speed_values != []:
-        plt.minorticks_on()
+        # Draws a graph for a velocity time graph
+        plt.minorticks_on() # Minor ticks and minor grid added to graph
         plt.gca().set_aspect("equal", adjustable="box")
         plt.plot(time_values, speed_values, linestyle="-", marker=".", color="blue")
         plt.xlabel("Time in Seconds")
@@ -427,7 +435,8 @@ def get_graph():
         graph_image.seek(0)
         plt.close()
     elif pie_chart_values != []:
-        def angle_generation(percentage):
+        # Draws a pie chart
+        def angle_generation(percentage): # Function adds degrees of each section in pie chart
             angle = (percentage / 100) * 360
             return f"{angle:.0f}°"
 
@@ -446,15 +455,18 @@ def get_graph():
 @app.route("/quiz", methods=["GET", "POST"])
 @login_required
 def quiz_page():
+    # Quiz must be created before going on quiz page
     if "topic_selection" not in session:
         flash("You must make a quiz before starting one.", category="danger")
         return redirect(url_for("quiz_selection"))
     else:
         form = AnswerForm()
         if "final_answer" not in session:
+            # Will get new question and answer for current quiz if none exist
             topic, question, answer, difficulty_weighting, multiple_answers, image_values, graph_values, circle_image_values, \
                 calculator_needed, time_needed = question_topic_selection(session.get("topic_selection"), int(session.get("current_difficulty")),
     ["free_text", "multiple-choice", "true/false"])
+            # Adds all the relevant question information into session data
             session["current_topic"] = topic
             session["final_answer"] = answer
             session["final_question"] = question
@@ -462,6 +474,7 @@ def quiz_page():
             session["multiple_answers"] = multiple_answers
             session["calculator_needed"] = calculator_needed
             session["time_needed"] = time_needed
+            # Will add the data needed to make graphs or images to session data if needed
             if image_values is not None:
                 session["image_values"] = image_values
                 session["image_added"] = True
@@ -481,23 +494,25 @@ def quiz_page():
                 session.pop("circle_image_values", None)
                 session.pop("circle_image_added", None)
 
+        # Type of form for answer created depends on the question topic
         if session["multiple_answers"] == "No":
-            form = AnswerForm()
+            form = AnswerForm() # Form for entering an answer to most questions in the quiz
         if session["multiple_answers"] == "TwoSame":
-            form = AnswerQuadraticEquationForm()
+            form = AnswerQuadraticEquationForm() # Form for entering an answer to quadratic equation questions
         if session["multiple_answers"] == "TwoDifferent":
-            form = AnswerSimultaneousEquationForm()
+            form = AnswerSimultaneousEquationForm() # Form for entering an answer to simultaneous linear equation and graph transformation questions
         if session["multiple_answers"] == "FourDifferent":
-            form = AnswerQuadraticSimultaneousEquationForm()
+            form = AnswerQuadraticSimultaneousEquationForm() # Form for entering an answer to simultaneous equation questions where one is linear and the other is quadratic
 
         final_answer = session.get("final_answer")
         final_question = session.get("final_question")
         print(final_answer)
 
-        answer_timeout = False
+        answer_timeout = False # Becomes true if the user runs out of time for a question
         if request.method == "POST":
             answer = 0
             match session["multiple_answers"]:
+                # Checks the user has not run out of time for a question for each of these forms
                 case "No":
                     answer = request.form.get("answer")
                     if answer == "timeout":
@@ -516,17 +531,20 @@ def quiz_page():
                         answer_timeout = True
 
             if not answer_timeout:
+                # There are different ways of processing user input depending on the question's maths topic
                 match session["current_topic"]:
                     case "equations":
                         match session["multiple_answers"]:
                             case "No":
-                                answer = request.form.get("answer")
+                                answer = request.form.get("answer") # Takes one user input for linear equations question
+                                # For all equations questions, check if user inputs are numeric without any . or -
                                 if not answer.replace(".", "").replace("-", "").isnumeric():
                                     flash("You must enter a number. Try again.", category="danger")
                                     return redirect(url_for("quiz_page"))
                                 answer = float(answer)
 
                             case "TwoSame":
+                                # Takes two user inputs for quadratic equations question
                                 answer_x_1 = request.form.get("answer_x_1")
                                 answer_x_2 = request.form.get("answer_x_2")
 
@@ -537,6 +555,7 @@ def quiz_page():
                                 answer = [float(answer_x_1), float(answer_x_2)]
 
                             case "TwoDifferent":
+                                # Takes two user inputs for linear simultaneous equations question
                                 answer_x = request.form.get("answer_x")
                                 answer_y = request.form.get("answer_y")
 
@@ -546,6 +565,7 @@ def quiz_page():
                                     return redirect(url_for("quiz_page"))
                                 answer = [float(answer_x), float(answer_y)]
                             case "FourDifferent":
+                                # Takes two user inputs for simultaneous equations question with a quadratic
                                 answer_x_1 = request.form.get("answer_x_1")
                                 answer_x_2 = request.form.get("answer_x_2")
                                 answer_y_1 = request.form.get("answer_y_1")
@@ -563,13 +583,17 @@ def quiz_page():
 
                     case "fractions":
                         answer = request.form.get("answer")
+                        # Fractions question will ask for true/false user input if that is the answer
                         if final_answer in ("True", "False") and answer not in ("True", "False"):
                             flash("You must enter True or False. Try again", category="danger")
                             return redirect(url_for("quiz_page"))
+                        # Fractions question will ask for fractional input if answer is fractional
                         elif type(final_answer) == str and not "/" in answer and final_answer not in ("True", "False"):
                             flash("You must write your answer as a fraction. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
                         else:
+                            # If final answer is an algebraic fraction, then user input expression is altered so that it can be understood by sympy
+                            # So 2x is replaced by 2*x and x^2 is replaced by x**2
                             if "x" in final_answer:
                                 for x in range(len(answer)):
                                     if x < len(answer) - 1 and answer[x].isnumeric() and (answer[x+1] == "x" or answer[x+1] == "("):
@@ -581,51 +605,56 @@ def quiz_page():
                                     elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "^":
                                         answer = f"{answer[0:x+1]}**{answer[x+2:]}"
                                 try:
+                                    # Converts user input and final answer in data types understood by sympy
                                     final_answer = sympify(final_answer)
                                     answer = sympify(answer)
                                     print(f"{answer} {type(answer)}")
                                     print(f"{final_answer} {type(answer)}")
-                                except Exception:
+                                except Exception: # If conversion fails, then user has entered their answer wrong, so they will get it wrong
                                     pass
                             else:
+                                # If final answer is not algebraic, then user input and final answer are converted into strings
                                 final_answer = str(final_answer)
                                 answer = str(answer)
 
                     case "expressions":
                         answer = request.form.get("answer")
-                        if final_answer in ("True", "False") and answer not in ("True", "False"):
-                            flash("You must enter True or False. Try again", category="danger")
+                        # Checks x is in user input
+                        if not answer.isnumeric() and "x" not in answer:
+                            flash("Expression must include an x. Try again.", category="danger")
+                            return redirect(url_for("quiz_page"))
+                        # Checks brackets are not in user input if question is an expansion one
+                        elif ("(" in answer or ")" in answer) and "(" not in final_answer:
+                            flash("Expression must be expanded, so no brackets. Try again.", category="danger")
+                            return redirect(url_for("quiz_page"))
+                        # Checks brackets are in user input if question is a factorisation one
+                        elif "(" in final_answer and "(" not in answer and ")" not in answer:
+                            flash("Expression must be factorised. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
                         else:
-                            if not answer.isnumeric() and "x" not in answer:
-                                flash("Expression must include an x. Try again.", category="danger")
-                                return redirect(url_for("quiz_page"))
-                            elif ("(" in answer or ")" in answer) and "(" not in final_answer:
-                                flash("Expression must be expanded, so no brackets. Try again.", category="danger")
-                                return redirect(url_for("quiz_page"))
-                            elif "(" in final_answer and "(" not in answer and ")" not in answer:
-                                flash("Expression must be factorised. Try again.", category="danger")
-                                return redirect(url_for("quiz_page"))
-                            else:
-                                for x in range(len(answer)):
-                                    if x < len(answer) - 1 and answer[x].isnumeric() and (answer[x+1] == "x" or answer[x+1] == "("):
-                                        answer = f"{answer[0:x+1]}*{answer[x+1:]}"
-                                    elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "(":
-                                        answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
-                                    elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1].isnumeric():
-                                        answer = f"{answer[0:x+1]}**{answer[x+1:]}"
-                                    elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "^":
-                                        answer = f"{answer[0:x+1]}**{answer[x+2:]}"
-                                print(answer)
-                                print(final_answer)
-                            try:
-                                answer = sympify(answer)
-                                final_answer = sympify(final_answer)
-                            except Exception:
-                                pass
+                            # User input expression is altered so that it can be understood by sympy
+                            # So 2x is replaced by 2*x and x^2 is replaced by x**2
+                            for x in range(len(answer)):
+                                if x < len(answer) - 1 and answer[x].isnumeric() and (answer[x+1] == "x" or answer[x+1] == "("):
+                                    answer = f"{answer[0:x+1]}*{answer[x+1:]}"
+                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "(":
+                                    answer = f"{answer[0:x + 1]}*{answer[x + 1:]}"
+                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1].isnumeric():
+                                    answer = f"{answer[0:x+1]}**{answer[x+1:]}"
+                                elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "^":
+                                    answer = f"{answer[0:x+1]}**{answer[x+2:]}"
+                            print(answer)
+                            print(final_answer)
+                        try: # Converts user input and final answer in data types understood by sympy
+                            answer = sympify(answer)
+                            final_answer = sympify(final_answer)
+                        except Exception: # If conversion fails, then user has entered their answer wrong, so they will get it wrong
+                            pass
 
                     case "calculus":
                         answer = request.form.get("answer")
+                        # If final answer is a function, then User input function is altered so that it can be understood by sympy
+                        # So 2x is replaced by 2*x and x^2 is replaced by x**2
                         if not final_answer.isnumeric() and "y" not in final_answer:
                             for x in range(len(answer)):
                                 if x < len(answer) - 1 and answer[x].isnumeric() and (
@@ -639,12 +668,12 @@ def quiz_page():
                                     answer = f"{answer[0:x + 1]}**{answer[x + 2:]}"
                             print(answer)
                             print(final_answer)
-                            try:
+                            try: # Converts user input and final answer in data types understood by sympy
                                 answer = sympify(answer)
                                 final_answer = sympify(final_answer)
-                            except Exception:
+                            except Exception: # If conversion fails, then user has entered their answer wrong, so they will get it wrong
                                 pass
-                        else:
+                        else: # If final answer is equation of a line or a number, then user input and final answer are taken without any spaces
                             final_answer = final_answer.replace(" ", "")
                             answer = answer.replace(" ", "")
 
@@ -654,25 +683,25 @@ def quiz_page():
                             case "No":
                                 try:
                                     answer = request.form.get("answer")
+                                    # Checks if final answer is float or int, then will try to convert user input to those
                                     if type(final_answer) == int:
                                         answer = int(answer)
                                     elif type(final_answer) == float:
                                         answer = float(answer)
                                     else:
+                                        # If final answer is equation of a line, then all spaces are removed from user input for better comparison with final answer
                                         if "y=" in final_answer or "y =" in final_answer or "(" in final_answer or ")" in final_answer:
                                             final_answer = final_answer.replace(" ", "")
                                             answer = answer.replace(" ", "")
-                                        if "(" in final_answer or ")" in final_answer:
-
-                                            pass
-                                except Exception:
+                                except Exception: # If conversion fails, then user has to enter answer again
                                     flash("You must enter a number. Try again.", category="danger")
                                     return redirect(url_for("quiz_page"))
 
+                            # Checks if final answer is coordinates for graph transformation question
                             case "TwoDifferent":
                                 answer_x = request.form.get("answer_x")
                                 answer_y = request.form.get("answer_y")
-
+                                # Check if user inputs are numeric without any . or -
                                 if (not answer_x.replace(".", "").replace("-", "").isnumeric() or
                                         not answer_y.replace(".", "").replace("-", "").isnumeric()):
                                     flash("You must enter a number. Try again.", category="danger")
@@ -684,16 +713,22 @@ def quiz_page():
                         total_number = ""
                         final_answer_str = ""
                         try:
+                            # If final answer a number, then it is for HCF or LCM, so user input should be number for that
                             if type(final_answer) == int:
                                 answer = int(answer)
+                            # Checks if final answer is dictionary that stores the number of times each prime factor is
+                            # used to get the number in the question as a product of them
                             elif type(final_answer) == dict:
                                 answer = answer.replace(" ", "")
                                 numbers_dict = {}
+                                # Checks the user has entered the prime factors of a number in the correct format e.g. 2x3x3
                                 for x, character in enumerate(answer):
+                                    # If prime factors not listed correctly, then user must try again
                                     if not character.isnumeric() and character.lower() not in ("x", "*"):
                                         flash("You must list the multiplication of prime factors like a x b x c. Try again.", category="danger")
                                         return redirect(url_for("quiz_page"))
                                     elif character.isnumeric():
+                                        # Extracts each number part of the prime factors entered by the user and adds the number of times each one appears in a dictionary
                                         total_number += character
                                         if x+1 == len(answer) or (x+1 < len(answer) and answer[x+1].lower() in ("x", "*")):
                                             if total_number not in numbers_dict:
@@ -701,6 +736,7 @@ def quiz_page():
                                             else:
                                                 numbers_dict[total_number] += 1
                                             total_number = ""
+                                # Compares the dictionary from the user input with the final answer, if they are not the same then answer is blank
                                 for number in numbers_dict:
                                     if number not in final_answer:
                                         answer = ""
@@ -709,51 +745,61 @@ def quiz_page():
                                         answer = ""
                                         break
 
+                                # Creates string to store final answer in format that can be displayed to a user if they get the question wrong
                                 for number in final_answer:
                                     for x in range(final_answer[number]):
                                         final_answer_str += f"{number}x"
                                 final_answer_str = final_answer_str[0:-1]
                                 final_answer = final_answer_str
 
-                                if answer != "":
+                                if answer != "": # If answer is now blank, then they got it right
                                     answer = final_answer
                             else:
+                                # If final answer is True or False, then user input should be one of them too
                                 if final_answer in ("True", "False") and answer not in ("True", "False"):
                                     flash("You must enter True or False. Try again", category="danger")
                                     return redirect(url_for("quiz_page"))
-                        except Exception:
+                        except Exception: # If conversion to int for user input was attempted but failed, then user told they must enter a number
                             flash("You must enter a number. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
 
                     case _:
+                        # For any other maths topic, this code is used to check the user input
                         try:
                             answer = request.form.get("answer")
+                            # If answer is for a percentages question, then % symbol removed from user input
                             if session["current_topic"] == "percentages":
                                 answer = answer.replace("%", "")
+                            # If final answer is int or float, then user input is converted to those forms
                             if type(final_answer) == int:
                                 answer = int(answer)
                             elif type(final_answer) == float:
                                 answer = float(answer)
                             else:
+                                # If final answer is True or False, then user input should be one of them too
                                 if final_answer in ("True", "False") and answer not in ("True", "False"):
                                     flash("You must enter True or False. Try again", category="danger")
                                     return redirect(url_for("quiz_page"))
                                 else:
                                     pass
                         except Exception:
+                            # If conversion to int for user input was attempted but failed, then user told they must enter a number
                             flash("You must enter a number. Try again.", category="danger")
                             return redirect(url_for("quiz_page"))
 
 
             if answer_timeout:
+                # If the user runs out of time for a question then they get it wrong
                 session["topic_counter"][session["current_topic"]][1] += 1
                 difficulty_counter = session["difficulty_counter"]
                 difficulty_counter[f"level_{session['current_difficulty']}"][1] += 1
                 session["difficulty_counter"] = difficulty_counter
 
                 print("Timeout")
+                # User's difficulty range decreases by 1 upon getting a question wrong unless they are at the lowest difficulty for the quiz
                 if session["current_difficulty"] > session["min_difficulty"]:
                     session["difficulty_range"] -= 1
+                    # If difficulty range is low enough, then the difficulty level of the quiz decreases
                     if session["difficulty_range"] <= -session["questions_to_progress"]:
                         session["current_difficulty"] -= 1
                         session["difficulty_range"] = 0
@@ -761,12 +807,14 @@ def quiz_page():
                     session["difficulty_range"] = 0
                 flash(f"You took too long to answer the question! The correct answer was {final_answer}.", category="danger")
 
+            # If statement checks all the ways a user could get a question correct
             elif (answer == final_answer or (type(final_answer) == list and (len(final_answer) == 1 and answer == final_answer[0])) or
                      (type(answer) == list and type(final_answer) == list and
                      ((len(answer) == 2 and answer[0] == final_answer[0] and answer[1] == final_answer[1])
                 or (len(answer) == 2 and answer[0] == final_answer[1] and answer[1] == final_answer[0] and session["multiple_answers"] == "TwoSame")
                 or (len(answer) == 4 and (answer[0] == final_answer[0] and answer[1] == final_answer[0] or (answer[0] == final_answer[1] and answer[1] == final_answer[0]))
                 and (answer[2] == final_answer[2] and answer[3] == final_answer[3] or (answer[2] == final_answer[3] and answer[3] == final_answer[2])))))):
+                # If they get it correct then their score and number of question they got correct increases
                 session["score"] += 1
                 session["topic_counter"][session["current_topic"]][0] += 1
                 difficulty_counter = session["difficulty_counter"]
@@ -774,8 +822,10 @@ def quiz_page():
                 session["difficulty_counter"] = difficulty_counter
 
                 print("Correct")
+                # User's difficulty range increases by 1 upon getting a question wrong unless they are at the max difficulty for the quiz
                 if session["current_difficulty"] < session["max_difficulty"]:
                     session["difficulty_range"] += 1
+                    # If difficulty range is high enough, then the difficulty level of the quiz increases
                     if session["difficulty_range"] >= session["questions_to_progress"]:
                         session["current_difficulty"] += 1
                         session["difficulty_range"] = 0
@@ -790,8 +840,10 @@ def quiz_page():
                 session["difficulty_counter"] = difficulty_counter
 
                 print("Incorrect")
+                # User's difficulty range decreases by 1 upon getting a question wrong unless they are at the lowest difficulty for the quiz
                 if session["current_difficulty"] > session["min_difficulty"]:
                     session["difficulty_range"] -= 1
+                    # If difficulty range is low enough, then the difficulty level of the quiz decreases
                     if session["difficulty_range"] <= -session["questions_to_progress"]:
                         session["current_difficulty"] -= 1
                         session["difficulty_range"] = 0
@@ -803,6 +855,7 @@ def quiz_page():
             print(f"Current difficulty: {session.get('current_difficulty')}")
             print(f"Difficulty range: {session.get('difficulty_range')}")
 
+            # Session data for question information is erased and question number increments
             session["question_number"] += 1
             session.pop("final_question", None)
             session.pop("final_answer", None)
@@ -810,15 +863,15 @@ def quiz_page():
             session.pop("multiple_answers", None)
             session.pop("current_topic", None)
 
+            # If the quiz is finished, then the number of questions the user got right for each maths topic and difficulty in the quiz is recorded
             if session["question_number"] > session["number_of_questions"]:
                 print(session["topic_counter"])
                 print(session["difficulty_counter"])
                 update_topic_information(session["topic_counter"])
                 update_difficulty_information(session["difficulty_counter"])
-                # question_topics = QuestionTopics.query.filter_by(user_id=current_user.id).first()
-
+                # After finishing quiz, return to end quiz webpage
                 return redirect(url_for("end_quiz"))
-
+            # After completing question quiz page is reloaded for next question
             return redirect(url_for("quiz_page"))
 
         current_difficulty = session.get("current_difficulty")
@@ -840,11 +893,12 @@ def quiz_page():
 
 @app.route("/get-results-graph")
 @login_required
-def get_results_graph():
+def get_results_graph(): # Function for showing graph of number of question one or two users got right and wrong overall
     user = User.query.filter_by(username=session["username"]).first()
     second_user = User.query.filter_by(username=session["second_username"]).first()
     match session["graph_type"]:
         case "all":
+            # Graph comparing the number of questions one or two users got right and wrong for all questions
             answer_correct, answer_incorrect, answer_percentage = get_user_results(user)
             if session["compare_results"]:
                 answer_correct_2, answer_incorrect_2, answer_percentage_2 = get_user_results(second_user)
@@ -859,6 +913,7 @@ def get_results_graph():
             plt.ylabel("Number of Questions")
 
         case "difficulty":
+            # Graph comparing the number of questions one or two users got right and wrong for all questions of a certain difficulty
             answer_correct, answer_incorrect, answer_percentage = get_difficulty_results(user, session["difficulty"])
             if session["compare_results"]:
                 answer_correct_2, answer_incorrect_2, answer_percentage_2 = get_difficulty_results(second_user, session["difficulty"])
@@ -873,16 +928,19 @@ def get_results_graph():
             plt.ylabel("Number of Questions")
 
         case "topic":
+            # Graph comparing the number of questions one or two users got right and wrong for all questions of a certain topic
             answer_correct, answer_incorrect, answer_percentage = get_topic_results(user, session["topic"])
             if session["compare_results"]:
                 answer_correct_2, answer_incorrect_2, answer_percentage_2 = get_topic_results(second_user, session["topic"])
                 y_axis_2 = [answer_correct_2, answer_incorrect_2]
+                # Updated title if topic is "hcf_lcm" so it makes sense for the user
                 if session["topic"] == "hcf_lcm":
                     plt.title(
                         f"Number of HCF, LCM and prime factors questions {session['username']} and {session['second_username']} got right and wrong")
                 else:
                     plt.title(f"Number of {session['topic']} questions {session['username']} and {session['second_username']} got right and wrong")
             else:
+                # Updated title if topic is "hcf_lcm" so it makes sense for the user
                 if session["topic"] == "hcf_lcm":
                     plt.title(
                         f"Number of HCF, LCM and prime factors questions {session['username']} got right and wrong")
@@ -894,6 +952,7 @@ def get_results_graph():
             y_axis = [answer_correct, answer_incorrect]
             plt.xlabel("Right or Wrong")
             plt.ylabel("Number of Questions")
+            # Updated title if topic is "hcf_lcm" so it makes sense for the user
             if session["topic"] == "hcf_lcm":
                 plt.title(f"Number of HCF, LCM and prime factors questions {session['username']} got right and wrong")
             else:
@@ -909,6 +968,7 @@ def get_results_graph():
             plt.ylabel("Number of Questions")
             plt.title(f"Number of questions you got right and wrong")
 
+    # If two users are being compared, then an extra bar is added to the correct and incorrect answers to represent them
     if session["compare_results"]:
         # Adapted from https://www.youtube.com/watch?v=ZjQCPMO7LBE
         bar_1 = np.arange(len(x_axis))
@@ -932,7 +992,7 @@ def get_results_graph():
 
 @app.route("/get-max-results-graph")
 @login_required
-def get_max_results_graph():
+def get_max_results_graph(): # Function for showing graph 5 Users with the highest number or percentage of correctly answered questions
     users = User.query.all()
     user_results = []
 
@@ -940,6 +1000,7 @@ def get_max_results_graph():
     plt.figure(figsize=(10, 10))
 
     match session["graph_type"]:
+        # Gets results for 5 users, either this is results for all questions, or questions of a specific topic or difficulty
         case "all":
             for user in users:
                 answer_correct, answer_incorrect, answer_percentage = get_user_results(user)
@@ -953,6 +1014,7 @@ def get_max_results_graph():
                 answer_correct, answer_incorrect, answer_percentage = get_topic_results(user, session["topic"])
                 user_results.append([user.username, answer_correct, answer_incorrect, answer_percentage])
 
+    # Sorts the results in reverse order
     if session["number_or_percentage"] == "number":
         user_results.sort(key=lambda x: x[1], reverse=True)
         plt.ylabel("Number of Correct Answers")
@@ -960,9 +1022,11 @@ def get_max_results_graph():
         user_results.sort(key=lambda x: x[3], reverse=True)
         plt.ylabel("Percentage of Correct Answers")
 
+    # Displays results for 5 users if there are 5 or more in the DB, otherwise displays the results for all user in DB
     user_results = user_results if len(user_results) <= 5 else user_results[0:5]
     x_axis = [x[0] for x in user_results]
     plt.xlabel("Users")
+    # Graph could display the results for Top 5 users with highest number of correct answers for all questions, or questions of a specific topic or difficulty
     if session["number_or_percentage"] == "number":
         y_axis = [x[1] for x in user_results]
         match session["graph_type"]:
@@ -979,6 +1043,8 @@ def get_max_results_graph():
                 else:
                     plt.title(f"Top {len(user_results)} Users with the Highest Number of Correct Answers for {session['topic']} Questions") if len(user_results) > 1 \
                         else plt.title(f"User with the Highest Number of Correct Answers for {session['topic']} Questions")
+
+    # Graph could display the results for Top 5 users with highest percentage of correct answers for all questions, or questions of a specific topic or difficulty
     else:
         y_axis = [x[3] for x in user_results]
         match session["graph_type"]:
@@ -999,6 +1065,7 @@ def get_max_results_graph():
                         f"Top {len(user_results)} Users with the Highest Percentage of Correct Answers for {session['topic']} Questions") if len(user_results) > 1 \
                         else plt.title(f"User with the Highest Percentage of Correct Answers for {session['topic']} Questions")
 
+    # Plots the graph itself
     print(y_axis)
     bars = plt.bar(x_axis, y_axis)
     plt.bar_label(bars, fmt="%d", padding=10, label_type="center")
@@ -1015,7 +1082,9 @@ def get_max_results_graph():
 @app.route("/view-results", methods=["GET", "POST"])
 @login_required
 def view_results():
+    # Webpage to view the number of questions one or two users answered correctly or incorrectly, for all questions, or questions of a specific topic or difficulty
     form_is_submitted = False
+    # Clears all session data from previous graph being presented
     session.pop("graph_type", None)
     session.pop("topic", None)
     session.pop("difficulty", None)
@@ -1030,6 +1099,7 @@ def view_results():
     form = ResultsForm(users_list)
 
     if form.validate_on_submit():
+        # Creates session data for new graph being created to display it on webpage
         form_is_submitted = True
         session["graph_type"] = form.results_returned.data
         session["topic"] = form.topic_chosen.data
@@ -1044,7 +1114,9 @@ def view_results():
 @app.route("/view-max-results", methods=["GET", "POST"])
 @login_required
 def view_max_results():
+    # Webpage to view the 5 Users with the highest number or percentage of correctly answered questions
     form_is_submitted = False
+    # Clears all session data from previous graph being presented
     session.pop("number_or_percentage", None)
     session.pop("graph_type", None)
     session.pop("topic", None)
@@ -1053,6 +1125,7 @@ def view_max_results():
                                "highest percentage of correct questions:")
 
     if form.validate_on_submit():
+        # Creates session data for new graph being created to display it on webpage
         form_is_submitted = True
         session["number_or_percentage"] = form.number_or_percentage_returned.data
         session["graph_type"] = form.results_returned.data
@@ -1063,13 +1136,14 @@ def view_max_results():
 
 @app.route("/leaderboard", methods=["GET", "POST"])
 @login_required
-def leaderboard_page():
+def leaderboard_page(): # Webpage for viewing leaderboard of all user results for questions in their quizzes
     form_is_submitted = False
     users = User.query.all()
     user_results = []
 
     form = MaxResultsForm("Choose whether you want the leaderboard to display the players by their number of correct answers or by their percentage of correct answers.")
     if form.validate_on_submit():
+        # User can either view users results for all questions, or questions of a specific topic or difficulty
         print(f"Results Returned: {form.results_returned}")
         form_is_submitted = True
         match form.results_returned.data:
@@ -1086,6 +1160,7 @@ def leaderboard_page():
                     answer_correct, answer_incorrect, answer_percentage = get_user_results(user)
                     user_results.append([user.username, answer_correct, answer_incorrect, answer_percentage])
 
+        # Results are either order by the number of questions or percentage of questions answered correctly
         if form.number_or_percentage_returned.data == "number":
             user_results.sort(key=lambda x: x[1], reverse=True)
         else:
@@ -1095,19 +1170,20 @@ def leaderboard_page():
 
 @app.route("/tutorial", methods=["GET", "POST"])
 @login_required
-def tutorial_page():
+def tutorial_page(): # Webpage for accessing tutorial contents
     return render_template("tutorial.html")
 
 @app.route("/delete-account", methods=["GET", "POST"])
 @login_required
-def delete_account_page():
+def delete_account_page(): # Webpage for deleting the account of the current user
     form = LoginForm("Confirm Deletion")
     if form.validate_on_submit():
         user_to_delete = User.query.filter_by(username=form.username.data).first()
+        # Checks if account entered by user matches details of currently logged in user
         if user_to_delete and user_to_delete.username == current_user.username and bcrypt.checkpw(form.password.data.encode("utf-8"), user_to_delete.password):
-            delete_user(user_to_delete)
+            delete_user(user_to_delete) # If details match, then account is deleted
             flash("Account deletion successful.", category="success")
             return redirect(url_for("register_page"))
-        else:
+        else: # If details don't match, then user is told this
             flash("The username or password entered does not match the details of the currently logged-in user.", category="danger")
     return render_template("delete_account.html", form=form)
