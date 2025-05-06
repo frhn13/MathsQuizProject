@@ -1,3 +1,4 @@
+<!--File includes styling and content that is imported into rest of the webpages-->
 <!doctype html>
 <html lang="en">
   <head>
@@ -7,7 +8,9 @@
         {% block title %}
         {% endblock %}
     </title>
+  <!--Link for Bootstrap CSS-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      <!--Creates borders for tables in leaderboard webpage-->
       <style>
           th {
             border: 1px solid black;
@@ -18,8 +21,11 @@
       </style>
   </head>
   <body>
+  <!--Adapted from https://getbootstrap.com/docs/5.3/components/navbar/ -->
+  <!--Creates navbar that is used on all webpages-->
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
+          <!--User can create new quiz if logged in-->
           {% if not current_user.is_anonymous %}
         <a class="navbar-brand" href="{{url_for('quiz_selection')}}">Select Quiz</a>
           {% endif %}
@@ -28,6 +34,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
+              <!--User can log or sign up if not logged in-->
               {% if current_user.is_anonymous %}
                 <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="{{url_for('register_page')}}">Sign Up</a>
@@ -35,6 +42,7 @@
                 <li class="nav-item">
                   <a class="nav-link" href="{{url_for('login_page')}}">Login</a>
                 </li>
+              <!--User can view tutorial, results pages, leaderboard page, log out and delete account if logged in-->
               {% else %}
                 <li class="nav-item">
                   <a class="nav-link" href="{{url_for('tutorial_page')}}">Tutorial</a>
@@ -63,12 +71,15 @@
         </div>
       </div>
     </nav>
+    <!--Says which user is currently logged in-->
     {% if not current_user.is_anonymous %}
       <h3 class="mb-5 mt-5 text-center">Now logged in as {{ current_user.username }}</h3>
     {% endif %}
     {% block content %}
     {% endblock %}
 
+    <!--Adapted from https://www.youtube.com/watch?v=l8T2-dUGqwg&list=PLOkVupluCIjuPtTkhO6jmA76uQR994Wvi&index=10 -->
+    <!--Code for displaying warning, success and info messages that are flashed to the user in different scenarios-->
     <div class="mt-5 container">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -82,7 +93,7 @@
       {% endwith %}
     </div>
 
-
+    <!--Links for Bootstrap CSS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>

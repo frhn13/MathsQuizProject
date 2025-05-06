@@ -2,12 +2,15 @@
 {% block title %}Quiz Page{% endblock %}
 
 {% block content %}
+<!--Webpage where user can do the quiz-->
 <div class="text-center mt-5 mx-auto w-100">
    <h1>Quiz Page</h1>
+   <!--Important information about the quiz is displayed to the user-->
    <h3 class="mt-5">Minimum Potential Difficulty: Level {{ min_difficulty }} | Maximum Potential Difficulty: Level {{ max_difficulty }}</h3>
    <h3 class="mt-5">Current Difficulty: Level {{ current_difficulty }}</h3>
    <h4 class="mt-3">Score: {{ score }}</h4>
    <h5 class="mt-5">Question {{ question_number }}
+   <!--Calculator symbol is displayed if it is needed in a question-->
    {% if calculator_needed %}
       <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-calculator icon" viewBox="0 0 16 16">
         <path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
@@ -15,8 +18,10 @@
       </svg>
    {% endif %}
    </h5>
+   <!--Shows how long a user has left to answer a question-->
    <h6 id="countdownTimer">{{ time_needed }} seconds left</h6>
    <br>
+   <!--Adds shape image or graph to webpage if it is needed in the question-->
    {% if image_added %}
       <img src="{{ url_for('get_image') }}" class="mx-auto w-100"/>
    {% elif graph_added %}
@@ -24,6 +29,7 @@
    {% elif circle_image_added %}
       <img src="{{ url_for('get_circle_image') }}"/>
    {% endif %}
+   <!--Answer form with only one text box for answering used for most questions-->
    {% if multiple_answers == "No" %}
       <div class="container mt-3 mx-auto w-50">
          <p>{{ final_question }}</p>
@@ -35,6 +41,7 @@
             {{ form.submit(class="btn btn-primary btn-lg mt-5", id="normal_submit") }}
          </form>
       </div>
+   <!--Answer form with two text boxes for answering used for quadratic equations questions-->
    {% elif multiple_answers == "TwoSame" %}
       <div class="container mt-3 mx-auto w-50">
          <p>{{ final_question }}</p>
@@ -48,6 +55,7 @@
             {{ form.submit(class="btn btn-primary btn-lg mt-5", id="two_same_submit") }}
          </form>
       </div>
+   <!--Answer form with two text boxes for answering used for linear simultaneous equations and graph transformation questions-->
    {% elif multiple_answers == "TwoDifferent" %}
       <div class="container mt-3 mx-auto w-50">
          <p>{{ final_question }}</p>
@@ -61,6 +69,7 @@
             {{ form.submit(class="btn btn-primary btn-lg mt-5", id="two_different_submit") }}
          </form>
       </div>
+   <!--Answer form with four text boxes for answering used for simltaneous equation questions with a quadratic one-->
    {% elif multiple_answers == "FourDifferent" %}
       <div class="container mt-3 mx-auto w-50">
          <p>{{ final_question }}</p>
@@ -82,17 +91,20 @@
 </div>
 
 <script>
+   // Stores the starting time whether the questions has multiple answers
    let timeRemaining =  '{{ time_needed }}';
    const multipleAnswers = '{{ multiple_answers }}';
    console.log(multipleAnswers);
    const countdownTimer = document.getElementById('countdownTimer');
 
+   // Question timer decreases by 1 every second
    const timerInterval = setInterval(updateTimer, 1000);
 
    function updateTimer() {
       timeRemaining--;
       countdownTimer.innerHTML = `${timeRemaining} seconds left`;
 
+      // If the timer's time becomes 0, then the value in the form becomes "timeout" and the user gets the question wrong
       if (timeRemaining <= 0) {
          clearInterval(timerInterval);
          switch(multipleAnswers) {

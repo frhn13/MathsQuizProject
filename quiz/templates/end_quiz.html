@@ -2,11 +2,13 @@
 {% block title %}End of Quiz{% endblock %}
 
 {% block content %}
+<!--Webpage is displayed when user has completed a quiz-->
 <div class="text-center mt-5">
    <h1>Quiz Completed!</h1>
    <h3 class="mt-3">You got {{ score }} out of {{ number_of_questions }} correct!</h3>
    {% if form %}
       <div class="container mt-5">
+         <!--Clicks submit button to return to quiz selection webpage-->
          <form method="POST" class="form-register">
             {{ form.csrf_token() }}
             {{ form.submit(class="btn btn-primary btn-lg mt-5") }}

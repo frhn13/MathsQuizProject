@@ -2,10 +2,12 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+<!--Webpage where user can delete their account-->
 <div class="text-center mt-5">
    <h1>To Delete your Account enter your Username and Password</h1>
    {% if form %}
       <div class="container mt-5">
+         <!--User will enter their username and password as an input-->
          <form method="POST" class="form-register mx-auto w-50">
             {{ form.csrf_token() }}
             {{ form.username.label() }}

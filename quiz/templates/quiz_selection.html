@@ -2,6 +2,7 @@
 {% block title %}Quiz Selection{% endblock %}
 
 {% block content %}
+<!--Webpage where user selects the maths topics, number of questions and initial difficulty of a quiz-->
 <div class="text-center mt-5">
    <h1>Quiz Selection</h1>
    <br>
@@ -9,6 +10,7 @@
    {% if form %}
          <form method="POST" class="form-register mt-3">
             {{ form.csrf_token() }}
+            <!--Each of the maths topics-->
             {{ form.operations.label() }}
             {{ form.operations() }}
             <br>
@@ -43,10 +45,12 @@
             {{ form.graphs() }}
             <br>
             <br>
+            <!--Text box where user selects number of questions for quiz-->
             {{ form.questions.label() }}
             {{ form.questions() }}
             <br>
             <br>
+            <!--Text box where user selects initial difficulty for quiz-->
             {{ form.difficulty.label() }}
             {{ form.difficulty()}}
             <br>

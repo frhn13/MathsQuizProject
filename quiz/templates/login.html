@@ -2,11 +2,13 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+<!--Webpage where user can log into their account-->
 <div class="text-center mt-5">
    <h1>Login</h1>
    {% if form %}
       <div class="container mt-5">
          <form method="POST" class="form-register mx-auto w-50">
+            <!--Login details are compared with records from User table, and if they are matching then user is logged in-->
             {{ form.csrf_token() }}
             {{ form.username.label() }}
             {{ form.username(class="form-control") }}

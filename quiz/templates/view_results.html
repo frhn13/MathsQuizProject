@@ -2,6 +2,7 @@
 {% block title %}Results{% endblock %}
 
 {% block content %}
+<!--Webpage to display a graph of number of questions a user got right or wrong, with ability to compare those results with another user-->
 <div class="text-center mt-5">
    <h1>Results Page</h1>
     {% if form %}
@@ -16,6 +17,7 @@
         {% endfor %}
         <br>
         <br>
+        <!--Graph can be viewed for all questions, or questions of a specific difficulty or maths topic-->
         <div id="topicField">
             {{ form.topic_chosen.label() }}
             {{ form.topic_chosen(class="form-control") }}
@@ -28,6 +30,7 @@
         {{ form.user_chosen(class="form-control") }}
 
         <br>
+        <!--Results of a second user can be added to the graph to compare them too-->
         {{ form.compare_results.label() }}
         {{ form.compare_results(id="CompareResults", onchange="toggleSecondUser()") }}
         <div id="CompareUser" class="mt-3">
@@ -38,12 +41,14 @@
         {{ form.submit(class="btn btn-primary btn-lg mt-3") }}
     </form>
     {% if form_is_submitted %}
+    <!--Graph of results displayed after form is submitted-->
     <div class="container mt-5">
          <img src="{{ url_for('get_results_graph') }}"/>
   </div>
     {% endif %}
     {% endif %}
 </div>
+
 <script>
         function toggleFormFields() {
             let selectedValue = document.querySelector('input[name="results_returned"]:checked').value;
@@ -51,6 +56,7 @@
             let topicField = document.getElementById("topicField");
             let difficultyField = document.getElementById("difficultyField");
 
+            // Code will hide dropdown menus for selecting difficulty or topic of results unless user wants to view questions of a specific maths topic or difficulty level
             if (selectedValue == "all") {
                 topicField.style.display = "none";
                 difficultyField.style.display = "none";
@@ -63,6 +69,7 @@
             }
         }
 
+        // Code will hide dropdown menu for second user unless current user wants to compare results
         function toggleSecondUser() {
             let secondUserField = document.getElementById("CompareUser");
             if (CompareResults.checked) {

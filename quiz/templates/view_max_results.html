@@ -2,12 +2,14 @@
 {% block title %}Results{% endblock %}
 
 {% block content %}
+<!--Webpage to display graph of the 5 users with the highest results-->
 <div class="text-center mt-5">
    <h1>Highest Results Page</h1>
     {% if form %}
     <form method="POST" class="form-register mx-auto w-50 mt-5">
         {{ form.csrf_token() }}
 
+        <!--Graph can be ranked by total number of or percentage amount of questions answered correctly-->
         {{ form.number_or_percentage_returned.label() }}
         {% for button in form.number_or_percentage_returned %}
         <br>
@@ -16,6 +18,7 @@
         {% endfor %}
         <br>
         <br>
+        <!--User can either view results for all questions, or questions of a specific maths topic or difficulty level-->
         {{ form.results_returned.label() }}
         {% for button in form.results_returned %}
         <br>
@@ -36,6 +39,7 @@
         {{ form.submit(class="btn btn-primary btn-lg mt-3") }}
     </form>
     {% if form_is_submitted %}
+    <!--Graph of results displayed after form is submitted-->
     <div class="container mt-5">
          <img src="{{ url_for('get_max_results_graph') }}"/>
   </div>
@@ -43,6 +47,7 @@
   {% endif %}
 </div>
 
+<!--Code will hide dropdown menus for selecting difficulty or topic of results unless user wants to view questions of a specific maths topic or difficulty level-->
 <script>
         function toggleFormFields() {
             let selectedValue = document.querySelector('input[name="results_returned"]:checked').value;
