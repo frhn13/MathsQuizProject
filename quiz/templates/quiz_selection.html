@@ -4,6 +4,8 @@
 {% block content %}
 <div class="text-center mt-5">
    <h1>Quiz Selection</h1>
+   <br>
+   <h3>1 is the Lowest Difficulty and 10 is the Highest</h3>
    {% if form %}
          <form method="POST" class="form-register mt-3">
             {{ form.csrf_token() }}

@@ -113,8 +113,6 @@ def circles_question_generation(entered_difficulty: int, question_types: list, d
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors)
 
         if final_difficulty == entered_difficulty: # Breaks out of while loop if difficulty level matches entered difficulty
-            print(difficulty_factors)
-            print(difficulty_weighting)
             break
 
     match question_type_chosen:

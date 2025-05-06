@@ -3,7 +3,6 @@ from quiz.models import User, QuestionTopics, QuestionDifficulties
 
 def init_db():
     with app.app_context():
-        print(len(User.query.all()))
         if not User or len(User.query.all()) == 0: # Checks if any users exist
             db.drop_all() # Deletes old table and makes new one
             db.create_all()

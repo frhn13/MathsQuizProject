@@ -20,8 +20,6 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
                     difficulty_factors["answers_similarity"][0] = 9
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors) # Gets final difficulty level of question
                     if entered_difficulty == final_difficulty: # Breaks out of while loop if difficulty level matches entered difficulty
-                        print(difficulty_factors)
-                        print(difficulty_weighting)
                         break
                 else:
                     pass
@@ -37,8 +35,6 @@ def calculus_questions_generation(entered_difficulty : int, question_types : lis
                     difficulty_factors["answers_similarity"][0] = 9
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors) # Gets final difficulty level of question
                     if entered_difficulty == final_difficulty: # Breaks out of while loop if difficulty level matches entered difficulty
-                        print(difficulty_factors)
-                        print(difficulty_weighting)
                         break
     answer = str(answer)
 

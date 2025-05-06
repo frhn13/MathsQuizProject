@@ -61,7 +61,6 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
                 difficulty_factors["number_of_steps"][0] = 4
                 num1 = random.randint(50, 200)
                 answer = factorint(num1)
-                print(type(answer))
                 question = f"How could {num1} be written as a product of its prime factors? Don't use any exponents in your answer."
                 # Question becomes easier if there is only 1 prime factor
                 if len(answer) == 1:
@@ -78,11 +77,8 @@ def hcf_lcm_question_generation(entered_difficulty: int, question_types: list, d
             difficulty_factors["question_type"][0] = 7
             difficulty_factors["answers_similarity"][0] = 7
         difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors) # Generates difficulty level of question
-        print(final_difficulty)
 
         if final_difficulty == entered_difficulty: # Breaks out of while loop if difficulty level matches entered difficulty
-            print(difficulty_factors)
-            print(difficulty_weighting)
             break
 
     match question_type_chosen:

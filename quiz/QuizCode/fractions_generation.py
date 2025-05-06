@@ -266,8 +266,6 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
                     difficulty_weighting, final_difficulty = calculate_difficulty(difficulty_factors) # Generates difficulty level of question
 
                     if final_difficulty == entered_difficulty: # Breaks out of while loop if difficulty level matches entered difficulty
-                        print(difficulty_factors)
-                        print(difficulty_weighting)
                         break
 
             case "algebra":
@@ -285,8 +283,6 @@ def fractions_question_generation(entered_difficulty: int, question_types: list,
 
                 # Breaks out of while loop if difficulty level matches entered difficulty
                 if question is not None and answer is not None and final_difficulty == entered_difficulty:
-                    print(difficulty_factors)
-                    print(difficulty_weighting)
                     break
             case _:
                 pass

@@ -131,8 +131,6 @@ def operations_question_generation(entered_difficulty: int, question_types: list
             # Breaks out of while loop if difficulty level matches entered difficulty, the answer is less than 1000 and
             # if none of the operations involve multiplying or dividing by one
             if final_difficulty == entered_difficulty and abs(answers[0]) <= 10000 and "*1" not in question and "1*" not in question and "/1" not in question:
-                print(difficulty_factors)
-                print(difficulty_weighting)
                 break
         else:
             pass
