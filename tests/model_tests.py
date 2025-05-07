@@ -411,15 +411,3 @@ def test_get_difficulty_results_level_ten(client, app, difficulty_counter_differ
         assert answers_correct == 3
         assert answers_incorrect == 7
         assert answers_percentage == 30
-
-
-"""def test_delete_user(client, app):
-    with app.test_request_context():
-        created_user = User.query.filter_by(username="test").first()
-        question_topics = QuestionTopics.query.filter_by(user_id=created_user.id).first()
-        question_difficulties = QuestionDifficulties.query.filter_by(user_id=created_user.id).first()
-        db.session.delete(created_user)
-        db.session.delete(question_topics)
-        db.session.delete(question_difficulties)
-        db.session.commit()
-        assert True"""

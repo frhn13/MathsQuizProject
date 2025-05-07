@@ -10,7 +10,7 @@ import bcrypt
 from io import BytesIO
 from math import sin, cos
 
-from quiz import app, db
+from quiz import app
 from .QuizCode.min_and_max_difficulties import *
 from quiz.forms import (RegisterForm, LoginForm, AnswerForm, TopicsForm, RestartForm, AnswerQuadraticEquationForm,
                         AnswerSimultaneousEquationForm, AnswerQuadraticSimultaneousEquationForm, ResultsForm,

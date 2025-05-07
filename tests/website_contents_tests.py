@@ -3,7 +3,6 @@ import pytest
 from quiz.models import User
 from quiz import app as test_app
 from quiz.database_functions import create_new_user, delete_user
-from flask_login import current_user
 
 # Adapted from https://flask.palletsprojects.com/en/stable/testing/#logging-in-and-out
 @pytest.fixture()

@@ -1,5 +1,3 @@
-import random
-
 from quiz.QuizCode.hcf_lcm_generation import hcf_lcm_question_generation
 
 def test_generate_hcf_questions(difficulty_factors, question_types):

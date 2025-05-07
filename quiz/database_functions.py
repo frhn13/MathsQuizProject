@@ -1,6 +1,6 @@
 from flask_login import current_user, login_user, logout_user
 
-from quiz import db, app
+from quiz import db
 from quiz.models import QuestionTopics, QuestionDifficulties, User
 
 def create_new_user(created_user: User):
@@ -238,19 +238,3 @@ def get_topic_results(chosen_user : User, chosen_topic : str):
         answer_percentage = 0
 
     return answer_correct, answer_incorrect, answer_percentage
-
-difficulty_counter = {
-    "level_1": [0, 0],
-    "level_2": [0, 0],
-    "level_3": [0, 0],
-    "level_4": [5, 5],
-    "level_5": [5, 5],
-    "level_6": [0, 0],
-    "level_7": [0, 0],
-    "level_8": [0, 0],
-    "level_9": [0, 0],
-    "level_10": [0, 0]
-}
-
-#with app.app_context():
-#    update_difficulty_information(difficulty_counter)

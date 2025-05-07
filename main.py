@@ -6,7 +6,7 @@ def init_db():
         if not User or len(User.query.all()) == 0: # Checks if any users exist
             db.drop_all() # Deletes old table and makes new one
             db.create_all()
-            created_user = User(username="user1", email="user1@email.com", password="123456") # Adds a user to table
+            created_user = User(username="John", email="john@email.com", password="123456") # Adds a user to table
             db.session.add(created_user)
             db.session.commit()
             # Adds record for number of questions answered for each difficulty and topic for new user
