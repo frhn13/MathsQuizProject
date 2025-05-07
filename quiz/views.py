@@ -231,8 +231,6 @@ def quiz_selection(): # Webpage where user can select details for quiz to do thr
             session["question_number"] = 1
             session["difficulty_range"] = 0
             session["score"] = 0
-            print(session.get("topic_selection"))
-            print(session["questions_to_progress"])
             return redirect(url_for("quiz_page")) # If quiz details are valid, then webpage goes to quiz webpage
 
     return render_template("quiz_selection.html", form=form, username=current_user.username)
@@ -250,8 +248,6 @@ def get_image(): # Function for displaying a triangle image in a triangles quest
     angle_c = session["image_values"].get("angle_c")
     question_topic = session["image_values"].get("question_topic")
     question_subtopic = session["image_values"].get("question_subtopic")
-
-    print(f"{question_topic} {question_subtopic}")
 
     # X and Y coordinates for all points of the triangle
     x_coordinates = [point_a[0], point_b[0], point_c[0], point_a[0]]
@@ -608,8 +604,6 @@ def quiz_page():
                                     # Converts user input and final answer in data types understood by sympy
                                     final_answer = sympify(final_answer)
                                     answer = sympify(answer)
-                                    print(f"{answer} {type(answer)}")
-                                    print(f"{final_answer} {type(answer)}")
                                 except Exception: # If conversion fails, then user has entered their answer wrong, so they will get it wrong
                                     pass
                             else:
@@ -643,8 +637,6 @@ def quiz_page():
                                     answer = f"{answer[0:x+1]}**{answer[x+1:]}"
                                 elif x < len(answer) - 1 and answer[x] == "x" and answer[x+1] == "^":
                                     answer = f"{answer[0:x+1]}**{answer[x+2:]}"
-                            print(answer)
-                            print(final_answer)
                         try: # Converts user input and final answer in data types understood by sympy
                             answer = sympify(answer)
                             final_answer = sympify(final_answer)
@@ -666,8 +658,6 @@ def quiz_page():
                                     answer = f"{answer[0:x + 1]}**{answer[x + 1:]}"
                                 elif x < len(answer) - 1 and answer[x] == "x" and answer[x + 1] == "^":
                                     answer = f"{answer[0:x + 1]}**{answer[x + 2:]}"
-                            print(answer)
-                            print(final_answer)
                             try: # Converts user input and final answer in data types understood by sympy
                                 answer = sympify(answer)
                                 final_answer = sympify(final_answer)
@@ -865,8 +855,6 @@ def quiz_page():
 
             # If the quiz is finished, then the number of questions the user got right for each maths topic and difficulty in the quiz is recorded
             if session["question_number"] > session["number_of_questions"]:
-                print(session["topic_counter"])
-                print(session["difficulty_counter"])
                 update_topic_information(session["topic_counter"])
                 update_difficulty_information(session["difficulty_counter"])
                 # After finishing quiz, return to end quiz webpage
@@ -1066,7 +1054,6 @@ def get_max_results_graph(): # Function for showing graph 5 Users with the highe
                         else plt.title(f"User with the Highest Percentage of Correct Answers for {session['topic']} Questions")
 
     # Plots the graph itself
-    print(y_axis)
     bars = plt.bar(x_axis, y_axis)
     plt.bar_label(bars, fmt="%d", padding=10, label_type="center")
 
@@ -1107,7 +1094,6 @@ def view_results():
         session["username"] = form.user_chosen.data
         session["compare_results"] = form.compare_results.data
         session["second_username"] = form.second_user_chosen.data
-        print(session["compare_results"])
 
     return render_template("view_results.html", form=form, form_is_submitted=form_is_submitted)
 
@@ -1144,7 +1130,6 @@ def leaderboard_page(): # Webpage for viewing leaderboard of all user results fo
     form = MaxResultsForm("Choose whether you want the leaderboard to display the players by their number of correct answers or by their percentage of correct answers.")
     if form.validate_on_submit():
         # User can either view users results for all questions, or questions of a specific topic or difficulty
-        print(f"Results Returned: {form.results_returned}")
         form_is_submitted = True
         match form.results_returned.data:
             case "difficulty":
